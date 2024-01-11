@@ -1,0 +1,9 @@
+* TODO Vote on project
+ - [ ] AI + nasa data to predict forest fires
+ - [ ] Zero shot AI training service
+ - [ ] Dating app where you can't choose your profile
+ - [ ] UCSC bus transportation service but it's just people driving in cars
+
+
+
+
