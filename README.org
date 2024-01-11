@@ -9,7 +9,7 @@
  - [ ] Marketplace for stuff
  - [ ] Housing app
  - [ ] Opinions of locals on tourist attractions
-               - map of points of interest?
+   - map of points of interest?
  - [ ] app to help manage monthly/annual subscriptions (something budget/finance related)
  - [ ] web scraping for stuff like shopping
  - [ ] app that helps people choose places to visit based on atmosphere of location
