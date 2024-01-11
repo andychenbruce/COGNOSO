@@ -1,27 +1,3 @@
-* TODO Vote on project
- - [ ] AI + nasa data to predict forest fires
- - [ ] Zero shot AI training service
- - [ ] Dating app where you can't choose your profile
- - [ ] UCSC bus transportation service but it's just people driving in cars
- - [ ] Notion similar app for productivity
- - [ ] General social media app
- - [ ] Online textbook rent/purchase from other students
- - [ ] Marketplace for stuff
- - [ ] Housing app
- - [ ] Opinions of locals on tourist attractions
-   - map of points of interest?
- - [ ] app to help manage monthly/annual subscriptions (something budget/finance related)
- - [ ] web scraping for stuff like shopping
- - [ ] app that helps people choose places to visit based on atmosphere of location
- - [ ] app that helps students schedule their ucsc courses based on major, prior experience, former student recommendations of profs
- - [ ] insult generator using ai
- - [ ] app that takes a list of places user wants to go to, and gives a the fastest/most scenic route?
- - [ ] app that helps build a computer based on compatability, price range
- - [ ] gambling app
- - [ ] american version of temu
- - [ ] app that helps show recipes for food based on nutrition/caloric intake
- - [ ] a simple game
- - [ ] something like quizlet
- - [ ] notepad/text editor
- - [ ] split the bill
- - [ ] “tracking” app (for expenses or other progress)
+* DONE Vote on project
+ - [X] something like quizlet
+
