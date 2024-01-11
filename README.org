@@ -9,6 +9,7 @@
  - [ ] Marketplace for stuff
  - [ ] Housing app
  - [ ] Opinions of locals on tourist attractions
+ - [ ] family thing idk
 
 
 
