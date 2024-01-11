@@ -3,7 +3,16 @@
  - [ ] Zero shot AI training service
  - [ ] Dating app where you can't choose your profile
  - [ ] UCSC bus transportation service but it's just people driving in cars
+ - [ ] Notion similar app for productivity
+ - [ ] General social media app
+ - [ ] Online textbook rent
+ - [ ] Marketplace for stuff
+ - [ ] Housing app
+ - [ ] Opinions of locals on tourist attractions
 
 
 
 
+
+
+ 
