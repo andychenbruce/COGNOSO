@@ -20,5 +20,8 @@
  - [ ] gambling app
  - [ ] american version of temu
  - [ ] app that helps show recipes for food based on nutrition/caloric intake
- - [ ] something similar to quizlet
- - [ ] 
+ - [ ] a simple game
+ - [ ] something like quizlet
+ - [ ] notepad/text editor
+ - [ ] split the bill
+ - [ ] “tracking” app (for expenses or other progress)
