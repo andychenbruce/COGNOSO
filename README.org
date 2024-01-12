@@ -1,25 +1,23 @@
 * DONE Vote on project
  - [X] something like quizlet
-* TODO Choose name
+* DONE Choose name
  - [X] Cognoso
  - [ ] 白开卡
 * Frontend
  - [ ] PDF upload
  - [ ] account creation interface
 * Backend
- - [ ] basic REST API
-   - [ ] define interface
+ - [-] basic REST API
+   - [-] define interface [2/4]
+     - [ ] create account
+     - [X] create new card set
+       - /create_card_set
+     - [X] create new card
+       - /create_card
+     - [ ] other
    - [ ] 
  - [ ] account management
    - [ ] password hasher
  - [X] database ideas
  - [ ] 
-
-
-
-
-
-
-
-
 
