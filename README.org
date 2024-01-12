@@ -8,12 +8,14 @@
  - [ ] account creation interface
 * Backend
  - [-] basic REST API
-   - [-] define interface [2/4]
+   - [-] define interface [2/5]
      - [ ] create account
      - [X] create new card set
-       - /create_card_set
+       - POST TO/create_card_set
      - [X] create new card
-       - /create_card
+       - POST /create_card
+     - [ ] get card set info
+       - GET /card_set
      - [ ] other
    - [ ] 
  - [ ] account management
