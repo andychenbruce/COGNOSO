@@ -2,6 +2,7 @@
 resolver = "2"
 members = [
   "crates/http_server",
+  "crates/api_structs",
 ]
 
 [workspace.dependencies]
@@ -11,6 +12,7 @@ serde_json = "1.0.111"
 hyper = { version = "1.1.0", features = ["full"] }
 hyper-util = { version = "0.1.2", features = ["full"] }
 http-body-util = "0.1.0"
+api_structs = { path = "crates/api_structs" }
 # wasm-bindgen = "0.2.87"
 # wasm-bindgen-futures = "0.4.37"
 # js-sys = "0.3.66"

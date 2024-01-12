@@ -1,14 +1,16 @@
 mod andy_error;
 
+use hyper::body::Buf;
+
 use andy_error::AndyError;
-use std::convert::Infallible;
-use std::net::SocketAddr;
+use http_body_util::BodyExt;
 use http_body_util::Full;
 use hyper::body::Bytes;
 use hyper::server::conn::http1;
 use hyper::service::service_fn;
 use hyper::{Request, Response};
 use hyper_util::rt::TokioIo;
+use std::net::SocketAddr;
 use tokio::net::TcpListener;
 
 #[tokio::main]
@@ -33,17 +35,44 @@ async fn main() -> Result<(), AndyError> {
     }
 }
 
-async fn main_service(req: Request<hyper::body::Incoming>) -> Result<Response<Full<Bytes>>, Infallible> {
+async fn main_service(
+    req: Request<hyper::body::Incoming>,
+) -> Result<Response<Full<Bytes>>, AndyError> {
     let uri = req.uri().path();
-    let body = req.body();
-    match (req.method(), req.uri().path()) {
-        (&hyper::Method::POST, "/echo") => {
-            Ok(Response::new(Full::new(Bytes::from("Hello, World!"))))
-        },
-        _ => {
-            let mut not_found = Response::new(Full::new(Bytes::from("")));
-            *not_found.status_mut() = hyper::StatusCode::NOT_FOUND;
-            Ok(not_found)
+    let method = req.method();
+
+    macro_rules! endpoints {
+        ($(($meth:pat, $uri:expr, $func:expr)),*) => {
+            match (method, uri) {
+                $((&$meth, $uri) => {
+                    let bytes = req.collect().await?.to_bytes();
+                    let thing = serde_json::from_reader(bytes.reader())?;
+                    $func(thing).await
+                },)*
+                _ => {
+                    let mut not_found = Response::new(Full::new(Bytes::from("")));
+                    *not_found.status_mut() = hyper::StatusCode::NOT_FOUND;
+                    Ok(not_found)
+                }
+            }
+
         }
     }
+
+    endpoints!(
+        (hyper::Method::POST, "/create_card_deck", create_card_deck),
+        (hyper::Method::POST, "/create_card", create_card)
+    )
+}
+
+async fn create_card_deck(
+    info: api_structs::CreateCard,
+) -> Result<Response<Full<Bytes>>, AndyError> {
+    todo!()
+}
+
+async fn create_card(
+    info: api_structs::CreateCardDeck,
+) -> Result<Response<Full<Bytes>>, AndyError> {
+    todo!()
 }

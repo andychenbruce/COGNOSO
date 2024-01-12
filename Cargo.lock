@@ -27,6 +27,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "api_structs"
+version = "0.1.0"
+dependencies = [
+ "serde",
+]
+
+[[package]]
 name = "autocfg"
 version = "1.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -78,6 +85,7 @@ checksum = "baf1de4339761588bc0619e3cbc0120ee582ebb74b53b4efbf79117bd2da40fd"
 name = "cognoso"
 version = "0.1.0"
 dependencies = [
+ "api_structs",
  "http-body-util",
  "hyper 1.1.0",
  "hyper-util",

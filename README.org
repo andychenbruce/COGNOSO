@@ -10,8 +10,8 @@
  - [-] basic REST API
    - [-] define interface [2/5]
      - [ ] create account
-     - [X] create new card set
-       - POST TO/create_card_set
+     - [X] create new deck
+       - POST TO/create_card_deck
      - [X] create new card
        - POST /create_card
      - [ ] get card set info
@@ -20,6 +20,6 @@
    - [ ] 
  - [ ] account management
    - [ ] password hasher
- - [X] database ideas
+ - [ ] basic database
  - [ ] 
 
