@@ -1,7 +1,8 @@
 [workspace]
 resolver = "2"
 members = [
-  "crates/http_server",
+  "crates/server_backend",
+  "crates/server_frontend",
   "crates/api_structs",
 ]
 

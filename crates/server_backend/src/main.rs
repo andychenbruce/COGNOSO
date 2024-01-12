@@ -55,7 +55,6 @@ async fn main_service(
                     Ok(not_found)
                 }
             }
-
         }
     }
 
@@ -66,13 +65,13 @@ async fn main_service(
 }
 
 async fn create_card_deck(
-    info: api_structs::CreateCard,
+    _info: api_structs::CreateCard,
 ) -> Result<Response<Full<Bytes>>, AndyError> {
     todo!()
 }
 
 async fn create_card(
-    info: api_structs::CreateCardDeck,
+    _info: api_structs::CreateCardDeck,
 ) -> Result<Response<Full<Bytes>>, AndyError> {
     todo!()
 }
