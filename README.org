@@ -1,3 +1,14 @@
 * DONE Vote on project
  - [X] something like quizlet
+* TODO Choose name
+ - [X] Cognoso
+ - [ ] 白开卡
+* Frontend
+ - [ ] PDF upload
+* Backend
+ - [ ] basic REST API
+   - [ ] define interface
+
+
+
 
