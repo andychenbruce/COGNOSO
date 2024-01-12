@@ -5,9 +5,20 @@
  - [ ] 白开卡
 * Frontend
  - [ ] PDF upload
+ - [ ] account creation interface
 * Backend
  - [ ] basic REST API
    - [ ] define interface
+   - [ ] 
+ - [ ] account management
+   - [ ] password hasher
+ - [X] database ideas
+ - [ ] 
+
+
+
+
+
 
 
 
