@@ -1,0 +1,15 @@
+html{
+    height: 100%;
+}
+
+body{
+    height: 100%;
+}
+
+#main_div{
+    color: white;
+    background-color: #333333;
+    height:100%;
+    width: 100%;
+    text-align: center;
+}

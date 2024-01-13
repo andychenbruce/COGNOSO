@@ -6,8 +6,8 @@ pub enum AndyError {
     Serde(#[from] serde_json::Error),
     #[error("io error")]
     Io(#[from] std::io::Error),
-    #[error("nonexistant user")]
-    UserDoesNotExist,
+    //#[error("nonexistant user")]
+    //UserDoesNotExist,
     #[error("database err")]
     DbError(#[from] redb::DatabaseError),
     #[error("database transaction err")]
@@ -17,5 +17,5 @@ pub enum AndyError {
     #[error("database storage err")]
     DbStorage(#[from] redb::StorageError),
     #[error("database commit err")]
-    DbCommit(#[from] redb::CommitError)
+    DbCommit(#[from] redb::CommitError),
 }

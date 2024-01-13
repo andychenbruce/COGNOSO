@@ -9,4 +9,3 @@ pub struct Args {
     #[arg(long)]
     pub database_path: std::path::PathBuf,
 }
-

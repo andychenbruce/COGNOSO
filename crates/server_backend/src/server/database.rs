@@ -24,26 +24,6 @@ struct Card {
     answer: String,
 }
 
-fn open_or_create_file_and_parents(path: std::path::PathBuf) -> Result<std::fs::File, AndyError> {
-    std::fs::create_dir_all(path.parent().unwrap())?;
-
-    match std::fs::File::options()
-        .read(true)
-        .write(true)
-        .create_new(true)
-        .open(&path)
-    {
-        Ok(x) => Ok(x),
-        Err(e) => {
-            if e.kind() == std::io::ErrorKind::AlreadyExists {
-                Ok(std::fs::File::open(&path)?)
-            } else {
-                Err(e.into())
-            }
-        }
-    }
-}
-
 pub struct Database {
     db: redb::Database,
 }
@@ -147,11 +127,11 @@ impl redb::RedbValue for CardDeck {
     where
         Self: 'a,
     {
-        todo!()
+        serde_json::from_slice(data).expect("bruh idk lol")
     }
 
     fn as_bytes<'a, 'b: 'a>(value: &Self) -> Vec<u8> {
-        todo!()
+        serde_json::to_vec(value).expect("bruh json")
     }
 
     fn type_name() -> redb::TypeName {
