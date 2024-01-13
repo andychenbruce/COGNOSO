@@ -1,18 +1,19 @@
-#[derive(serde::Serialize, serde::Deserialize, std::cmp::PartialEq, std::cmp::Eq, std::hash::Hash)]
+#[derive(serde::Serialize, serde::Deserialize)]
 pub struct CreateCard {
-    pub user_token: String,
+    pub user_id: u64,
+    pub deck_id: u64,
     pub card_name: String,
     pub question: String,
-    pub answer: String,
+    pub answer: String
 }
 
-#[derive(serde::Serialize, serde::Deserialize, std::cmp::PartialEq, std::cmp::Eq, std::hash::Hash)]
+#[derive(serde::Serialize, serde::Deserialize)]
 pub struct CreateCardDeck {
-    pub user_token: String,
-    pub deck_name: String,
+    pub user_id: u64,
+    pub deck_name: String
 }
 
-#[derive(serde::Serialize, serde::Deserialize, std::cmp::PartialEq, std::cmp::Eq, std::hash::Hash)]
+#[derive(serde::Serialize, serde::Deserialize)]
 pub struct NewUser {
     pub user_name: String,
     pub email: String,

@@ -7,6 +7,6 @@ pub struct Args {
     pub port: u16,
 
     #[arg(long)]
-    pub database_dir: std::path::PathBuf,
+    pub database_path: std::path::PathBuf,
 }
 
