@@ -5,10 +5,10 @@ WASM_DIR = ./root/wasm
 all: server website
 
 run: server website
-	cargo run --bin server_frontend -- --port 1234 --root-serve-path ./root
+	cargo run --bin "andy_http_server" -- --port 1234 --root-serve-path ./root
 
 server: 
-	cargo build --package "server_frontend"
+	cargo build --package "andy_http_server"
 
 website: wasm
 	cargo build --package "frontend_wasm" --target "wasm32-unknown-unknown"
