@@ -6,7 +6,7 @@ use std::hash::Hasher;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen_futures::JsFuture;
 
-const API_ADDR: &str = "http://localhost:3000/";
+const API_ADDR: &str = "http://localhost:3000";
 
 const FORM_USERNAME: (&str, &str) = ("auth_input_form", "username");
 const FORM_PASSWORD: (&str, &str) = ("auth_input_form", "password");
@@ -15,7 +15,7 @@ const FORM_NEW_DECK: (&str, &str) = ("new_deck", "new_deck");
 #[derive(thiserror::Error, Debug)]
 pub enum AndyError {
     #[error("javascript error")]
-    JavaScript( JsValue),
+    JavaScript(JsValue),
     #[error("casting failed")]
     DynamicCastFailed,
     #[error("serde error")]
@@ -32,48 +32,81 @@ pub enum AndyError {
     MissingFormField(String),
 }
 
-impl From<JsValue> for AndyError{
-    fn from(x: JsValue) -> Self{
+impl From<JsValue> for AndyError {
+    fn from(x: JsValue) -> Self {
         AndyError::JavaScript(x)
     }
 }
 
-fn set_error_box(error: AndyError) -> Result<(), AndyError>{
-    todo!()
+fn set_error_box(error: AndyError) -> Result<(), AndyError> {
+    let output_box: web_sys::HtmlParagraphElement = get_document()?
+        .get_element_by_id("errors_display")
+        .unwrap()
+        .dyn_into()
+        .unwrap();
+    output_box.set_inner_text(&format!("Error: {:?}", error));
+    Ok(())
 }
 
-
-macro_rules! request_func_expose {
-    ($func:expr, $real_name:ident, $endpoint:expr) => {
+macro_rules! func_expose {
+    ($func:expr, $real_name:ident) => {
         #[wasm_bindgen]
-        pub async fn $real_name(){
-            async fn middle() -> Result<web_sys::Response, AndyError>{
-                let body = $func()?;
-                do_post_request(
-                    $endpoint,
-                    Some(body)
-                ).await
+        pub fn $real_name() {
+            match $func() {
+                Ok(_) => {}
+                Err(e) => set_error_box(e).unwrap(),
             }
-            match middle().await{
-                Ok(_) => {},
-                Err(e) => set_error_box(e).unwrap()
-            }
-            
         }
-    }
+    };
 }
 
-request_func_expose!(card_interface::make_new_deck, poo, api_structs::ENDPOINT_CREATE_CARD_DECK);
+func_expose!(setup_stuff, wasm_setup_stuff);
 
-#[wasm_bindgen]
-pub fn setup_stuff() {
+pub fn setup_stuff() -> Result<(), AndyError> {
     console_error_panic_hook::set_once();
-    
+
+    let dom = get_document()?;
+
+    set_button_callback(dom, "submit_new_deck", card_interface::make_new_deck)?;
+
+    Ok(())
+}
+
+fn set_button_callback<T, O>(
+    dom: web_sys::Document,
+    button_id: &str,
+    func: T,
+) -> Result<(), AndyError>
+where
+    T: Fn() -> O + 'static + Clone,
+    O: core::future::Future<Output = Result<(), AndyError>>,
+{
+    let button: web_sys::HtmlButtonElement = dom
+        .get_element_by_id(button_id)
+        .unwrap()
+        .dyn_into()
+        .unwrap();
+
+    let callback = Closure::wrap(Box::new(move |_e: web_sys::Event| {
+        let poo = func.clone();
+        wasm_bindgen_futures::spawn_local(async move {
+            match poo().await {
+                Ok(_) => {}
+                Err(e) => set_error_box(e).unwrap(),
+            }
+        })
+    }) as Box<dyn Fn(_)>);
+
+    button.add_event_listener_with_callback("click", callback.as_ref().dyn_ref().unwrap())?;
+    std::mem::forget(callback); //mem leak, too bad
+
+    Ok(())
 }
 
 fn get_field_from_form(form: (&str, &str)) -> Result<String, AndyError> {
     let (form_id, field) = form;
-    let form: web_sys::HtmlFormElement = get_forms()?
+    let form: web_sys::HtmlFormElement = get_document()?
+        .forms()
         .get_with_name(form_id)
         .ok_or(AndyError::MissingForm(form_id.to_owned()))?
         .dyn_into()
@@ -95,10 +128,7 @@ fn get_document() -> Result<web_sys::Document, AndyError> {
     get_window()?.document().ok_or(AndyError::MissingDOM)
 }
 
-fn get_forms() -> Result<web_sys::HtmlCollection, AndyError> {
-    Ok(get_document()?.forms())
-}
-
+/*
 async fn do_post_request_and_deserialize<T: for<'a> serde::Deserialize<'a>>(
     url_resource: &str,
     body: Option<String>,
@@ -106,7 +136,7 @@ async fn do_post_request_and_deserialize<T: for<'a> serde::Deserialize<'a>>(
     let resp = do_post_request(url_resource, body).await?;
     let json = JsFuture::from(resp.json()?).await?;
     Ok(serde_wasm_bindgen::from_value(json)?)
-}
+}*/
 
 async fn do_post_request(
     url_resource: &str,
@@ -136,13 +166,10 @@ fn get_username_and_password() -> Result<(String, String), AndyError> {
 }
 
 fn hash<K>(username: K) -> u64
-    where
-        K: std::hash::Hash,
-    {
-        let mut hasher = std::collections::hash_map::DefaultHasher::new();
-        username.hash(&mut hasher);
-        hasher.finish()
-    }
-
-
-
+where
+    K: std::hash::Hash,
+{
+    let mut hasher = std::collections::hash_map::DefaultHasher::new();
+    username.hash(&mut hasher);
+    hasher.finish()
+}

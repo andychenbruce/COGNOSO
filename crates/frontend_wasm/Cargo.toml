@@ -45,5 +45,7 @@ features = [
   "FileReader",
   "Event",
   "ReadableStream",
-  "ReadableStreamDefaultReader"
+  "ReadableStreamDefaultReader",
+  "HtmlButtonElement",
+  "HtmlParagraphElement"
 ]

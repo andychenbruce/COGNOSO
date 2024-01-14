@@ -2,4 +2,5 @@
  (list
   "coreutils"
   "libgccjit"
-  "clang-toolchain"))
+  "clang-toolchain"
+  "make"))

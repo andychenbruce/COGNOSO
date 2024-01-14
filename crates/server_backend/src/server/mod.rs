@@ -27,7 +27,8 @@ pub async fn main_service(
                     let thing = serde_json::from_reader(bytes.reader())?;
                     $func(thing, state).await
                 },)*
-                _ => {
+                (method, endpoint) => {
+                    println!("BAD REQUEST IDK: endpoint = {}, meth = {}", endpoint, method);
                     let mut not_found = Response::new(Full::new(Bytes::from("")));
                     *not_found.status_mut() = hyper::StatusCode::NOT_FOUND;
                     Ok(not_found)
@@ -60,8 +61,7 @@ async fn create_card_deck(
     state: SharedState,
 ) -> Result<Response<Full<Bytes>>, AndyError> {
     state.database.lock().unwrap().new_card_deck(info)?;
-
-    todo!()
+    Ok(Response::new(Full::new(Bytes::from(""))))
 }
 
 async fn create_card(
@@ -69,7 +69,7 @@ async fn create_card(
     state: SharedState,
 ) -> Result<Response<Full<Bytes>>, AndyError> {
     state.database.lock().unwrap().new_card(info)?;
-    todo!()
+    Ok(Response::new(Full::new(Bytes::from(""))))
 }
 
 async fn new_user(
@@ -77,5 +77,5 @@ async fn new_user(
     state: SharedState,
 ) -> Result<Response<Full<Bytes>>, AndyError> {
     state.database.lock().unwrap().new_user(info)?;
-    todo!()
+    Ok(Response::new(Full::new(Bytes::from(""))))
 }
