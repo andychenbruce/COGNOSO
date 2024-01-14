@@ -40,8 +40,12 @@ impl Database {
         })
     }
 
+    fn get_user_id(user_name: &str) -> u64 {
+        Self::hash(user_name)
+    }
+
     pub fn new_user(&self, info: api_structs::NewUser) -> Result<(), AndyError> {
-        let user_id = Self::hash(&info.user_name); //todo idk
+        let user_id = Self::get_user_id(&info.user_name); //todo idk
         let write_txn = self.db.begin_write()?;
         {
             let mut table = write_txn.open_table(Self::USERS_TABLE)?;
@@ -83,6 +87,32 @@ impl Database {
 
         self.insert(key, deck, Self::DECKS_TABLE)?;
         Ok(())
+    }
+
+    pub fn list_card_decks(
+        &self,
+        info: api_structs::ListCardDecks,
+    ) -> Result<api_structs::ListCardDecksResponse, AndyError> {
+        let user_id = Self::get_user_id(&info.user_name);
+
+        let read_txn = self.db.begin_read()?;
+        let table = read_txn.open_table(Self::DECKS_TABLE)?;
+
+        let mut deck_ids: Vec<u64> = vec![];
+
+        for entry in table.iter()? {
+            let entry = entry?.0.value();
+            if entry.0 == user_id {
+                deck_ids.push(entry.1);
+            }
+        }
+
+        Ok(api_structs::ListCardDecksResponse {
+            decks: deck_ids
+                .into_iter()
+                .map(|deck_id| api_structs::CardDeck { deck_id })
+                .collect(),
+        })
     }
 
     fn insert<'a, K, V>(
