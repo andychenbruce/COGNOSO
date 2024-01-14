@@ -20,8 +20,6 @@ pub enum AndyError {
     DynamicCastFailed,
     #[error("serde error")]
     Serde(#[from] serde_json::Error),
-    #[error("serde wasm error")]
-    SerdeWasm(#[from] serde_wasm_bindgen::Error),
     #[error("no global window")]
     MissingGlobalWindow,
     #[error("no dom")]
@@ -30,6 +28,8 @@ pub enum AndyError {
     MissingForm(String),
     #[error("html missing field")]
     MissingFormField(String),
+    #[error("response not OK")]
+    BadResponseStatus(u16),
 }
 
 impl From<JsValue> for AndyError {
@@ -67,13 +67,14 @@ pub fn setup_stuff() -> Result<(), AndyError> {
 
     let dom = get_document()?;
 
-    set_button_callback(dom, "submit_new_deck", card_interface::make_new_deck)?;
+    set_button_callback(&dom, "submit_new_deck", card_interface::make_new_deck)?;
+    set_button_callback(&dom, "list_decks", card_interface::list_decks)?;
 
     Ok(())
 }
 
 fn set_button_callback<T, O>(
-    dom: web_sys::Document,
+    dom: &web_sys::Document,
     button_id: &str,
     func: T,
 ) -> Result<(), AndyError>
@@ -128,15 +129,16 @@ fn get_document() -> Result<web_sys::Document, AndyError> {
     get_window()?.document().ok_or(AndyError::MissingDOM)
 }
 
-/*
 async fn do_post_request_and_deserialize<T: for<'a> serde::Deserialize<'a>>(
     url_resource: &str,
     body: Option<String>,
 ) -> Result<T, AndyError> {
     let resp = do_post_request(url_resource, body).await?;
-    let json = JsFuture::from(resp.json()?).await?;
-    Ok(serde_wasm_bindgen::from_value(json)?)
-}*/
+    let json = JsFuture::from(resp.text()?).await?;
+    Ok(serde_json::from_str(
+        &json.as_string().ok_or(AndyError::DynamicCastFailed)?,
+    )?)
+}
 
 async fn do_post_request(
     url_resource: &str,
@@ -155,6 +157,9 @@ async fn do_post_request(
     let resp_value = JsFuture::from(get_window()?.fetch_with_request(&request)).await?;
 
     let resp: web_sys::Response = resp_value.dyn_into()?;
+    if !resp.ok() {
+        return Err(AndyError::BadResponseStatus(resp.status()));
+    }
 
     Ok(resp)
 }

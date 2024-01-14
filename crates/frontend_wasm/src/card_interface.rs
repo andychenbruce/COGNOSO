@@ -13,3 +13,19 @@ pub async fn make_new_deck() -> Result<(), AndyError> {
 
     Ok(())
 }
+
+pub async fn list_decks() -> Result<(), AndyError> {
+    let (username, _password) = crate::get_username_and_password()?;
+    let req_struct = api_structs::ListCardDecks {
+        user_id: crate::hash(username),
+    };
+    let body = serde_json::to_string(&req_struct)?;
+
+    let response: api_structs::ListCardDecksResponse =
+        crate::do_post_request_and_deserialize(api_structs::ENDPOINT_LIST_CARD_DECKS, Some(body))
+            .await?;
+
+    web_sys::console::log_1(&format!("{:?}", response).into());
+
+    Ok(())
+}

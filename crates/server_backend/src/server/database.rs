@@ -93,8 +93,6 @@ impl Database {
         &self,
         info: api_structs::ListCardDecks,
     ) -> Result<api_structs::ListCardDecksResponse, AndyError> {
-        let user_id = Self::get_user_id(&info.user_name);
-
         let read_txn = self.db.begin_read()?;
         let table = read_txn.open_table(Self::DECKS_TABLE)?;
 
@@ -102,7 +100,7 @@ impl Database {
 
         for entry in table.iter()? {
             let entry = entry?.0.value();
-            if entry.0 == user_id {
+            if entry.0 == info.user_id {
                 deck_ids.push(entry.1);
             }
         }
