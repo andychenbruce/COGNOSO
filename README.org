@@ -7,19 +7,29 @@
  - [ ] PDF upload
  - [ ] account creation interface
 * Backend
- - [ ] basic REST API
-   - [ ] define interface [0/5]
-     - [ ] create account
-     - [ ] create new deck
-       - POST TO/create_card_deck
-     - [ ] create new card
-       - POST /create_card
-     - [ ] get card set info
-       - GET /card_set
-     - [ ] other
+ - [-] basic REST API [3/6]
+   - [-] create account
+     - [X] server
+     - [ ] client
+   - [X] create new deck
+     - [X] server
+     - [X] client
+   - [X] create new card
+     - [X] server
+     - [X] client
+   - [X] list decks
+     - [X] server
+     - [X] client
+   - [-] list cards in a deck
+     - [X] server
+     - [ ] client
+   - [ ] get card info
+     - [ ] server
+     - [ ] client
+   - more...
  - [-] account management
-   - [X] password hasher
-   - [ ] store accounts in database
- - [ ] basic database
+   - [ ] password hasher
+   - [X] store accounts in database
+ - [X] basic database
  - [ ] 
 
