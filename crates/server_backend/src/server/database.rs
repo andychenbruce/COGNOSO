@@ -19,7 +19,6 @@ struct CardDeck {
 }
 #[derive(serde::Serialize, serde::Deserialize, Debug)]
 struct Card {
-    name: String,
     question: String,
     answer: String,
 }
@@ -82,7 +81,6 @@ impl Database {
         deck.cards.push(Card {
             question: info.question,
             answer: info.answer,
-            name: info.card_name,
         });
 
         self.insert(key, deck, Self::DECKS_TABLE)?;
@@ -96,19 +94,42 @@ impl Database {
         let read_txn = self.db.begin_read()?;
         let table = read_txn.open_table(Self::DECKS_TABLE)?;
 
-        let mut deck_ids: Vec<u64> = vec![];
+        let mut deck_ids: Vec<api_structs::CardDeck> = vec![];
 
         for entry in table.iter()? {
-            let entry = entry?.0.value();
-            if entry.0 == info.user_id {
-                deck_ids.push(entry.1);
+            let entry = entry?;
+            let id_pair = entry.0.value();
+            if id_pair.0 == info.user_id {
+                let deck = entry.1.value();
+                deck_ids.push(api_structs::CardDeck {
+                    deck_id: id_pair.1,
+                    name: deck.name,
+                    num_cards: deck.cards.len().try_into()?,
+                });
             }
         }
 
-        Ok(api_structs::ListCardDecksResponse {
-            decks: deck_ids
+        Ok(api_structs::ListCardDecksResponse { decks: deck_ids })
+    }
+
+    pub fn list_cards(
+        &self,
+        info: api_structs::ListCards,
+    ) -> Result<api_structs::ListCardsResponse, AndyError> {
+        let key = (info.user_id, info.deck_id);
+
+        let read_txn = self.db.begin_read()?;
+        let table = read_txn.open_table(Self::DECKS_TABLE)?;
+        let deck = table.get(key)?.unwrap().value();
+
+        Ok(api_structs::ListCardsResponse {
+            cards: deck
+                .cards
                 .into_iter()
-                .map(|deck_id| api_structs::CardDeck { deck_id })
+                .map(|card: Card| api_structs::Card {
+                    question: card.question,
+                    answer: card.answer,
+                })
                 .collect(),
         })
     }

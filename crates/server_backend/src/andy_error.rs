@@ -18,4 +18,6 @@ pub enum AndyError {
     DbStorage(#[from] redb::StorageError),
     #[error("database commit err")]
     DbCommit(#[from] redb::CommitError),
+    #[error("int cast err")]
+    IntCast(#[from] core::num::TryFromIntError),
 }

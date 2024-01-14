@@ -57,6 +57,11 @@ pub async fn main_service(
             hyper::Method::POST,
             api_structs::ENDPOINT_LIST_CARD_DECKS,
             list_card_decks
+        ),
+        (
+            hyper::Method::POST,
+            api_structs::ENDPOINT_LIST_CARDS,
+            list_cards
         )
     )
 }
@@ -90,6 +95,16 @@ async fn list_card_decks(
     state: SharedState,
 ) -> Result<Response<Full<Bytes>>, AndyError> {
     let out = state.database.lock().unwrap().list_card_decks(info)?;
+    Ok(Response::new(Full::new(Bytes::from(
+        serde_json::to_string(&out)?,
+    ))))
+}
+
+async fn list_cards(
+    info: api_structs::ListCards,
+    state: SharedState,
+) -> Result<Response<Full<Bytes>>, AndyError> {
+    let out = state.database.lock().unwrap().list_cards(info)?;
     Ok(Response::new(Full::new(Bytes::from(
         serde_json::to_string(&out)?,
     ))))
