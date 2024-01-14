@@ -69,6 +69,8 @@ pub fn setup_stuff() -> Result<(), AndyError> {
 
     set_button_callback(&dom, "submit_new_deck", card_interface::make_new_deck)?;
     set_button_callback(&dom, "list_decks", card_interface::list_decks)?;
+    set_button_callback(&dom, "list_cards", card_interface::list_cards)?;
+    set_button_callback(&dom, "submit_new_card", card_interface::make_new_card)?;
 
     Ok(())
 }
