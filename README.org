@@ -7,7 +7,7 @@
  - [ ] PDF upload
  - [ ] account creation interface
 * Backend
- - [-] basic REST API [3/6]
+ - [-] basic REST API [5/6]
    - [-] create account
      - [X] server
      - [ ] client
@@ -20,12 +20,12 @@
    - [X] list decks
      - [X] server
      - [X] client
-   - [-] list cards in a deck
+   - [X] list cards in a deck
      - [X] server
-     - [ ] client
-   - [ ] get card info
-     - [ ] server
-     - [ ] client
+     - [X] client
+   - [X] get card info
+     - [X] server
+     - [X] client
    - more...
  - [-] account management
    - [ ] password hasher
