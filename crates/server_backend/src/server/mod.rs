@@ -9,7 +9,7 @@ use hyper::{Request, Response};
 
 #[derive(Clone)]
 pub struct SharedState {
-    pub database: std::sync::Arc<std::sync::Mutex<database::Database>>,
+    pub database: std::sync::Arc<tokio::sync::Mutex<database::Database>>,
 }
 
 pub async fn main_service(
@@ -86,7 +86,7 @@ async fn create_card_deck(
     info: api_structs::CreateCardDeck,
     state: SharedState,
 ) -> Result<Response<Full<Bytes>>, AndyError> {
-    state.database.lock().unwrap().new_card_deck(info)?;
+    state.database.lock().await.new_card_deck(info)?;
     Ok(Response::new(Full::new(Bytes::from(""))))
 }
 
@@ -94,7 +94,7 @@ async fn create_card(
     info: api_structs::CreateCard,
     state: SharedState,
 ) -> Result<Response<Full<Bytes>>, AndyError> {
-    state.database.lock().unwrap().new_card(info)?;
+    state.database.lock().await.new_card(info)?;
     Ok(Response::new(Full::new(Bytes::from(""))))
 }
 
@@ -102,7 +102,7 @@ async fn new_user(
     info: api_structs::NewUser,
     state: SharedState,
 ) -> Result<Response<Full<Bytes>>, AndyError> {
-    state.database.lock().unwrap().new_user(info)?;
+    state.database.lock().await.new_user(info)?;
     Ok(Response::new(Full::new(Bytes::from(""))))
 }
 
@@ -110,7 +110,7 @@ async fn list_card_decks(
     info: api_structs::ListCardDecks,
     state: SharedState,
 ) -> Result<Response<Full<Bytes>>, AndyError> {
-    let out = state.database.lock().unwrap().list_card_decks(info)?;
+    let out = state.database.lock().await.list_card_decks(info)?;
     Ok(Response::new(Full::new(Bytes::from(
         serde_json::to_string(&out)?,
     ))))
@@ -120,7 +120,7 @@ async fn list_cards(
     info: api_structs::ListCards,
     state: SharedState,
 ) -> Result<Response<Full<Bytes>>, AndyError> {
-    let out = state.database.lock().unwrap().list_cards(info)?;
+    let out = state.database.lock().await.list_cards(info)?;
     Ok(Response::new(Full::new(Bytes::from(
         serde_json::to_string(&out)?,
     ))))

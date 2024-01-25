@@ -21,7 +21,7 @@ async fn main() -> Result<(), AndyError> {
     let listener = TcpListener::bind(addr).await?;
 
     let globals: server::SharedState = server::SharedState {
-        database: std::sync::Arc::new(std::sync::Mutex::new(
+        database: std::sync::Arc::new(tokio::sync::Mutex::new(
             server::database::Database::new(args.database_path).unwrap(),
         )),
     };
