@@ -1,4 +1,6 @@
 use crate::AndyError;
+use crate::OUTPUT_CARDS;
+use crate::OUTPUT_DECKS;
 use wasm_bindgen::JsCast;
 use wasm_bindgen::JsValue;
 pub async fn make_new_deck() -> Result<(), AndyError> {
@@ -19,12 +21,10 @@ pub async fn make_new_deck() -> Result<(), AndyError> {
 pub async fn make_new_card() -> Result<(), AndyError> {
     let (username, _password) = crate::get_username_and_password()?;
 
-    let deck_id = crate::get_field_from_form(("new_card", "new_card_deck_id"))?
-        .parse::<u64>()
-        .unwrap();
+    let deck_id = crate::get_field_from_form(crate::FORM_DECK_ID)?.parse::<u64>()?;
 
-    let question: String = crate::get_field_from_form(("new_card", "new_card_question"))?;
-    let answer: String = crate::get_field_from_form(("new_card", "new_card_answer"))?;
+    let question: String = crate::get_field_from_form(crate::FORM_CARD_QUESTION)?;
+    let answer: String = crate::get_field_from_form(crate::FORM_CARD_ANSWER)?;
 
     let req_struct = api_structs::CreateCard {
         user_id: crate::hash(username),
@@ -55,9 +55,11 @@ pub async fn list_decks() -> Result<(), AndyError> {
     Ok(())
 }
 
-fn display_card_deck(decks: Vec<api_structs::CardDeck>) -> Result<(), JsValue> {
-    let doc = super::get_document().unwrap();
-    let output = doc.get_element_by_id("decks_list").unwrap();
+fn display_card_deck(decks: Vec<api_structs::CardDeck>) -> Result<(), AndyError> {
+    let doc = super::get_document()?;
+    let output = doc
+        .get_element_by_id(OUTPUT_DECKS)
+        .ok_or(AndyError::MissingElementId(OUTPUT_DECKS))?;
 
     let boxes: Vec<web_sys::HtmlElement> = decks
         .iter()
@@ -90,9 +92,7 @@ fn make_decks_display(
 
 pub async fn list_cards() -> Result<(), AndyError> {
     let (username, _password) = crate::get_username_and_password()?;
-    let deck_id = crate::get_field_from_form(("new_card", "new_card_deck_id"))?
-        .parse::<u64>()
-        .unwrap();
+    let deck_id = crate::get_field_from_form(crate::FORM_DECK_ID)?.parse::<u64>()?;
     let req_struct = api_structs::ListCards {
         user_id: crate::hash(username),
         deck_id,
@@ -108,9 +108,11 @@ pub async fn list_cards() -> Result<(), AndyError> {
     Ok(())
 }
 
-fn display_cards(cards: Vec<api_structs::Card>) -> Result<(), JsValue> {
-    let doc = super::get_document().unwrap();
-    let output = doc.get_element_by_id("cards_list").unwrap();
+fn display_cards(cards: Vec<api_structs::Card>) -> Result<(), AndyError> {
+    let doc = super::get_document()?;
+    let output = doc
+        .get_element_by_id(OUTPUT_CARDS)
+        .ok_or(AndyError::MissingElementId(OUTPUT_CARDS))?;
 
     let boxes: Vec<web_sys::HtmlElement> = cards
         .iter()

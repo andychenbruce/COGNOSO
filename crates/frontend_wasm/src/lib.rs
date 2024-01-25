@@ -11,6 +11,12 @@ const API_ADDR: &str = "http://localhost:3000";
 const FORM_USERNAME: (&str, &str) = ("auth_input_form", "username");
 const FORM_PASSWORD: (&str, &str) = ("auth_input_form", "password");
 const FORM_NEW_DECK: (&str, &str) = ("new_deck", "new_deck");
+const FORM_DECK_ID: (&str, &str) = ("new_card", "new_card_deck_id");
+const FORM_CARD_QUESTION: (&str, &str) = ("new_card", "new_card_question");
+const FORM_CARD_ANSWER: (&str, &str) = ("new_card", "new_card_answer");
+const OUTPUT_ERRORS: &str = "errors_display";
+const OUTPUT_DECKS: &str = "decks_list";
+const OUTPUT_CARDS: &str = "cards_list";
 
 #[derive(thiserror::Error, Debug)]
 pub enum AndyError {
@@ -30,9 +36,13 @@ pub enum AndyError {
     MissingFormField(String),
     #[error("response status bad")]
     BadResponseStatus(u16, String),
+    #[error("integer parse error")]
+    IntParseError(#[from] core::num::ParseIntError),
+    #[error("missing element")]
+    MissingElementId(&'static str),
 }
 
-impl From<JsValue> for AndyError {
+impl From<wasm_bindgen::JsValue> for AndyError {
     fn from(x: JsValue) -> Self {
         AndyError::JavaScript(x)
     }
@@ -40,10 +50,11 @@ impl From<JsValue> for AndyError {
 
 fn set_error_box(error: AndyError) -> Result<(), AndyError> {
     let output_box: web_sys::HtmlParagraphElement = get_document()?
-        .get_element_by_id("errors_display")
-        .unwrap()
+        .get_element_by_id(OUTPUT_ERRORS)
+        .ok_or(AndyError::MissingElementId(OUTPUT_ERRORS))?
         .dyn_into()
-        .unwrap();
+        .map_err(|_| AndyError::DynamicCastFailed)?;
+
     output_box.set_inner_text(&format!("Error: {:?}", error));
     Ok(())
 }
@@ -77,7 +88,7 @@ pub fn setup_stuff() -> Result<(), AndyError> {
 
 fn set_button_callback<T, O>(
     dom: &web_sys::Document,
-    button_id: &str,
+    button_id: &'static str,
     func: T,
 ) -> Result<(), AndyError>
 where
@@ -86,9 +97,9 @@ where
 {
     let button: web_sys::HtmlButtonElement = dom
         .get_element_by_id(button_id)
-        .unwrap()
+        .ok_or(AndyError::MissingElementId(button_id))?
         .dyn_into()
-        .unwrap();
+        .map_err(|_| AndyError::DynamicCastFailed)?;
 
     let callback = Closure::wrap(Box::new(move |_e: web_sys::Event| {
         let poo = func.clone();
@@ -100,7 +111,13 @@ where
         })
     }) as Box<dyn Fn(_)>);
 
-    button.add_event_listener_with_callback("click", callback.as_ref().dyn_ref().unwrap())?;
+    button.add_event_listener_with_callback(
+        "click",
+        callback
+            .as_ref()
+            .dyn_ref()
+            .ok_or(AndyError::DynamicCastFailed)?,
+    )?;
     std::mem::forget(callback); //mem leak, too bad
 
     Ok(())
