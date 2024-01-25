@@ -1,20 +1,102 @@
 * Build instructions
 ** backend
-#+BEGIN_SRC bash-ts
+#+BEGIN_SRC bash
   cargo build
 #+END_SRC
 ** frontend
-#+BEGIN_SRC bash-ts
+#+BEGIN_SRC bash
   cd website
   make all
 #+END_SRC
 * Running
 ** backend
-#+BEGIN_SRC bash-ts
+#+BEGIN_SRC bash
   ./run.sh
 #+END_SRC
 ** frontend
-#+BEGIN_SRC bash-ts
+#+BEGIN_SRC bash
   cd website
   make run
+#+END_SRC
+
+* Backend endpoints
+** ~/create_card_deck~
+#+BEGIN_SRC json
+  {
+    "user_id": 123456,
+    "deck_name": "Cool deck"
+  }
+#+END_SRC
+** ~/create_card~
+#+BEGIN_SRC json
+  {
+    "user_id" : 123,
+    "deck_id" : 456,
+    "question" : "Hello",
+    "answer" : "Hi"
+  }
+#+END_SRC
+** ~/new_user~
+#+BEGIN_SRC json
+   {
+     "user_name": "pooman",
+     "email": "person@qq.com",
+     "passwd_hash": [12, 34, 56, 255]
+   }
+#+END_SRC
+** ~/list_card_decks~
+*** request
+#+BEGIN_SRC json
+  {
+    "user_id": 123456,
+  }
+#+END_SRC
+*** response
+#+BEGIN_SRC json
+  {
+    "decks": [
+      {
+	"name": "deck1",
+	"deck_id" : 123,
+	"num_cards": 20
+      },
+      {
+	"name": "deck2",
+	"deck_id" : 456,
+	"num_cards": 0
+      },
+      {
+	"name": "cool deck",
+	"deck_id" : 789,
+	"num_cards": 2000
+      }
+    ]
+  }
+#+END_SRC
+** ~/list_cards~
+*** request
+#+BEGIN_SRC json
+  {
+    "user_id": 123456,
+    "deck_id": 8998
+  }
+#+END_SRC
+*** response
+#+BEGIN_SRC json
+  {
+    "cards": [
+      {
+	"question": "bruh",
+	"answer": "idk"
+      },
+      {
+	"question": "mmm",
+	"answer": "kkk"
+      },
+      {
+	"question": "what is the last digit of pi",
+	"answer": "3"
+      }
+    ]
+  }
 #+END_SRC
