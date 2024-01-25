@@ -1,35 +1,20 @@
-* DONE Vote on project
- - [X] something like quizlet
-* DONE Choose name
- - [X] Cognoso
- - [ ] 白开卡
-* Frontend
- - [ ] PDF upload
- - [ ] account creation interface
-* Backend
- - [-] basic REST API [5/6]
-   - [-] create account
-     - [X] server
-     - [ ] client
-   - [X] create new deck
-     - [X] server
-     - [X] client
-   - [X] create new card
-     - [X] server
-     - [X] client
-   - [X] list decks
-     - [X] server
-     - [X] client
-   - [X] list cards in a deck
-     - [X] server
-     - [X] client
-   - [X] get card info
-     - [X] server
-     - [X] client
-   - more...
- - [-] account management
-   - [ ] password hasher
-   - [X] store accounts in database
- - [X] basic database
- - [ ] 
-
+* Build instructions
+** backend
+#+BEGIN_SRC bash-ts
+  cargo build
+#+END_SRC
+** frontend
+#+BEGIN_SRC bash-ts
+  cd website
+  make all
+#+END_SRC
+* Running
+** backend
+#+BEGIN_SRC bash-ts
+  ./run.sh
+#+END_SRC
+** frontend
+#+BEGIN_SRC bash-ts
+  cd website
+  make run
+#+END_SRC
