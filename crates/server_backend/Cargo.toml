@@ -10,7 +10,6 @@ serde_json = { workspace = true }
 hyper = { workspace = true }
 hyper-util = { workspace = true }
 http-body-util = { workspace = true }
-routerify = "3.0.0"
 thiserror = "1.0.56"
 api_structs = { workspace = true }
 clap = { version = "4.4.16", features = ["derive"] }
