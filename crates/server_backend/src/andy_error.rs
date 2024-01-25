@@ -20,12 +20,4 @@ pub enum AndyError {
     DbCommit(#[from] redb::CommitError),
     #[error("int cast err")]
     IntCast(#[from] core::num::TryFromIntError),
-    #[error("int cast err")]
-    UnknownError(Box<dyn std::error::Error>),
-}
-
-impl<T: 'static> From<std::sync::PoisonError<T>> for AndyError {
-    fn from(thing: std::sync::PoisonError<T>) -> Self {
-        AndyError::UnknownError(Box::new(thing))
-    }
 }
