@@ -31,12 +31,18 @@ impl Database {
     const USERS_TABLE: redb::TableDefinition<'static, &'static str, u64> =
         redb::TableDefinition::new("users");
     const DECKS_TABLE: redb::TableDefinition<'static, (u64, u64), CardDeck> =
-        redb::TableDefinition::new("users");
+        redb::TableDefinition::new("decks");
 
     pub fn new(db_path: std::path::PathBuf) -> Result<Self, AndyError> {
-        Ok(Self {
-            db: redb::Database::create(db_path)?,
-        })
+        let db = redb::Database::create(db_path)?;
+        {
+            //create tables
+            let write_txn = db.begin_write()?;
+            write_txn.open_table(Self::USERS_TABLE)?;
+            write_txn.open_table(Self::DECKS_TABLE)?;
+            write_txn.commit()?;
+        }
+        Ok(Self { db })
     }
 
     fn get_user_id(user_name: &str) -> u64 {

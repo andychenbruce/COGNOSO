@@ -15,6 +15,22 @@ pub struct SharedState {
 pub async fn main_service(
     req: Request<hyper::body::Incoming>,
     state: SharedState,
+) -> Result<Response<Full<Bytes>>, std::convert::Infallible> {
+    match handle_request(req, state).await {
+        Ok(x) => Ok(x),
+        Err(e) => {
+            println!("got error: {:?}", e);
+            let mut err_response = Response::new(Full::new(Bytes::from(format!("{:?}", e))));
+            *err_response.status_mut() = hyper::StatusCode::INTERNAL_SERVER_ERROR;
+
+            Ok(err_response)
+        }
+    }
+}
+
+async fn handle_request(
+    req: Request<hyper::body::Incoming>,
+    state: SharedState,
 ) -> Result<Response<Full<Bytes>>, AndyError> {
     let uri = req.uri().path();
     let method = req.method();

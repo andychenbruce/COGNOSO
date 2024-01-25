@@ -28,8 +28,8 @@ pub enum AndyError {
     MissingForm(String),
     #[error("html missing field")]
     MissingFormField(String),
-    #[error("response not OK")]
-    BadResponseStatus(u16),
+    #[error("response status bad")]
+    BadResponseStatus(u16, String),
 }
 
 impl From<JsValue> for AndyError {
@@ -160,7 +160,11 @@ async fn do_post_request(
 
     let resp: web_sys::Response = resp_value.dyn_into()?;
     if !resp.ok() {
-        return Err(AndyError::BadResponseStatus(resp.status()));
+        let body_text = JsFuture::from(resp.text()?)
+            .await?
+            .as_string()
+            .ok_or(AndyError::DynamicCastFailed)?;
+        return Err(AndyError::BadResponseStatus(resp.status(), body_text));
     }
 
     Ok(resp)
