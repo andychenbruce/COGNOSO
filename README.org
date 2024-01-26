@@ -3,26 +3,30 @@
 [[assets/logo.png]]
 
 * Build instructions
-** backend
+** Backend
 #+BEGIN_SRC bash
   cargo build
 #+END_SRC
-** frontend
+** Frontend
 #+BEGIN_SRC bash
   cd website
   make all
 #+END_SRC
 * Running
-** backend
+** Backend
 #+BEGIN_SRC bash
   ./run.sh
 #+END_SRC
-** frontend
+** Frontend
+Make sure you install wasm-bindgen for autogenerating bindings from javascript.
+#+BEGIN_SRC bash
+  cargo install wasm-bindgen-cli
+#+END_SRC
+Then run the makefile.
 #+BEGIN_SRC bash
   cd website
   make run
 #+END_SRC
-
 * Backend endpoints
 ** ~/create_card_deck~
 #+BEGIN_SRC json
