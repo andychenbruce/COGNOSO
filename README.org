@@ -1,3 +1,7 @@
+#+attr_html: :width 100 px
+#+attr_html: :height 100 px
+[[assets/logo.png]]
+
 * Build instructions
 ** backend
 #+BEGIN_SRC bash
