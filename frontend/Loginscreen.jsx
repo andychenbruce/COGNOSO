@@ -87,6 +87,12 @@ const LoginScreen = () => {
           <Button type="submit" variant="contained" color="primary" fullWidth>
             Login
           </Button>
+          <Button type="submit" variant="contained" color="primary" fullWidth>
+            Create Account
+          </Button>
+          <Button type="submit" variant="text" color="primary" fullWidth>
+            Forgot Password?
+          </Button>
         </form>
       </Paper>
     </Container>
