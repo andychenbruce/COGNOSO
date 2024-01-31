@@ -3,8 +3,6 @@ import { Container, Paper, TextField, Button, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { UserContext } from './UserContext';
 
-// Got most stuff here from Prof's authenticated Book example
-
 const LoginScreen = () => {
   const { updateUser } = useContext(UserContext);
   const [user, setUser] = useState({ email: '', password: ''});
