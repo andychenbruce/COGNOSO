@@ -1,42 +1,43 @@
 #+attr_html: :width 100 px
 #+attr_html: :height 100 px
-[[assets/logo.png]]
+[[./assets/logo.png]]
 
-* Build instructions
-** Backend
-#+BEGIN_SRC bash
+
+* Backend
+** Build instructions
+#+BEGIN_SRC bash-ts
   cargo build
 #+END_SRC
-** Frontend
-#+BEGIN_SRC bash
+** Running
+#+BEGIN_SRC bash-ts
+  ./run.sh
+#+END_SRC
+
+* Frontend
+Make sure you install wasm-bindgen for autogenerating bindings from javascript.
+#+BEGIN_SRC bash-ts
+  cargo install wasm-bindgen-cli
+#+END_SRC
+** build
+#+BEGIN_SRC bash-ts
   cd website
   make all
 #+END_SRC
-* Running
-** Backend
-#+BEGIN_SRC bash
-  ./run.sh
-#+END_SRC
-** Frontend
-Make sure you install wasm-bindgen for autogenerating bindings from javascript.
-#+BEGIN_SRC bash
-  cargo install wasm-bindgen-cli
-#+END_SRC
-Then run the makefile.
-#+BEGIN_SRC bash
+** Running
+#+BEGIN_SRC bash-ts
   cd website
   make run
 #+END_SRC
 * Backend endpoints
 ** ~/create_card_deck~
-#+BEGIN_SRC json
+#+BEGIN_SRC json-ts
   {
     "user_id": 123456,
     "deck_name": "Cool deck"
   }
 #+END_SRC
 ** ~/create_card~
-#+BEGIN_SRC json
+#+BEGIN_SRC json-ts
   {
     "user_id" : 123,
     "deck_id" : 456,
@@ -45,7 +46,7 @@ Then run the makefile.
   }
 #+END_SRC
 ** ~/new_user~
-#+BEGIN_SRC json
+#+BEGIN_SRC json-ts
    {
      "user_name": "pooman",
      "email": "person@qq.com",
@@ -54,13 +55,13 @@ Then run the makefile.
 #+END_SRC
 ** ~/list_card_decks~
 *** request
-#+BEGIN_SRC json
+#+BEGIN_SRC json-ts
   {
-    "user_id": 123456,
+    "user_id": 123456
   }
 #+END_SRC
 *** response
-#+BEGIN_SRC json
+#+BEGIN_SRC json-ts
   {
     "decks": [
       {
@@ -83,14 +84,14 @@ Then run the makefile.
 #+END_SRC
 ** ~/list_cards~
 *** request
-#+BEGIN_SRC json
+#+BEGIN_SRC json-ts
   {
     "user_id": 123456,
     "deck_id": 8998
   }
 #+END_SRC
 *** response
-#+BEGIN_SRC json
+#+BEGIN_SRC json-ts
   {
     "cards": [
       {
