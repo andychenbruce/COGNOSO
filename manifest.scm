@@ -3,4 +3,5 @@
   "coreutils"
   "libgccjit"
   "clang-toolchain"
-  "make"))
+  "make"
+  "node"))
