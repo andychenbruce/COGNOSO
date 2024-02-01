@@ -1,46 +1,55 @@
-import { useContext, useState } from 'react';
+import React from 'react';
+import { useState } from 'react';
 import { Container, Paper, TextField, Button, Typography } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
-import { UserContext } from './UserContext';
+import logo from './logo.svg';
+import './App.css';
 
-const LoginScreen = () => {
-  const { updateUser } = useContext(UserContext);
+function App() {
+  return (
+    <div className="App">
+      <p>
+        test123
+      </p>
+      <LoginScreen />
+    </div>
+  );
+}
+
+function LoginScreen() {
   const [user, setUser] = useState({ email: '', password: ''});
-  const history = useNavigate();
-
-  const handleInputChange = (event) => {
+  const handleInputChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
     const { value, name } = event.target;
     setUser((prevUser) => ({
       ...prevUser,
       [name]: value,
     }));
   };
-
-  const onSubmit = (event) => {
-    event.preventDefault();
-    const requestData = {
-      email: user.email,
-      password: user.password,
-    };
-    fetch('http://localhost:3010/v0/login', {
-      method: 'POST',
-      body: JSON.stringify(requestData),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-    .then((res) => res.json())
-    .then((json) => {
-      updateUser(json);
-      localStorage.setItem('data', JSON.stringify(json));
-      history('/home');
-    })
-    .catch((err) => {
-      alert('Error logging in, please try again', err);
-      return;
-    });
+  const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    console.log("bruh");
+    // event.preventDefault();
+    // const requestData = {
+    //   email: user.email,
+    //   password: user.password,
+    // };
+    // fetch('http://localhost:3010/v0/login', {
+    //   method: 'POST',
+    //   body: JSON.stringify(requestData),
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //   },
+    // })
+    // .then((res) => res.json())
+    // .then((json) => {
+    //   updateUser(json);
+    //   localStorage.setItem('data', JSON.stringify(json));
+    //   history('/home');
+    // })
+    // .catch((err) => {
+    //   alert('Error logging in, please try again', err);
+    //   return;
+    // });
   };
-
+  
   return (
     <Container
       style={{
@@ -97,6 +106,6 @@ const LoginScreen = () => {
       </Paper>
     </Container>
   );
-};
+}
 
-export default LoginScreen;
+export default App;
