@@ -14,19 +14,10 @@
 #+END_SRC
 
 * Frontend
-Make sure you install wasm-bindgen for autogenerating bindings from javascript.
 #+BEGIN_SRC bash-ts
-  cargo install wasm-bindgen-cli
-#+END_SRC
-** build
-#+BEGIN_SRC bash-ts
-  cd website
-  make all
-#+END_SRC
-** Running
-#+BEGIN_SRC bash-ts
-  cd website
-  make run
+  cd frontend
+  npm install
+  npm start
 #+END_SRC
 * Backend endpoints
 ** ~/create_card_deck~
