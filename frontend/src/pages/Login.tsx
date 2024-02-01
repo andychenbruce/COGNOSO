@@ -1,19 +1,8 @@
 import React from 'react';
 import { useState } from 'react';
 import { Container, Paper, TextField, Button, Typography } from '@mui/material';
-import logo from './logo.svg';
-import './App.css';
+import './Login.css';
 
-function App() {
-  return (
-    <div className="App">
-      <p>
-        test123
-      </p>
-      <LoginScreen />
-    </div>
-  );
-}
 
 function LoginScreen() {
   const [user, setUser] = useState({ email: '', password: ''});
@@ -108,4 +97,4 @@ function LoginScreen() {
   );
 }
 
-export default App;
+export default LoginScreen;
