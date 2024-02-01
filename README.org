@@ -17,7 +17,19 @@
 #+BEGIN_SRC bash-ts
   cd frontend
   npm install
+#+END_SRC
+** Test build
+#+BEGIN_SRC bash-ts
   npm start
+#+END_SRC
+** Production build
+#+BEGIN_SRC bash-ts
+  npm run build
+#+END_SRC
+Static html will be in ~frontend/build~, can be served with any HTTP server of choice.
+We have a test HTTP server. Run
+#+BEGIN_SRC bash-ts
+  cargo run --bin "andy_http_server" -- --port 1234 --root-serve-path ./frontend/build
 #+END_SRC
 * Backend endpoints
 ** ~/create_card_deck~
