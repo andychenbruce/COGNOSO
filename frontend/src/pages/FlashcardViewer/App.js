@@ -8,7 +8,7 @@ import ArrowButtons from './ArrowButtons';
 
 
 
-function App() {
+function FlashcardViewerFunc() {
   const [flashcards, setFlashcards] = useState([]);
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
   const [frontText, setFrontText] = useState('');
@@ -71,4 +71,4 @@ function App() {
   );
 }
 
-export default App;
+export default FlashcardViewerFunc;

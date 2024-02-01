@@ -1,16 +1,17 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-//import App from './App';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-import LoginScreen from "./pages/Login"
+import LoginScreen from "./pages/Login/Login"
+import FlashcardViewerFunc from "./pages/FlashcardViewer/App"
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/login" element={<LoginScreen/>} />
+	<Route path="/flashcard_viewer" element={<FlashcardViewerFunc/>} />
       </Routes>
     </BrowserRouter>
   );
