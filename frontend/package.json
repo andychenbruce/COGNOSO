@@ -8,11 +8,11 @@
     "gatsby"
   ],
   "scripts": {
-    "develop": "gatsby develop",
-    "start": "gatsby develop",
-    "build": "gatsby build",
-    "serve": "gatsby serve",
-    "clean": "gatsby clean",
+    "develop": "npm run typecheck && gatsby develop",
+    "start": "npm run typecheck && gatsby develop",
+    "build": "npm run typecheck && gatsby build",
+    "serve": "npm run typecheck && gatsby serve",
+    "clean": "npm run typecheck && gatsby clean",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

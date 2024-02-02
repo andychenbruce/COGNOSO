@@ -2,6 +2,7 @@ import React from 'react';
 import { useState } from 'react';
 import { Container, Paper, TextField, Button, Typography } from '@mui/material';
 import './login.css';
+import type { PageProps } from "gatsby"
 
 const Main: React.FC<PageProps>  = () => {
   const [user, setUser] = useState({ email: '', password: ''});
