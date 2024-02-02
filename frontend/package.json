@@ -8,12 +8,11 @@
     "gatsby"
   ],
   "scripts": {
-    "develop": "npm run typecheck && gatsby develop",
-    "start": "npm run typecheck && gatsby develop",
-    "build": "npm run typecheck && gatsby build",
-    "serve": "npm run typecheck && gatsby serve",
-    "clean": "npm run typecheck && gatsby clean",
-    "typecheck": "tsc --noEmit"
+    "start": "tsc && gatsby develop",
+    "build": "tsc && gatsby build",
+    "serve": "tsc && gatsby serve",
+    "clean": "gatsby clean",
+    "typecheck": "tsc"
   },
   "dependencies": {
     "gatsby": "^5.13.2",
