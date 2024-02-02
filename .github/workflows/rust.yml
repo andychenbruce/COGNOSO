@@ -17,6 +17,8 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Clippy
+      working-directory: ./backend
       run: cargo clippy
     - name: Run tests
+      working-directory: ./backend
       run: cargo test
