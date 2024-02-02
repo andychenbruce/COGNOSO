@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const Flashcard = ({ question, answer }) => {
+const Flashcard = ({ question, answer } : any) => {
   const [showAnswer, setShowAnswer] = useState(false);
 
   const toggleShowAnswer = () => {

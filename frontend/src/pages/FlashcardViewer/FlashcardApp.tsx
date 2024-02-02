@@ -9,7 +9,7 @@ const FlashcardApp = () => {
   const addFlashcard = () => {
     if (frontText && backText) {
       const newFlashcard = { front: frontText, back: backText };
-      setFlashcards([...flashcards, newFlashcard]);
+      setFlashcards([...flashcards, newFlashcard] as any);
       setFrontText('');
       setBackText('');
     }
@@ -29,7 +29,7 @@ const FlashcardApp = () => {
         <button onClick={addFlashcard}>Add Flashcard</button>
       </div>
 
-      {flashcards.map((flashcard, index) => (
+      {flashcards.map((flashcard: any, index) => (
         <Flashcard key={index} front={flashcard.front} back={flashcard.back} />
       ))}
     </div>

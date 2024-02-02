@@ -1,5 +1,5 @@
 import './App.css';
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Button from "@mui/material/Button";
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
@@ -17,7 +17,7 @@ function FlashcardViewerFunc() {
   const addFlashcard = () => {
     if (frontText && backText) {
       const newFlashcard = { front: frontText, back: backText };
-      setFlashcards([...flashcards, newFlashcard]);
+      setFlashcards([...flashcards, newFlashcard] as any);
       setFrontText('');
       setBackText('');
     }
