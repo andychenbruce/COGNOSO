@@ -1,10 +1,9 @@
 import React from 'react';
 import { useState } from 'react';
 import { Container, Paper, TextField, Button, Typography } from '@mui/material';
-import './Login.css';
+import './login.css';
 
-
-function LoginScreen() {
+const Main: React.FC<PageProps>  = () => {
   const [user, setUser] = useState({ email: '', password: ''});
   const handleInputChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
     const { value, name } = event.target;
@@ -97,4 +96,4 @@ function LoginScreen() {
   );
 }
 
-export default LoginScreen;
+export default Main;
