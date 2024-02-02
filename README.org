@@ -4,6 +4,9 @@
 
 
 * Backend
+#+BEGIN_SRC bash-ts
+  cd backend
+#+END_SRC
 ** Build instructions
 #+BEGIN_SRC bash-ts
   cargo build
@@ -27,10 +30,7 @@
   npm run build
 #+END_SRC
 Static html will be in ~frontend/build~, can be served with any HTTP server of choice.
-We have a test HTTP server. Run
-#+BEGIN_SRC bash-ts
-  cargo run --bin "andy_http_server" -- --port 1234 --root-serve-path ./frontend/build
-#+END_SRC
+
 * Backend endpoints
 ** ~/create_card_deck~
 #+BEGIN_SRC json-ts
