@@ -20,4 +20,6 @@ pub enum AndyError {
     DbCommit(#[from] redb::CommitError),
     #[error("int cast err")]
     IntCast(#[from] core::num::TryFromIntError),
+    #[error("http err")]
+    HyperError(#[from] hyper::http::Error),
 }

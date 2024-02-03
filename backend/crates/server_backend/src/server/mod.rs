@@ -28,6 +28,23 @@ pub async fn main_service(
     }
 }
 
+pub async fn cors_preflight_headers(
+    _req: Request<hyper::body::Incoming>,
+    methods: Vec<&str>,
+) -> Result<Response<Full<Bytes>>, AndyError> {
+    let builder_no_headers = hyper::Response::builder()
+        .status(hyper::StatusCode::OK)
+        .header("Access-Control-Allow-Origin", "*")
+        .header("Access-Control-Allow-Headers", "content-type");
+
+    Ok(methods
+        .into_iter()
+        .fold(builder_no_headers, |acc, x| {
+            acc.header("Access-Control-Allow-Methods", x)
+        })
+        .body("".into())?)
+}
+
 async fn handle_request(
     req: Request<hyper::body::Incoming>,
     state: SharedState,
@@ -43,6 +60,9 @@ async fn handle_request(
                     let thing = serde_json::from_reader(bytes.reader())?;
                     $func(thing, state).await
                 },)*
+                (&hyper::Method::OPTIONS, _) => {//TODO this handles POST requests in CORS headers
+                    cors_preflight_headers(req, vec!("POST")).await
+                },
                 (method, endpoint) => {
                     println!("BAD REQUEST IDK: endpoint = {}, meth = {}", endpoint, method);
                     let mut not_found = Response::new(Full::new(Bytes::from("")));
