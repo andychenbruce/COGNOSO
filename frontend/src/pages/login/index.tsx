@@ -13,8 +13,8 @@ const Main: React.FC<PageProps>  = () => {
       [name]: value,
     }));
   };
-  const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    console.log("bruh");
+  //const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  //  console.log("bruh");
     // event.preventDefault();
     // const requestData = {
     //   email: user.email,
@@ -37,8 +37,33 @@ const Main: React.FC<PageProps>  = () => {
     //   alert('Error logging in, please try again', err);
     //   return;
     // });
+  //};
+
+  const newUser = {
+    user_name: "pooman",
+    email: "person@qq.com",
+    passwd_hash: [12, 34, 56, 255]
   };
-  
+  const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    fetch('http://localhost:3000/new_user', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(newUser),
+    })
+    .then(response => response.json())
+    .then(data => {
+      console.log('New user created:', data);
+      // Handle success or perform additional actions
+    })
+    .catch(error => {
+      console.error('Error creating new user:', error);
+      // Handle error or provide user feedback
+    });
+  };
+
   return (
     <Container
       style={{
