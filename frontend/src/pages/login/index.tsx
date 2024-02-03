@@ -38,7 +38,7 @@ const Main: React.FC<PageProps>  = () => {
     //   return;
     // });
   };
-  
+
   return (
     <Container
       style={{
@@ -53,7 +53,10 @@ const Main: React.FC<PageProps>  = () => {
           width: 300,
         }}
         elevation={3}>
-        <Typography variant="h5" component="h1" align="center">
+        <Typography style={{
+              marginBottom: 20,
+            }}
+            variant="h5" component="h1" align="center">
           Login
         </Typography>
         <form onSubmit={onSubmit}>
