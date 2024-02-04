@@ -58,7 +58,12 @@ async fn handle_request(
                 $((&$meth, $uri) => {
                     let bytes = req.collect().await?.to_bytes();
                     let thing = serde_json::from_reader(bytes.reader())?;
-                    $func(thing, state).await
+                    let body_str = $func(thing, state).await?;
+                    Ok(hyper::Response::builder()
+                        .status(hyper::StatusCode::OK)
+                        .header("content-type", "application/json")
+                        .header("Access-Control-Allow-Origin", "*")
+                        .body(Full::new(Bytes::from(body_str)))?)
                 },)*
                 (&hyper::Method::OPTIONS, _) => {//TODO this handles POST requests in CORS headers
                     cors_preflight_headers(req, vec!("POST")).await
@@ -105,43 +110,33 @@ async fn handle_request(
 async fn create_card_deck(
     info: api_structs::CreateCardDeck,
     state: SharedState,
-) -> Result<Response<Full<Bytes>>, AndyError> {
+) -> Result<String, AndyError> {
     state.database.lock().await.new_card_deck(info)?;
-    Ok(Response::new(Full::new(Bytes::from(""))))
+    Ok("".to_owned())
 }
 
 async fn create_card(
     info: api_structs::CreateCard,
     state: SharedState,
-) -> Result<Response<Full<Bytes>>, AndyError> {
+) -> Result<String, AndyError> {
     state.database.lock().await.new_card(info)?;
-    Ok(Response::new(Full::new(Bytes::from(""))))
+    Ok("".to_owned())
 }
 
-async fn new_user(
-    info: api_structs::NewUser,
-    state: SharedState,
-) -> Result<Response<Full<Bytes>>, AndyError> {
+async fn new_user(info: api_structs::NewUser, state: SharedState) -> Result<String, AndyError> {
     state.database.lock().await.new_user(info)?;
-    Ok(Response::new(Full::new(Bytes::from(""))))
+    Ok("".to_owned())
 }
 
 async fn list_card_decks(
     info: api_structs::ListCardDecks,
     state: SharedState,
-) -> Result<Response<Full<Bytes>>, AndyError> {
+) -> Result<String, AndyError> {
     let out = state.database.lock().await.list_card_decks(info)?;
-    Ok(Response::new(Full::new(Bytes::from(
-        serde_json::to_string(&out)?,
-    ))))
+    Ok(serde_json::to_string(&out)?)
 }
 
-async fn list_cards(
-    info: api_structs::ListCards,
-    state: SharedState,
-) -> Result<Response<Full<Bytes>>, AndyError> {
+async fn list_cards(info: api_structs::ListCards, state: SharedState) -> Result<String, AndyError> {
     let out = state.database.lock().await.list_cards(info)?;
-    Ok(Response::new(Full::new(Bytes::from(
-        serde_json::to_string(&out)?,
-    ))))
+    Ok(serde_json::to_string(&out)?)
 }
