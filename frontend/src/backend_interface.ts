@@ -1,13 +1,13 @@
 export interface CreateCard {
-    access_token: [number, number];
-    deck_id: number;
-    question: string;
-    answer: string;
+  access_token: [number, number];
+  deck_id: number;
+  question: string;
+  answer: string;
 }
 
 export interface CreateCardDeck {
-    access_token: [number, number];
-    deck_name: string;
+  access_token: [number, number];
+  deck_name: string;
 }
 
 export interface NewUser {
@@ -17,7 +17,7 @@ export interface NewUser {
 }
 
 export interface ListCardDecks {
-    access_token: [number, number];
+  access_token: [number, number];
 }
 
 export interface ListCardDecksResponse {
@@ -25,9 +25,9 @@ export interface ListCardDecksResponse {
 }
 
 export interface CardDeck {
-    name: string;
-    deck_id: number;
-    num_cards: number;
+  name: string;
+  deck_id: number;
+  num_cards: number;
 }
 
 export interface ListCards {
@@ -36,7 +36,7 @@ export interface ListCards {
 }
 
 export interface ListCardsResponse {
-    cards: Card[];
+  cards: Card[];
 }
 
 export interface Card {
@@ -45,12 +45,10 @@ export interface Card {
 }
 
 export interface LoginRequest {
-    username: string;
-    password: string;
+  username: string;
+  password: string;
 }
 
 export interface LoginResponse {
   access_token: [number, number];
 }
-
-

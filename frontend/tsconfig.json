@@ -15,5 +15,10 @@
     "skipLibCheck": true,
     "noUnusedLocals": false
   },
-  "include": ["./src/**/*", "./gatsby-node.ts", "./gatsby-config.ts", "./plugins/**/*"]
+  "include": [
+    "./src/**/*",
+    "./gatsby-node.ts",
+    "./gatsby-config.ts",
+    "./plugins/**/*"
+  ]
 }
