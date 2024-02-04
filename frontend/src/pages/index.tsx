@@ -16,6 +16,9 @@ const Main: React.FC<PageProps> = () => {
       <p>
         <a href="home_page">home_page</a>
       </p>
+      <p>
+        <a href="acc_manage">acc_manage</a>
+      </p>
       <p>bruh bruh</p>
     </>
   );
