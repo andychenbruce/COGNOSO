@@ -64,7 +64,7 @@ pub struct Card {
 
 #[derive(Debug, serde::Serialize, serde::Deserialize)]
 pub struct LoginRequest {
-    pub username: String,
+    pub email: String,
     pub password: String,
 }
 

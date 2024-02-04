@@ -3,9 +3,15 @@ import { useState } from "react";
 import { Container, Paper, TextField, Button, Typography } from "@mui/material";
 import "./login.css";
 import type { PageProps } from "gatsby";
+import { NewUser } from "../../backend_interface";
 
 const Main: React.FC<PageProps> = () => {
-  const [user, setUser] = useState({ email: "", password1: "", password2: "" });
+  const [user, setUser] = useState({
+    username: "",
+    email: "",
+    password1: "",
+    password2: "",
+  });
   const handleInputChange = (
     event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
   ) => {
@@ -28,16 +34,27 @@ const Main: React.FC<PageProps> = () => {
       alert("Passwords do not match!");
       return;
     }
-    fetch("http://localhost:3000/acc_create", {
+    let new_user_request: NewUser = {
+      user_name: user.username,
+      email: user.email,
+      password: user.password1,
+    };
+    fetch("http://localhost:3000/new_user", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(newUser),
+      body: JSON.stringify(new_user_request),
     })
-      .then((response) => response.json())
+      .then((response) => {
+        if (!response.ok) {
+          return Promise.reject(response.text());
+        }
+        let output: Promise<String> = response.json();
+        return output;
+      })
       .then((data) => {
-        console.log("New user created:", data);
+        console.log("New user made:", data);
         // Handle success or perform additional actions
       })
       .catch((error) => {
@@ -70,6 +87,18 @@ const Main: React.FC<PageProps> = () => {
           Create Account
         </Typography>
         <form onSubmit={onSubmit}>
+          <TextField
+            style={{
+              marginBottom: 20,
+            }}
+            label="Username"
+            variant="outlined"
+            fullWidth
+            name="username"
+            value={user.username}
+            onChange={handleInputChange}
+            required
+          />
           <TextField
             style={{
               marginBottom: 20,

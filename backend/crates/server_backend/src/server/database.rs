@@ -6,7 +6,7 @@ use std::hash::Hasher;
 
 use api_structs::AccessToken;
 
-const SHA265_NUM_BYTES: usize = 100;
+const SHA265_NUM_BYTES: usize = 32;
 
 #[derive(serde::Serialize, serde::Deserialize, Debug)]
 struct UserEntry {
@@ -42,9 +42,9 @@ impl Database {
     const SESSION_TOKENS_TABLE: redb::TableDefinition<'static, AccessToken, u64> =
         redb::TableDefinition::new("tokens");
 
-    pub fn get_user_id(&self, username: String) -> u64 {
+    pub fn get_user_id(&self, email: String) -> u64 {
         //todo make actually good
-        hash(username)
+        hash(email)
     }
 
     pub fn new_session(&self, user_id: u64, password: String) -> Result<AccessToken, AndyError> {
@@ -110,7 +110,7 @@ impl Database {
         email: String,
         password: String,
     ) -> Result<(), AndyError> {
-        let user_id = hash(&user_name); //todo idk
+        let user_id = hash(&email); //todo idk
         let write_txn = self.db.begin_write()?;
         {
             let mut table = write_txn.open_table(Self::USERS_TABLE)?;

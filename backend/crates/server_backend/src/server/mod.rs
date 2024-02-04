@@ -97,7 +97,7 @@ async fn login(
     info: api_structs::LoginRequest,
     state: std::sync::Arc<SharedState>,
 ) -> Result<api_structs::LoginResponse, AndyError> {
-    let user_id = state.database.get_user_id(info.username);
+    let user_id = state.database.get_user_id(info.email);
     let access_token = state.database.new_session(user_id, info.password)?;
     Ok(api_structs::LoginResponse { access_token })
 }

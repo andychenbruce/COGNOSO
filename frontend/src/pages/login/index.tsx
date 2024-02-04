@@ -3,38 +3,41 @@ import { useState } from "react";
 import { Container, Paper, TextField, Button, Typography } from "@mui/material";
 import "./login.css";
 import type { PageProps } from "gatsby";
-import { NewUser } from "../../backend_interface";
+import { LoginRequest, LoginResponse } from "../../backend_interface";
 
 const Main: React.FC<PageProps> = () => {
-  const [user, setUser] = useState({ email: "", password: "" });
+  const [user, setUser]: [LoginRequest, any] = useState({
+    email: "",
+    password: "",
+  });
   const handleInputChange = (
     event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
   ) => {
     const { value, name } = event.target;
-    setUser((prevUser) => ({
+    setUser((prevUser: LoginRequest) => ({
       ...prevUser,
       [name]: value,
     }));
   };
 
-  // const newUser = {
-  //   user_name: "pooman",
-  //   email: "person@qq.com",
-  //   passwd_hash: [12, 34, 56, 255]
-  // };
-
   const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    fetch("http://localhost:3000/new_user", {
+    fetch("http://localhost:3000/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(user),
     })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log("New user created:", data); // Handle success or perform additional actions
+      .then((response) => {
+        if (!response.ok) {
+          return Promise.reject(response.text());
+        }
+        let output: Promise<LoginResponse> = response.json();
+        return output;
+      })
+      .then((data: LoginResponse) => {
+        console.log("got user token: ", data); // Handle success or perform additional actions
       })
       .catch((error) => {
         console.error("Error creating new user:", error); // Handle error or provide user feedback
