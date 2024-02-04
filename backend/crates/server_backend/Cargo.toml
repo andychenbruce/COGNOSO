@@ -13,5 +13,6 @@ http-body-util = { workspace = true }
 thiserror = "1.0.56"
 api_structs = { workspace = true }
 clap = { version = "4.4.16", features = ["derive"] }
-chrono = { version = "0.4.31", features = ["serde"] }
 redb = "1.5.0"
+sha2 = "0.10.8"
+serde_with = "3.6.0"

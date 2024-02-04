@@ -23,12 +23,12 @@ pub struct CreateCardDeck {
 pub struct NewUser {
     pub user_name: String,
     pub email: String,
-    pub passwd_hash: Vec<u8>,
+    pub password: String,
 }
 
 #[derive(Debug, serde::Serialize, serde::Deserialize)]
 pub struct ListCardDecks {
-    pub user_id: u64,
+    pub access_token: String,
 }
 
 #[derive(Debug, serde::Serialize, serde::Deserialize)]
@@ -45,7 +45,7 @@ pub struct CardDeck {
 
 #[derive(Debug, serde::Serialize, serde::Deserialize)]
 pub struct ListCards {
-    pub user_id: u64,
+    pub access_token: String,
     pub deck_id: u64,
 }
 
@@ -63,10 +63,9 @@ pub struct Card {
 #[derive(Debug, serde::Serialize, serde::Deserialize)]
 pub struct LoginRequest {
     pub username: String,
-    pub password_sha256: Vec<u8>,
+    pub password: String,
 }
 
-//crypto.createHash('sha256').update(input).digest('hex');
 #[derive(Debug, serde::Serialize, serde::Deserialize)]
 pub struct LoginResponse {
     pub access_token: String,

@@ -1,4 +1,5 @@
 pub mod database;
+pub mod utils;
 
 use crate::AndyError;
 use http_body_util::BodyExt;
@@ -27,23 +28,6 @@ pub async fn main_service(
     }
 }
 
-pub async fn cors_preflight_headers(
-    _req: Request<hyper::body::Incoming>,
-    methods: Vec<&str>,
-) -> Result<Response<Full<Bytes>>, AndyError> {
-    let builder_no_headers = hyper::Response::builder()
-        .status(hyper::StatusCode::OK)
-        .header("Access-Control-Allow-Origin", "*")
-        .header("Access-Control-Allow-Headers", "content-type");
-
-    Ok(methods
-        .into_iter()
-        .fold(builder_no_headers, |acc, x| {
-            acc.header("Access-Control-Allow-Methods", x)
-        })
-        .body("".into())?)
-}
-
 async fn handle_request(
     req: Request<hyper::body::Incoming>,
     state: std::sync::Arc<SharedState>,
@@ -65,11 +49,12 @@ async fn handle_request(
                         .header("Access-Control-Allow-Origin", "*")
                         .body(Full::new(Bytes::from(body_str)))?)
                 },)*
-                (&hyper::Method::OPTIONS, _) => {//TODO this handles POST requests in CORS headers
-                    cors_preflight_headers(req, vec!("POST")).await
+                (&hyper::Method::OPTIONS, _) => {
+                    //TODO this assumes every endpoint is a POST request in CORS headers
+                    utils::cors_preflight_headers(req, vec!("POST"))
                 },
                 (method, endpoint) => {
-                    println!("BAD REQUEST IDK: endpoint = {}, meth = {}", endpoint, method);
+                    println!("404 REQUEST: endpoint = {}, method = {}", endpoint, method);
                     let mut not_found = Response::new(Full::new(Bytes::from("")));
                     *not_found.status_mut() = hyper::StatusCode::NOT_FOUND;
                     Ok(not_found)
@@ -103,10 +88,10 @@ async fn handle_request(
             hyper::Method::POST,
             api_structs::ENDPOINT_LIST_CARDS,
             list_cards
-        )
+        ),
+        (hyper::Method::POST, api_structs::ENDPOINT_LOGIN, login)
     )
 }
-
 
 async fn login(
     _info: api_structs::LoginRequest,
@@ -116,12 +101,12 @@ async fn login(
     //state.database.new_thingidk(info)?;
 }
 
-
 async fn create_card_deck(
     info: api_structs::CreateCardDeck,
     state: std::sync::Arc<SharedState>,
 ) -> Result<(), AndyError> {
-    state.database.new_card_deck(info)?;
+    let user_id = state.database.validate_token(info.access_token)?;
+    state.database.new_card_deck(user_id, info.deck_name)?;
     Ok(())
 }
 
@@ -129,7 +114,10 @@ async fn create_card(
     info: api_structs::CreateCard,
     state: std::sync::Arc<SharedState>,
 ) -> Result<(), AndyError> {
-    state.database.new_card(info)?;
+    let user_id = state.database.validate_token(info.access_token)?;
+    state
+        .database
+        .new_card(user_id, info.deck_id, info.question, info.answer)?;
     Ok(())
 }
 
@@ -137,7 +125,9 @@ async fn new_user(
     info: api_structs::NewUser,
     state: std::sync::Arc<SharedState>,
 ) -> Result<(), AndyError> {
-    state.database.new_user(info)?;
+    state
+        .database
+        .new_user(info.user_name, info.email, info.password)?;
     Ok(())
 }
 
@@ -145,12 +135,14 @@ async fn list_card_decks(
     info: api_structs::ListCardDecks,
     state: std::sync::Arc<SharedState>,
 ) -> Result<api_structs::ListCardDecksResponse, AndyError> {
-    state.database.list_card_decks(info)
+    let user_id = state.database.validate_token(info.access_token)?;
+    state.database.list_card_decks(user_id)
 }
 
 async fn list_cards(
     info: api_structs::ListCards,
     state: std::sync::Arc<SharedState>,
 ) -> Result<api_structs::ListCardsResponse, AndyError> {
-    state.database.list_cards(info)
+    let user_id = state.database.validate_token(info.access_token)?;
+    state.database.list_cards(user_id, info.deck_id)
 }

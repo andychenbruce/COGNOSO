@@ -2,9 +2,9 @@
 resolver = "2"
 members = [
   "crates/server_backend",
-  "crates/server_frontend",
+  #"crates/server_frontend",
   "crates/api_structs",
-  "crates/frontend_wasm",
+  #"crates/frontend_wasm",
 ]
 
 [workspace.dependencies]

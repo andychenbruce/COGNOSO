@@ -6,8 +6,8 @@ pub enum AndyError {
     Serde(#[from] serde_json::Error),
     #[error("io error")]
     Io(#[from] std::io::Error),
-    //#[error("nonexistant user")]
-    //UserDoesNotExist,
+    #[error("nonexistant user")]
+    UserDoesNotExist,
     #[error("database err")]
     DbError(#[from] redb::DatabaseError),
     #[error("database transaction err")]
@@ -21,5 +21,7 @@ pub enum AndyError {
     #[error("int cast err")]
     IntCast(#[from] core::num::TryFromIntError),
     #[error("http err")]
-    HyperError(#[from] hyper::http::Error),
+    HttpError(#[from] hyper::http::Error),
+    #[error("http invalid header")]
+    HttpInvalidHeader(#[from] hyper::header::InvalidHeaderValue),
 }
