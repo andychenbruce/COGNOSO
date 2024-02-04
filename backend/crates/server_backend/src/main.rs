@@ -20,11 +20,9 @@ async fn main() -> Result<(), AndyError> {
     eprintln!("listening on {:?}", addr);
     let listener = TcpListener::bind(addr).await?;
 
-    let globals: server::SharedState = server::SharedState {
-        database: std::sync::Arc::new(tokio::sync::Mutex::new(server::database::Database::new(
-            args.database_path,
-        )?)),
-    };
+    let globals: std::sync::Arc<server::SharedState> = std::sync::Arc::new(server::SharedState {
+        database: server::database::Database::new(args.database_path)?,
+    });
 
     loop {
         let (stream, _) = listener.accept().await?;
