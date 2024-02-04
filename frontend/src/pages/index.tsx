@@ -13,6 +13,9 @@ const Main: React.FC<PageProps> = () => {
       <p>
         <a href="/acc_create">acc_create</a>
       </p>
+      <p>
+        <a href="home_page">home_page</a>
+      </p>
       <p>bruh bruh</p>
     </>
   );
