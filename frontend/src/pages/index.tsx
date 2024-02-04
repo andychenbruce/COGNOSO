@@ -6,6 +6,7 @@ const Main: React.FC<PageProps>  = () => {
     <>
       <p><a href="/login">login</a></p>
       <p><a href="/flashcard_viewer">view flashcards</a></p>
+      <p><a href="/acc_create">acc_create</a></p>
       <p>bruh bruh</p>
     </>
   );
