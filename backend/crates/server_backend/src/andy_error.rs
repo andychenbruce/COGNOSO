@@ -8,6 +8,10 @@ pub enum AndyError {
     Io(#[from] std::io::Error),
     #[error("nonexistant user")]
     UserDoesNotExist,
+    #[error("wrong password")]
+    WrongPassword,
+    #[error("bad access token")]
+    BadAccessToken,
     #[error("database err")]
     DbError(#[from] redb::DatabaseError),
     #[error("database transaction err")]

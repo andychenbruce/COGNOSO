@@ -5,9 +5,11 @@ pub const ENDPOINT_LIST_CARD_DECKS: &str = "/list_card_decks";
 pub const ENDPOINT_LIST_CARDS: &str = "/list_cards";
 pub const ENDPOINT_LOGIN: &str = "/login";
 
+pub type AccessToken = (u64, u64);
+
 #[derive(Debug, serde::Serialize, serde::Deserialize)]
 pub struct CreateCard {
-    pub access_token: String,
+    pub access_token: AccessToken,
     pub deck_id: u64,
     pub question: String,
     pub answer: String,
@@ -15,7 +17,7 @@ pub struct CreateCard {
 
 #[derive(Debug, serde::Serialize, serde::Deserialize)]
 pub struct CreateCardDeck {
-    pub access_token: String,
+    pub access_token: AccessToken,
     pub deck_name: String,
 }
 
@@ -28,7 +30,7 @@ pub struct NewUser {
 
 #[derive(Debug, serde::Serialize, serde::Deserialize)]
 pub struct ListCardDecks {
-    pub access_token: String,
+    pub access_token: AccessToken,
 }
 
 #[derive(Debug, serde::Serialize, serde::Deserialize)]
@@ -45,7 +47,7 @@ pub struct CardDeck {
 
 #[derive(Debug, serde::Serialize, serde::Deserialize)]
 pub struct ListCards {
-    pub access_token: String,
+    pub access_token: AccessToken,
     pub deck_id: u64,
 }
 
@@ -68,5 +70,5 @@ pub struct LoginRequest {
 
 #[derive(Debug, serde::Serialize, serde::Deserialize)]
 pub struct LoginResponse {
-    pub access_token: String,
+    pub access_token: AccessToken,
 }

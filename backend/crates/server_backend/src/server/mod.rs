@@ -94,11 +94,12 @@ async fn handle_request(
 }
 
 async fn login(
-    _info: api_structs::LoginRequest,
-    _state: std::sync::Arc<SharedState>,
+    info: api_structs::LoginRequest,
+    state: std::sync::Arc<SharedState>,
 ) -> Result<api_structs::LoginResponse, AndyError> {
-    todo!()
-    //state.database.new_thingidk(info)?;
+    let user_id = state.database.get_user_id(info.username);
+    let access_token = state.database.new_session(user_id, info.password)?;
+    Ok(api_structs::LoginResponse { access_token })
 }
 
 async fn create_card_deck(

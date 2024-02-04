@@ -1,7 +1,10 @@
-use crate::AndyError;
+use crate::andy_error::AndyError;
+use rand::Rng;
 use redb::ReadableTable;
 use sha2::Digest;
 use std::hash::Hasher;
+
+use api_structs::AccessToken;
 
 const SHA265_NUM_BYTES: usize = 100;
 
@@ -9,7 +12,6 @@ const SHA265_NUM_BYTES: usize = 100;
 #[derive(serde::Serialize, serde::Deserialize, Debug)]
 struct UserEntry {
     username: String,
-    user_id: u64,
     email: String,
     #[serde_as(as = "serde_with::Bytes")]
     //idk prolly serde will fix this const generics in the future
@@ -35,13 +37,56 @@ pub struct Database {
 }
 
 impl Database {
-    const USERS_TABLE: redb::TableDefinition<'static, &'static str, UserEntry> =
+    const USERS_TABLE: redb::TableDefinition<'static, u64, UserEntry> =
         redb::TableDefinition::new("users");
     const DECKS_TABLE: redb::TableDefinition<'static, (u64, u64), CardDeck> =
         redb::TableDefinition::new("decks");
+    const SESSION_TOKENS_TABLE: redb::TableDefinition<'static, AccessToken, u64> =
+        redb::TableDefinition::new("decks");
 
-    pub fn validate_token(&self, _token: String) -> Result<u64, AndyError> {
-        todo!()
+    pub fn get_user_id(&self, username: String) -> u64 {
+        //todo make actually good
+        hash(username)
+    }
+
+    pub fn new_session(&self, user_id: u64, password: String) -> Result<AccessToken, AndyError> {
+        //todo make an actuall token manager instead of just generating 2 random numbers lmao
+        self.validate_password(user_id, password)?;
+
+        let mut rng = rand::thread_rng();
+
+        let n1: u64 = rng.gen();
+        let n2: u64 = rng.gen();
+
+        let access_token: AccessToken = (n1, n2);
+
+        self.insert(access_token, user_id, Self::SESSION_TOKENS_TABLE)?;
+
+        Ok((n1, n2))
+    }
+
+    pub fn validate_password(&self, user_id: u64, password: String) -> Result<(), AndyError> {
+        let read_txn = self.db.begin_read()?;
+        let table = read_txn.open_table(Self::USERS_TABLE)?;
+        let user_info = table
+            .get(user_id)?
+            .ok_or(AndyError::UserDoesNotExist)?
+            .value();
+
+        let password_hash = sha256_hash(password.as_bytes());
+        if user_info.password_hash != password_hash {
+            Err(AndyError::WrongPassword)
+        } else {
+            Ok(())
+        }
+    }
+
+    pub fn validate_token(&self, token: AccessToken) -> Result<u64, AndyError> {
+        //TODO make tokens expire after like a month or something
+        let read_txn = self.db.begin_read()?;
+        let table = read_txn.open_table(Self::SESSION_TOKENS_TABLE)?;
+        let user_id = table.get(token)?.ok_or(AndyError::BadAccessToken)?.value();
+        Ok(user_id)
     }
 
     pub fn new(db_path: std::path::PathBuf) -> Result<Self, AndyError> {
@@ -51,6 +96,7 @@ impl Database {
             let write_txn = db.begin_write()?;
             write_txn.open_table(Self::USERS_TABLE)?;
             write_txn.open_table(Self::DECKS_TABLE)?;
+            write_txn.open_table(Self::SESSION_TOKENS_TABLE)?;
             write_txn.commit()?;
         }
         Ok(Self { db })
@@ -67,10 +113,9 @@ impl Database {
         {
             let mut table = write_txn.open_table(Self::USERS_TABLE)?;
             table.insert(
-                user_name.as_str(),
+                user_id,
                 UserEntry {
-                    username: user_name.clone(),
-                    user_id,
+                    username: user_name,
                     email,
                     password_hash: sha256_hash(password.as_bytes()),
                     signup_time: get_current_unix_time_seconds(),
@@ -193,7 +238,7 @@ fn sha256_hash(bytes: &[u8]) -> [u8; SHA265_NUM_BYTES] {
 
     let result: Vec<u8> = hasher.finalize().to_vec();
 
-    return result.try_into().unwrap();
+    result.try_into().unwrap()
 }
 
 fn hash<K>(username: K) -> u64
