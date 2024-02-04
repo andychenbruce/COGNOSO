@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { Container, Paper, TextField, Button, Typography } from '@mui/material';
 import './login.css';
 import type { PageProps } from "gatsby"
+import {NewUser} from "../../backend_interface"
 
 const Main: React.FC<PageProps>  = () => {
   const [user, setUser] = useState({ email: '', password: ''});
