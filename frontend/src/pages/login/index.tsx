@@ -53,15 +53,19 @@ const Main: React.FC<PageProps>  = () => {
       },
       body: JSON.stringify(newUser),
     })
-    .then(response => response.json())
+    .then(response => console.log("new user made idk"))
     .then(data => {
-      console.log('New user created:', data);
-      // Handle success or perform additional actions
+     console.log('New user created:', data);
+     // Handle success or perform additional actions
     })
     .catch(error => {
       console.error('Error creating new user:', error);
       // Handle error or provide user feedback
     });
+  };
+
+  const redirectToacc_create = () => {
+    window.location.href = 'http://localhost:8000/acc_create/';
   };
 
   return (
@@ -110,12 +114,12 @@ const Main: React.FC<PageProps>  = () => {
           <Button type="submit" variant="contained" color="primary" fullWidth>
             Login
           </Button>
-          <Button type="submit" variant="contained" color="primary" fullWidth>
+          <Button type="submit" variant="contained" color="primary" fullWidth onClick={redirectToacc_create}>
             Create Account
           </Button>
-          <Button type="submit" variant="text" color="primary" fullWidth>
+          {/* <Button type="submit" variant="text" color="primary" fullWidth>
             Forgot Password?
-          </Button>
+          </Button> */}
         </form>
       </Paper>
     </Container>
