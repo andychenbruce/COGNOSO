@@ -19,6 +19,15 @@ const Main: React.FC<PageProps> = () => {
       <p>
         <a href="acc_manage">acc_manage</a>
       </p>
+      <p>
+        <a href="deck_manage">deck_manage</a>
+      </p>
+      <p>
+        <a href="deck_manage">deck_manage</a>
+      </p>
+      <p>
+        <a href="flashcard_editor">flashcard_editor</a>
+      </p>
       <p>bruh bruh</p>
     </>
   );
