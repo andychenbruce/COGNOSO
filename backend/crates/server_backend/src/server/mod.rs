@@ -7,14 +7,13 @@ use hyper::body::Buf;
 use hyper::body::Bytes;
 use hyper::{Request, Response};
 
-#[derive(Clone)]
 pub struct SharedState {
-    pub database: std::sync::Arc<tokio::sync::Mutex<database::Database>>,
+    pub database: database::Database,
 }
 
 pub async fn main_service(
     req: Request<hyper::body::Incoming>,
-    state: SharedState,
+    state: std::sync::Arc<SharedState>,
 ) -> Result<Response<Full<Bytes>>, std::convert::Infallible> {
     match handle_request(req, state).await {
         Ok(x) => Ok(x),
@@ -47,7 +46,7 @@ pub async fn cors_preflight_headers(
 
 async fn handle_request(
     req: Request<hyper::body::Incoming>,
-    state: SharedState,
+    state: std::sync::Arc<SharedState>,
 ) -> Result<Response<Full<Bytes>>, AndyError> {
     let uri = req.uri().path();
     let method = req.method();
@@ -108,34 +107,50 @@ async fn handle_request(
     )
 }
 
+
+async fn login(
+    _info: api_structs::LoginRequest,
+    _state: std::sync::Arc<SharedState>,
+) -> Result<api_structs::LoginResponse, AndyError> {
+    todo!()
+    //state.database.new_thingidk(info)?;
+}
+
+
 async fn create_card_deck(
     info: api_structs::CreateCardDeck,
-    state: SharedState,
+    state: std::sync::Arc<SharedState>,
 ) -> Result<(), AndyError> {
-    state.database.lock().await.new_card_deck(info)?;
+    state.database.new_card_deck(info)?;
     Ok(())
 }
 
-async fn create_card(info: api_structs::CreateCard, state: SharedState) -> Result<(), AndyError> {
-    state.database.lock().await.new_card(info)?;
+async fn create_card(
+    info: api_structs::CreateCard,
+    state: std::sync::Arc<SharedState>,
+) -> Result<(), AndyError> {
+    state.database.new_card(info)?;
     Ok(())
 }
 
-async fn new_user(info: api_structs::NewUser, state: SharedState) -> Result<(), AndyError> {
-    state.database.lock().await.new_user(info)?;
+async fn new_user(
+    info: api_structs::NewUser,
+    state: std::sync::Arc<SharedState>,
+) -> Result<(), AndyError> {
+    state.database.new_user(info)?;
     Ok(())
 }
 
 async fn list_card_decks(
     info: api_structs::ListCardDecks,
-    state: SharedState,
+    state: std::sync::Arc<SharedState>,
 ) -> Result<api_structs::ListCardDecksResponse, AndyError> {
-    state.database.lock().await.list_card_decks(info)
+    state.database.list_card_decks(info)
 }
 
 async fn list_cards(
     info: api_structs::ListCards,
-    state: SharedState,
+    state: std::sync::Arc<SharedState>,
 ) -> Result<api_structs::ListCardsResponse, AndyError> {
-    state.database.lock().await.list_cards(info)
+    state.database.list_cards(info)
 }

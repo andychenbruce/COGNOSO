@@ -3,10 +3,11 @@ pub const ENDPOINT_CREATE_CARD: &str = "/create_card";
 pub const ENDPOINT_NEW_USER: &str = "/new_user";
 pub const ENDPOINT_LIST_CARD_DECKS: &str = "/list_card_decks";
 pub const ENDPOINT_LIST_CARDS: &str = "/list_cards";
+pub const ENDPOINT_LOGIN: &str = "/login";
 
 #[derive(Debug, serde::Serialize, serde::Deserialize)]
 pub struct CreateCard {
-    pub user_id: u64,
+    pub access_token: String,
     pub deck_id: u64,
     pub question: String,
     pub answer: String,
@@ -14,7 +15,7 @@ pub struct CreateCard {
 
 #[derive(Debug, serde::Serialize, serde::Deserialize)]
 pub struct CreateCardDeck {
-    pub user_id: u64,
+    pub access_token: String,
     pub deck_name: String,
 }
 
@@ -57,4 +58,16 @@ pub struct ListCardsResponse {
 pub struct Card {
     pub question: String,
     pub answer: String,
+}
+
+#[derive(Debug, serde::Serialize, serde::Deserialize)]
+pub struct LoginRequest {
+    pub username: String,
+    pub password_sha256: Vec<u8>,
+}
+
+//crypto.createHash('sha256').update(input).digest('hex');
+#[derive(Debug, serde::Serialize, serde::Deserialize)]
+pub struct LoginResponse {
+    pub access_token: String,
 }
