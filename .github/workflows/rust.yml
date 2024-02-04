@@ -1,4 +1,4 @@
-name: Rust
+name: Backend
 
 on:
   push:
@@ -22,3 +22,6 @@ jobs:
     - name: Run tests
       working-directory: ./backend
       run: cargo test
+    - name: Formatting
+      working-directory: ./backend
+      run: cargo fmt --check
