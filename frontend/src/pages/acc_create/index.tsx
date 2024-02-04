@@ -23,7 +23,6 @@ const Main: React.FC<PageProps>  = () => {
   const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (user.password1 !== user.password2) {
-      // Display a popup or set an error state
       alert("Passwords do not match!");
       return;
     }
@@ -34,7 +33,7 @@ const Main: React.FC<PageProps>  = () => {
     },
     body: JSON.stringify(newUser),
     })
-    .then(response => console.log("new user made idk"))
+    .then(response => response.json())
     .then(data => {
       console.log('New user created:', data);
       // Handle success or perform additional actions

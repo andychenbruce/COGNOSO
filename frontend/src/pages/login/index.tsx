@@ -13,37 +13,14 @@ const Main: React.FC<PageProps>  = () => {
       [name]: value,
     }));
   };
-  //const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-  //  console.log("bruh");
-    // event.preventDefault();
-    // const requestData = {
-    //   email: user.email,
-    //   password: user.password,
-    // };
-    // fetch('http://localhost:3010/v0/login', {
-    //   method: 'POST',
-    //   body: JSON.stringify(requestData),
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //   },
-    // })
-    // .then((res) => res.json())
-    // .then((json) => {
-    //   updateUser(json);
-    //   localStorage.setItem('data', JSON.stringify(json));
-    //   history('/home');
-    // })
-    // .catch((err) => {
-    //   alert('Error logging in, please try again', err);
-    //   return;
-    // });
-  //};
+ 
 
-  const newUser = {
-    user_name: "pooman",
-    email: "person@qq.com",
-    passwd_hash: [12, 34, 56, 255]
-  };
+  // const newUser = {
+  //   user_name: "pooman",
+  //   email: "person@qq.com",
+  //   passwd_hash: [12, 34, 56, 255]
+  // };
+
   const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     fetch('http://localhost:3000/new_user', {
@@ -51,16 +28,14 @@ const Main: React.FC<PageProps>  = () => {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(newUser),
+      body: JSON.stringify(user),
     })
-    .then(response => console.log("new user made idk"))
+    .then(response => response.json())
     .then(data => {
-     console.log('New user created:', data);
-     // Handle success or perform additional actions
+     console.log('New user created:', data);// Handle success or perform additional actions
     })
     .catch(error => {
-      console.error('Error creating new user:', error);
-      // Handle error or provide user feedback
+      console.error('Error creating new user:', error);// Handle error or provide user feedback
     });
   };
 
