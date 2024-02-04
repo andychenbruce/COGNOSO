@@ -19,6 +19,9 @@ jobs:
     - name: Install
       working-directory: ./frontend
       run: npm install
+    - name: Format
+      working-directory: ./frontend
+      run: npx prettier --check ./
     - name: Build
       working-directory: ./frontend
       run: npm run build
