@@ -6,6 +6,7 @@ use http_body_util::BodyExt;
 use http_body_util::Full;
 use hyper::body::Buf;
 use hyper::body::Bytes;
+use hyper::header::HeaderValue;
 use hyper::{Request, Response};
 
 pub struct SharedState {
@@ -22,7 +23,12 @@ pub async fn main_service(
             println!("got error: {:?}", e);
             let mut err_response = Response::new(Full::new(Bytes::from(format!("{:?}", e))));
             *err_response.status_mut() = hyper::StatusCode::INTERNAL_SERVER_ERROR;
-
+            err_response
+                .headers_mut()
+                .insert("content-type", HeaderValue::from_static("application/json"));
+            err_response
+                .headers_mut()
+                .insert("Access-Control-Allow-Origin", HeaderValue::from_static("*"));
             Ok(err_response)
         }
     }
@@ -34,7 +40,7 @@ async fn handle_request(
 ) -> Result<Response<Full<Bytes>>, AndyError> {
     let uri = req.uri().path();
     let method = req.method();
-
+    println!("got request method = {}, endpoint = {}", method, uri);
     macro_rules! endpoints {
         ($(($meth:pat, $uri:pat, $func:expr)),*) => {
             match (method, uri) {
@@ -43,11 +49,12 @@ async fn handle_request(
                     let thing = serde_json::from_reader(bytes.reader())?;
                     let body_struct = $func(thing, state).await?;
                     let body_str = serde_json::to_string(&body_struct)?;
-                    Ok(hyper::Response::builder()
-                        .status(hyper::StatusCode::OK)
-                        .header("content-type", "application/json")
-                        .header("Access-Control-Allow-Origin", "*")
-                        .body(Full::new(Bytes::from(body_str)))?)
+                    utils::make_response(
+                        hyper::StatusCode::OK,
+                        vec![("content-type", "application/json"),
+                        ("Access-Control-Allow-Origin", "*")],
+                        body_str
+                    )
                 },)*
                 (&hyper::Method::OPTIONS, _) => {
                     //TODO this assumes every endpoint is a POST request in CORS headers
@@ -55,9 +62,12 @@ async fn handle_request(
                 },
                 (method, endpoint) => {
                     println!("404 REQUEST: endpoint = {}, method = {}", endpoint, method);
-                    let mut not_found = Response::new(Full::new(Bytes::from("")));
-                    *not_found.status_mut() = hyper::StatusCode::NOT_FOUND;
-                    Ok(not_found)
+                    utils::make_response(
+                        hyper::StatusCode::NOT_FOUND,
+                        vec![("content-type", "application/json"),
+                        ("Access-Control-Allow-Origin", "*")],
+                        "".to_owned()
+                    )
                 }
             }
         }
