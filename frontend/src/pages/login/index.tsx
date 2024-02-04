@@ -1,6 +1,6 @@
 import React from "react";
 import { useState } from "react";
-import { Container, Paper, TextField, Button, Typography } from "@mui/material";
+import { Container, Paper, TextField, Button, Typography, Snackbar} from "@mui/material";
 import "./login.css";
 import type { PageProps } from "gatsby";
 import { LoginRequest, LoginResponse } from "../../backend_interface";
@@ -10,6 +10,8 @@ const Main: React.FC<PageProps> = () => {
     email: "",
     password: "",
   });
+  const [shouldShowPopup, setShouldShowPopup] = useState(false);
+
   const handleInputChange = (
     event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
   ) => {
@@ -31,6 +33,7 @@ const Main: React.FC<PageProps> = () => {
     })
       .then((response) => {
         if (!response.ok) {
+          setShouldShowPopup(true);
           return Promise.reject(response.text());
         }
         let output: Promise<LoginResponse> = response.json();
@@ -50,6 +53,9 @@ const Main: React.FC<PageProps> = () => {
   };
   const redirectTohome_page = () => {
     window.location.href = "http://localhost:8000/home_page/";
+  };
+  const handleClosePopup = () => {
+    setShouldShowPopup(false);
   };
 
   return (
@@ -113,6 +119,12 @@ const Main: React.FC<PageProps> = () => {
             Forgot Password?
           </Button> */}
         </form>
+        <Snackbar
+          open={shouldShowPopup}
+          autoHideDuration={3000}
+          onClose={handleClosePopup}
+          message="Login failed. Please try again."
+        />
       </Paper>
     </Container>
   );
