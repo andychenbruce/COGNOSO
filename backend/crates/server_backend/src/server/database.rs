@@ -8,14 +8,12 @@ use api_structs::AccessToken;
 
 const SHA265_NUM_BYTES: usize = 100;
 
-#[serde_with::serde_as]
 #[derive(serde::Serialize, serde::Deserialize, Debug)]
 struct UserEntry {
     username: String,
     email: String,
-    #[serde_as(as = "serde_with::Bytes")]
     //idk prolly serde will fix this const generics in the future
-    password_hash: [u8; SHA265_NUM_BYTES],
+    password_hash: Vec<u8>,
     signup_time: u64,
 }
 
@@ -42,7 +40,7 @@ impl Database {
     const DECKS_TABLE: redb::TableDefinition<'static, (u64, u64), CardDeck> =
         redb::TableDefinition::new("decks");
     const SESSION_TOKENS_TABLE: redb::TableDefinition<'static, AccessToken, u64> =
-        redb::TableDefinition::new("decks");
+        redb::TableDefinition::new("tokens");
 
     pub fn get_user_id(&self, username: String) -> u64 {
         //todo make actually good
@@ -73,11 +71,15 @@ impl Database {
             .ok_or(AndyError::UserDoesNotExist)?
             .value();
 
-        let password_hash = sha256_hash(password.as_bytes());
-        if user_info.password_hash != password_hash {
-            Err(AndyError::WrongPassword)
-        } else {
+        let test_password_hash = sha256_hash(password.as_bytes());
+        let real_password_hash: [u8; SHA265_NUM_BYTES] = user_info
+            .password_hash
+            .try_into()
+            .map_err(AndyError::BadHash)?;
+        if real_password_hash == test_password_hash {
             Ok(())
+        } else {
+            Err(AndyError::WrongPassword)
         }
     }
 
@@ -117,7 +119,7 @@ impl Database {
                 UserEntry {
                     username: user_name,
                     email,
-                    password_hash: sha256_hash(password.as_bytes()),
+                    password_hash: sha256_hash(password.as_bytes()).to_vec(),
                     signup_time: get_current_unix_time_seconds(),
                 },
             )?;

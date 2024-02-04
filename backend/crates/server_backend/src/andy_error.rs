@@ -28,4 +28,6 @@ pub enum AndyError {
     HttpError(#[from] hyper::http::Error),
     #[error("http invalid header")]
     HttpInvalidHeader(#[from] hyper::header::InvalidHeaderValue),
+    #[error("invalid hash in database")]
+    BadHash(Vec<u8>),
 }
