@@ -33,13 +33,19 @@ Static html will be in ~frontend/build~, can be served with any HTTP server of c
 
 * Backend endpoints
 ** ~/create_card_deck~
+*** request
 #+BEGIN_SRC json-ts
   {
     "user_id": 123456,
     "deck_name": "Cool deck"
   }
 #+END_SRC
+*** response
+#+BEGIN_SRC json-ts
+  null
+#+END_SRC
 ** ~/create_card~
+*** request
 #+BEGIN_SRC json-ts
   {
     "user_id" : 123,
@@ -48,13 +54,22 @@ Static html will be in ~frontend/build~, can be served with any HTTP server of c
     "answer" : "Hi"
   }
 #+END_SRC
-** ~/new_user~
+*** response
 #+BEGIN_SRC json-ts
-   {
-     "user_name": "pooman",
-     "email": "person@qq.com",
-     "passwd_hash": [12, 34, 56, 255]
-   }
+  null
+#+END_SRC
+** ~/new_user~
+*** response
+#+BEGIN_SRC json-ts
+  {
+    "user_name": "pooman",
+    "email": "person@qq.com",
+    "passwd_hash": [12, 34, 56, 255]
+  }
+#+END_SRC
+*** response
+#+BEGIN_SRC json-ts
+  null
 #+END_SRC
 ** ~/list_card_decks~
 *** request
