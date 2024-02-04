@@ -34,6 +34,7 @@ const Main: React.FC<PageProps> = () => {
           return Promise.reject(response.text());
         }
         let output: Promise<LoginResponse> = response.json();
+        redirectTohome_page();
         return output;
       })
       .then((data: LoginResponse) => {
@@ -46,6 +47,9 @@ const Main: React.FC<PageProps> = () => {
 
   const redirectToacc_create = () => {
     window.location.href = "http://localhost:8000/acc_create/";
+  };
+  const redirectTohome_page = () => {
+    window.location.href = "http://localhost:8000/home_page/";
   };
 
   return (
