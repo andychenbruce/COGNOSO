@@ -72,3 +72,10 @@ pub struct LoginRequest {
 pub struct LoginResponse {
     pub access_token: AccessToken,
 }
+
+#[derive(Debug, serde::Serialize, serde::Deserialize)]
+pub struct UploadPdf {
+    pub access_token: AccessToken,
+    pub deck_id: u64,
+    pub file_bytes_base64: String,
+}

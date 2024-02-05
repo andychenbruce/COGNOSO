@@ -61,3 +61,10 @@ export interface LoginRequest {
 export interface LoginResponse {
   access_token: [number, number];
 }
+
+// request <- /add_pdf
+export interface UploadPdf {
+  access_token: [number, number];
+  deck_id: number;
+  file_bytes_base64: string;
+}
