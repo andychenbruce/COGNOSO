@@ -50,7 +50,7 @@ const Main: React.FC<PageProps> = () => {
         if (!response.ok) {
           return Promise.reject(response.text());
         }
-        redirectToLogin()
+        redirectToLogin();
         let output: Promise<String> = response.json();
         return output;
       })
