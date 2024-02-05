@@ -1,59 +1,59 @@
 import React, { useState } from 'react';
 import {
-  AppBar,
-  Toolbar,
+  InputBase,
   Typography,
   Button,
-  Container,
-  CssBaseline,
-  Paper,
 } from '@mui/material';
 
 const App: React.FC = () => {
   const [selectedPage, setSelectedPage] = useState<string>('home');
-
+  const [searchQuery, setSearchQuery] = useState("")
   const handlePageChange = (page: string) => {
     setSelectedPage(page);
   };
 
+  const redirectToAcc_Manage = () => {
+    window.location.href = "http://localhost:8000/acc_manage/";
+  };
+  const redirectToHome_Page = () => {
+    window.location.href = "http://localhost:8000/home_page/";
+  };
+  const redirectToDeck_manage = () => {
+    window.location.href = "http://localhost:8000/deck_manage/";
+  };
   return (
-    <>
-      <CssBaseline />
-      <div>
-        <AppBar position="static">
-          <Toolbar>
-            <Typography
-              variant="h6"
-              style={{ cursor: 'pointer' }}
-              onClick={() => handlePageChange('home')}
-            >
-              My App
-            </Typography>
-            <Button
-              color="inherit"
-              onClick={() => handlePageChange('about')}
-              disabled={selectedPage === 'about'}
-            >
-              About
-            </Button>
-            <Button
-              color="inherit"
-              onClick={() => handlePageChange('contact')}
-              disabled={selectedPage === 'contact'}
-            >
-              Contact
-            </Button>
-          </Toolbar>
-        </AppBar>
+    <div>
+      <div style={{
+        border: "5px solid #1976d2",
+        borderRadius: "15px",
+        padding: "5px",
+        display: "flex",
+        justifyContent: "center",
+        flexWrap: "wrap",
+        gap: "10px",
+        marginBottom: "20px" 
+      }}>
+        <Button variant="contained" style={{ fontSize: "20px", width: "400px" }} onClick={redirectToHome_Page}>Home</Button>
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          width: '500px',
+          border: '2px solid #1976d2',
+          borderRadius: '4px',
+          padding: '5px',
+        }}>
+          <InputBase
+            placeholder="Search…"
+            inputProps={{ 'aria-label': 'search' }}
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            style={{ flex: 1, fontSize: "20px", paddingLeft: "10px" }}
+          />
+        </div>
+        <Button variant="contained" style={{ fontSize: "20px", width: "400px" }} onClick={redirectToDeck_manage}>Decks</Button>
+        <Button variant="contained" style={{ fontSize: "20px", width: "400px" }} onClick={redirectToAcc_Manage}>Account</Button>
       </div>
-      <Container component="main" maxWidth="xs">
-        <Paper elevation={3} style={{ padding: '20px', marginTop: '20px' }}>
-          {selectedPage === 'home' && <Home />}
-          {selectedPage === 'about' && <About />}
-          {selectedPage === 'contact' && <Contact />}
-        </Paper>
-      </Container>
-    </>
+    </div>
   );
 };
 
