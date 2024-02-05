@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import {
   InputBase,
-  Typography,
   Button,
 } from '@mui/material';
 
@@ -54,9 +53,10 @@ const App: React.FC = () => {
         <Button variant="contained" style={{ fontSize: "20px", width: "400px" }} onClick={redirectToAcc_Manage}>Account</Button>
       </div>
       <p>
-        Nothing here yet
+      No decks yet
       </p>
     </div>
+
   );
 };
 
