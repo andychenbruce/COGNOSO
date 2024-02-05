@@ -22,6 +22,7 @@ const AccountManagement: React.FC = () => {
   const handleDeleteConfirm = () => {
     console.log("Account deleted!");
     setOpenDeleteDialog(false);
+    //andy doessomething here
   };
 
   const handleDeleteDialogClose = () => {
