@@ -1,12 +1,103 @@
-import React, { useState } from "react";
-import { InputBase, Button } from "@mui/material";
+import React, {
+  useState,
+  ChangeEventHandler,
+  Dispatch,
+  SetStateAction,
+} from "react";
 import { Navbar } from "../../navbar";
+import { Dialog, Button, DialogTitle, DialogContentText, DialogContent, DialogActions} from "@mui/material";
+import { UploadPdf } from "../../backend_interface";
+import { send_json } from "../../utils";
 
 const App: React.FC = () => {
+  const [file, setFile]: [File | null, Dispatch<SetStateAction<File | null>>] =
+    useState<File | null>(null);
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+
+  const handleCreateButtonClick = () => {
+    setOpenDeleteDialog(true);
+  };
+
+  const handleCreateConfirm = () => {
+    console.log("Account deleted!");
+    setOpenDeleteDialog(false);
+  };
+
+  const handleCreateDialogClose = () => {
+    setOpenDeleteDialog(false);
+  };
+
+  let handleChangeFile: ChangeEventHandler<HTMLInputElement> = (event) => {
+    if (event.target.files == null) {
+      console.error("missing file");
+    } else {
+      let input_file = event.target.files[0];
+      setFile((prevFile) => {
+        return input_file;
+      });
+    }
+  };
+
+  function getBase64(file: File): Promise<string> {
+    return new Promise((resolve, reject) => {
+      var reader = new FileReader();
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+      reader.onload = () => {
+        resolve(reader.result as string);
+      };
+    });
+  }
+  const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (file == null) {
+      console.error("missing file");
+      return;
+    }
+
+    getBase64(file).then((base64_encode: string) => {
+      let request_json: UploadPdf = {
+        access_token: [123, 456], //todo
+        deck_id: 123, //todo
+        file_bytes_base64: base64_encode,
+      };
+      return send_json("/upload_pdf", JSON.stringify(request_json));
+    });
+  };
+
   return (
     <div>
       <Navbar />
-      No decks yet
+      <Button type="submit" variant="contained" color="primary" onClick={handleCreateButtonClick}>
+        asdf
+      </Button>
+
+        <Dialog
+          open={openDeleteDialog}
+          onClose={handleCreateDialogClose}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+        <DialogTitle id="alert-dialog-title">
+        Select a Set creation method:
+          </DialogTitle>
+          <DialogContent>
+          </DialogContent>
+          <DialogActions>
+            <Button type="submit" variant="contained" fullWidth onClick={handleCreateDialogClose} color="primary">
+              Create Your Own!
+            </Button>
+            <form onSubmit={onSubmit}>
+              <input type="file" onChange={handleChangeFile.bind(this)} />
+              <Button type="submit" variant="contained" color="primary" fullWidth>
+                upload pdf
+              </Button>
+            </form>
+            <Button onClick={handleCreateDialogClose} color="primary">
+              Cancel
+            </Button>
+          </DialogActions>
+        </Dialog>    
     </div>
   );
 };

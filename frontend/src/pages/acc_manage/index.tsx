@@ -48,7 +48,6 @@ const AccountManagement: React.FC = () => {
           }}
           elevation={3}
         >
-          {/* Buttons wrapped in a vertical Stack */}
           <Container
             sx={{ display: "flex", flexDirection: "column", gap: "8px" }}
           >
@@ -61,12 +60,10 @@ const AccountManagement: React.FC = () => {
               Delete Account
             </Button>
 
-            {/* Change Password Button */}
             <Button variant="contained" color="primary">
               Change Password
             </Button>
 
-            {/* Change Username Button */}
             <Button variant="contained" color="primary">
               Change Username
             </Button>
