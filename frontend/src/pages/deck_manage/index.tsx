@@ -1,17 +1,11 @@
-import React, {
-  useState,
-  ChangeEventHandler,
-  Dispatch,
-  SetStateAction,
-} from "react";
+import React, { useState, ChangeEventHandler, Dispatch, SetStateAction } from "react";
 import { Navbar } from "../../navbar";
-import { Dialog, Button, DialogTitle, DialogContentText, DialogContent, DialogActions} from "@mui/material";
+import { Dialog, Button, DialogTitle, DialogActions } from "@mui/material";
 import { UploadPdf } from "../../backend_interface";
 import { send_json } from "../../utils";
 
 const App: React.FC = () => {
-  const [file, setFile]: [File | null, Dispatch<SetStateAction<File | null>>] =
-    useState<File | null>(null);
+  const [file, setFile] = useState<File | null>(null);
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
 
   const handleCreateButtonClick = () => {
@@ -27,14 +21,12 @@ const App: React.FC = () => {
     setOpenDeleteDialog(false);
   };
 
-  let handleChangeFile: ChangeEventHandler<HTMLInputElement> = (event) => {
+  const handleChangeFile: ChangeEventHandler<HTMLInputElement> = (event) => {
     if (event.target.files == null) {
       console.error("missing file");
     } else {
       let input_file = event.target.files[0];
-      setFile((prevFile) => {
-        return input_file;
-      });
+      setFile(input_file);
     }
   };
 
@@ -48,6 +40,7 @@ const App: React.FC = () => {
       };
     });
   }
+
   const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (file == null) {
@@ -69,37 +62,34 @@ const App: React.FC = () => {
     <div>
       <Navbar />
       <Button type="submit" variant="contained" color="primary" onClick={handleCreateButtonClick}>
-        asdf
+        +
       </Button>
 
-        <Dialog
-          open={openDeleteDialog}
-          onClose={handleCreateDialogClose}
-          aria-labelledby="alert-dialog-title"
-          aria-describedby="alert-dialog-description"
-        >
-        <DialogTitle id="alert-dialog-title">
-        Select a Set creation method:
-          </DialogTitle>
-          <DialogContent>
-          </DialogContent>
-          <DialogActions>
-            <Button type="submit" variant="contained" fullWidth onClick={handleCreateDialogClose} color="primary">
-              Create Your Own!
-            </Button>
-            <form onSubmit={onSubmit}>
-              <input type="file" onChange={handleChangeFile.bind(this)} />
-              <Button type="submit" variant="contained" color="primary" fullWidth>
-                upload pdf
-              </Button>
-            </form>
-            <Button onClick={handleCreateDialogClose} color="primary">
-              Cancel
-            </Button>
-          </DialogActions>
-        </Dialog>    
+      <Dialog
+        open={openDeleteDialog}
+        onClose={handleCreateDialogClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">Select a Set creation method:</DialogTitle>
+        <DialogActions>
+          <Button type="submit" variant="contained" onClick={handleCreateConfirm} color="primary" fullWidth>
+            Create Your Own!
+          </Button>
+
+          <Button variant="contained" component="label" fullWidth>
+            Upload File
+            <input type="file" hidden onChange={handleChangeFile} />
+          </Button>
+
+          <Button onClick={handleCreateDialogClose} color="primary">
+            Cancel
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 };
 
 export default App;
+
