@@ -1,7 +1,7 @@
 export async function send_json_backend(
   endpoint: string,
   body: string,
-): Promise<String> {
+): Promise<any> {
   return fetch("http://localhost:3000" + endpoint, {
     method: "POST",
     headers: {
@@ -12,16 +12,23 @@ export async function send_json_backend(
     if (!response.ok) {
       return Promise.reject(response.text());
     }
-    let output: Promise<String> = response.json();
-    return output;
+    return response.json();
   });
 }
 
-function get_session_token(): [number, number] | null {
-  let data = sessionStorage.getItem("key");
+export function get_session_token(): [number, number] | null {
+  let data = sessionStorage.getItem("session_token");
 
   if (data == null) {
     return null;
   }
   return JSON.parse(data);
+}
+
+export function set_session_token(token: [number, number]) {
+  sessionStorage.setItem("session_token", JSON.stringify(token));
+}
+
+export function logout() {
+  sessionStorage.removeItem("session_token");
 }

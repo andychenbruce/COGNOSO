@@ -1,4 +1,9 @@
-import React, { useState, ChangeEventHandler, Dispatch, SetStateAction } from "react";
+import React, {
+  useState,
+  ChangeEventHandler,
+  Dispatch,
+  SetStateAction,
+} from "react";
 import { Navbar } from "../../navbar";
 import { Dialog, Button, DialogTitle, DialogActions } from "@mui/material";
 import { UploadPdf } from "../../backend_interface";
@@ -61,7 +66,12 @@ const App: React.FC = () => {
   return (
     <div>
       <Navbar />
-      <Button type="submit" variant="contained" color="primary" onClick={handleCreateButtonClick}>
+      <Button
+        type="submit"
+        variant="contained"
+        color="primary"
+        onClick={handleCreateButtonClick}
+      >
         +
       </Button>
 
@@ -71,9 +81,17 @@ const App: React.FC = () => {
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">Select a Set creation method:</DialogTitle>
+        <DialogTitle id="alert-dialog-title">
+          Select a Set creation method:
+        </DialogTitle>
         <DialogActions>
-          <Button type="submit" variant="contained" onClick={handleCreateConfirm} color="primary" fullWidth>
+          <Button
+            type="submit"
+            variant="contained"
+            onClick={handleCreateConfirm}
+            color="primary"
+            fullWidth
+          >
             Create Your Own!
           </Button>
 
@@ -92,4 +110,3 @@ const App: React.FC = () => {
 };
 
 export default App;
-

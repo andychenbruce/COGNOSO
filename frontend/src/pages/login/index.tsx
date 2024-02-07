@@ -11,6 +11,7 @@ import {
 import "./login.css";
 import type { PageProps } from "gatsby";
 import { LoginRequest, LoginResponse } from "../../backend_interface";
+import { send_json_backend, set_session_token } from "../../utils";
 
 const Main: React.FC<PageProps> = () => {
   const [user, setUser]: [LoginRequest, any] = useState({
@@ -31,27 +32,14 @@ const Main: React.FC<PageProps> = () => {
 
   const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    fetch("http://localhost:3000/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(user),
-    })
-      .then((response) => {
-        if (!response.ok) {
-          setShouldShowPopup(true);
-          return Promise.reject(response.text());
-        }
-        let output: Promise<LoginResponse> = response.json();
-        redirectTohome_page();
-        return output;
-      })
+    send_json_backend("/login", JSON.stringify(user))
       .then((data: LoginResponse) => {
-        console.log("got user token: ", data); // Handle success or perform additional actions
+        set_session_token(data.access_token);
+        console.log("got back json: ", data);
+        redirectTohome_page();
       })
       .catch((error) => {
-        console.error("Error creating new user:", error); // Handle error or provide user feedback
+        console.error("Error loggin in:", error); // Handle error or provide user feedback
       });
   };
 
