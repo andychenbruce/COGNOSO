@@ -35,7 +35,7 @@ const Main: React.FC<PageProps> = () => {
 
 export const Head: HeadFC = () => (
   <>
-    <title>poopoo</title>
+    <title>Cognoso</title>
     <link href="/favicon.ico" rel="shortcut icon" type="image/x-icon" />
   </>
 );
