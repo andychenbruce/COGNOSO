@@ -2,9 +2,8 @@
 resolver = "2"
 members = [
   "crates/server_backend",
-  #"crates/server_frontend",
   "crates/api_structs",
-  #"crates/frontend_wasm",
+  "crates/pdf_parser",
 ]
 
 [workspace.dependencies]
@@ -15,9 +14,4 @@ hyper = { version = "1.1.0", features = ["full"] }
 hyper-util = { version = "0.1.2", features = ["full"] }
 http-body-util = "0.1.0"
 api_structs = { path = "crates/api_structs" }
-# wasm-bindgen = "0.2.87"
-# wasm-bindgen-futures = "0.4.37"
-# js-sys = "0.3.66"
-# console_error_panic_hook = "0.1.7"
-# cgmath = "0.18.0"
-# web-sys = "0.3.66"
+pdf_parser = { path = "crates/pdf_parser" }

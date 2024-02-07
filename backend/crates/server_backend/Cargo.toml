@@ -12,6 +12,7 @@ hyper-util = { workspace = true }
 http-body-util = { workspace = true }
 thiserror = "1.0.56"
 api_structs = { workspace = true }
+pdf_parser = { workspace = true }
 clap = { version = "4.4.16", features = ["derive"] }
 redb = "1.5.0"
 sha2 = "0.10.8"

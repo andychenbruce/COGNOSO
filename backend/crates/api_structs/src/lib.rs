@@ -4,6 +4,7 @@ pub const ENDPOINT_NEW_USER: &str = "/new_user";
 pub const ENDPOINT_LIST_CARD_DECKS: &str = "/list_card_decks";
 pub const ENDPOINT_LIST_CARDS: &str = "/list_cards";
 pub const ENDPOINT_LOGIN: &str = "/login";
+pub const ENDPOINT_CREATE_DECK_PDF: &str = "/create_card_deck_pdf";
 
 pub type AccessToken = (u64, u64);
 

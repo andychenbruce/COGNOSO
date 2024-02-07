@@ -99,7 +99,12 @@ async fn handle_request(
             api_structs::ENDPOINT_LIST_CARDS,
             list_cards
         ),
-        (hyper::Method::POST, api_structs::ENDPOINT_LOGIN, login)
+        (hyper::Method::POST, api_structs::ENDPOINT_LOGIN, login),
+        (
+            hyper::Method::POST,
+            api_structs::ENDPOINT_CREATE_DECK_PDF,
+            create_deck_pdf
+        )
     )
 }
 
@@ -156,4 +161,11 @@ async fn list_cards(
 ) -> Result<api_structs::ListCardsResponse, AndyError> {
     let user_id = state.database.validate_token(info.access_token)?;
     state.database.list_cards(user_id, info.deck_id)
+}
+
+async fn create_deck_pdf(
+    info: api_structs::UploadPdf,
+    state: std::sync::Arc<SharedState>,
+) -> Result<api_structs::ListCardsResponse, AndyError> {
+    todo!()
 }
