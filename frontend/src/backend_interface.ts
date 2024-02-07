@@ -62,7 +62,7 @@ export interface LoginResponse {
   access_token: [number, number];
 }
 
-// request <- /add_pdf
+// request -> /create_deck_pdf
 export interface UploadPdf {
   access_token: [number, number];
   deck_id: number;

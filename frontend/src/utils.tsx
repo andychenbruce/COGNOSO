@@ -1,4 +1,4 @@
-export async function send_json(
+export async function send_json_backend(
   endpoint: string,
   body: string,
 ): Promise<String> {

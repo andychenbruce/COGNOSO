@@ -2,7 +2,7 @@ import React, { useState, ChangeEventHandler, Dispatch, SetStateAction } from "r
 import { Navbar } from "../../navbar";
 import { Dialog, Button, DialogTitle, DialogActions } from "@mui/material";
 import { UploadPdf } from "../../backend_interface";
-import { send_json } from "../../utils";
+import { send_json_backend } from "../../utils";
 
 const App: React.FC = () => {
   const [file, setFile] = useState<File | null>(null);
@@ -54,7 +54,7 @@ const App: React.FC = () => {
         deck_id: 123, //todo
         file_bytes_base64: base64_encode,
       };
-      return send_json("/upload_pdf", JSON.stringify(request_json));
+      return send_json_backend("/upload_pdf", JSON.stringify(request_json));
     });
   };
 
