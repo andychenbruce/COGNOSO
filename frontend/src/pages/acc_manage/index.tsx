@@ -67,6 +67,10 @@ const AccountManagement: React.FC = () => {
             <Button variant="contained" color="primary">
               Change Username
             </Button>
+
+            <Button variant="contained" color="primary">
+              Log Out
+            </Button>
           </Container>
 
           {/* Delete Confirmation Dialog */}
