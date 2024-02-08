@@ -20,6 +20,7 @@ export function get_session_token(): [number, number] | null {
   let data = sessionStorage.getItem("session_token");
 
   if (data == null) {
+    window.location.href = "http://localhost:8000/login/";
     return null;
   }
   return JSON.parse(data);

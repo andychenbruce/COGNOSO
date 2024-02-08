@@ -6,7 +6,7 @@ pub const ENDPOINT_LIST_CARDS: &str = "/list_cards";
 pub const ENDPOINT_LOGIN: &str = "/login";
 pub const ENDPOINT_CREATE_DECK_PDF: &str = "/create_card_deck_pdf";
 
-pub type AccessToken = (u64, u64);
+pub type AccessToken = (u32, u32);
 
 #[derive(Debug, serde::Serialize, serde::Deserialize)]
 pub struct CreateCard {

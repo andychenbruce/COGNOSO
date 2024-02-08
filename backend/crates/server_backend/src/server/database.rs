@@ -53,8 +53,8 @@ impl Database {
 
         let mut rng = rand::thread_rng();
 
-        let n1: u64 = rng.gen();
-        let n2: u64 = rng.gen();
+        let n1: u32 = rng.gen();
+        let n2: u32 = rng.gen();
 
         let access_token: AccessToken = (n1, n2);
 
