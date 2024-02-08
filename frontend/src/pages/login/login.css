@@ -38,12 +38,15 @@
 }
 
 .login {
+  display: flex;
+  flex-direction: column; 
+  justify-content: center; 
+  align-items: center;
+  text-align: center;
+  width: 100%;
   margin: 0;
   padding: 0;
   height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
   background: linear-gradient(to left, #140952a6, #22032e);
 }
 
@@ -53,10 +56,10 @@ body, html {
 }
 
 .header {
+  font-family: "Lobster", Courier, monospace;
   text-align: center;
   color: rgb(221, 194, 236);
   padding: 20px;
-  justify-content: center;
 }
 
 

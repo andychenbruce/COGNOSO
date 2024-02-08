@@ -1,18 +1,20 @@
 import React from "react";
 import { useState } from "react";
-import { Container, Paper, TextField, Button, Typography } from "@mui/material";
+import { Container, Paper, TextField, Button, Typography, Snackbar} from "@mui/material";
 import "./acc_create.css";
 import type { PageProps } from "gatsby";
 import { NewUser } from "../../backend_interface";
 import { send_json_backend } from "../../utils";
 
 const Main: React.FC<PageProps> = () => {
+  const [passwordMismatch, setPasswordMismatch] = useState(false);
   const [user, setUser] = useState({
     username: "",
     email: "",
     password1: "",
     password2: "",
   });
+
   const handleInputChange = (
     event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
   ) => {
@@ -26,7 +28,7 @@ const Main: React.FC<PageProps> = () => {
   const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (user.password1 !== user.password2) {
-      alert("Passwords do not match!");
+      setPasswordMismatch(true);
       return;
     }
     let new_user_request: NewUser = {
@@ -48,7 +50,12 @@ const Main: React.FC<PageProps> = () => {
     window.location.href = "http://localhost:8000/login/";
   };
 
+  const handleClosePopup = () => {
+    setPasswordMismatch(false);
+  };
+
   return (
+    <div className="acc_create">
     <Container
       style={{
         display: "flex",
@@ -56,17 +63,20 @@ const Main: React.FC<PageProps> = () => {
         alignItems: "center",
         height: "100vh",
       }}
+      
     >
       <Paper
         style={{
           padding: 20,
           width: 300,
+          backgroundColor: "#c993ed"
         }}
         elevation={3}
       >
         <Typography variant="h5" component="h1" align="center">
           Create Account
         </Typography>
+        <p> </p>
         <form onSubmit={onSubmit}>
           <TextField
             style={{
@@ -118,20 +128,29 @@ const Main: React.FC<PageProps> = () => {
             onChange={handleInputChange}
             required
           />
-          <Button type="submit" variant="contained" color="primary" fullWidth>
+          <Button type="submit" variant="contained" color="primary" fullWidth style={{ backgroundColor: "#4d1a7f", color: "white" }}>
             Create Account
           </Button>
+          <p> </p>
           <Button
             variant="contained"
             color="primary"
             fullWidth
             onClick={redirectToLogin}
+            style={{ backgroundColor: "#4d1a7f", color: "white" }}
           >
             Back
           </Button>
         </form>
+        <Snackbar
+          open={passwordMismatch}
+          autoHideDuration={3000}
+          onClose={handleClosePopup}
+          message="Passwords Do Not Match!"
+        />
       </Paper>
     </Container>
+    </div>
   );
 };
 

@@ -37,6 +37,20 @@
   }
 }
 
-.login_text {
-  margin-bottom: 20px;
+.acc_create {
+  background: linear-gradient(to left, #140952a6, #22032e);
+}
+
+.container {
+  position: relative;
+}
+
+.popup {
+  position: absolute;
+  top: calc(100% + 5px); /* Adjust as needed */
+  left: 0;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  padding: 10px;
+  display: block;
 }
