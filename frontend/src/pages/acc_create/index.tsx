@@ -1,7 +1,7 @@
 import React from "react";
 import { useState } from "react";
 import { Container, Paper, TextField, Button, Typography } from "@mui/material";
-import "./login.css";
+import "./acc_create.css";
 import type { PageProps } from "gatsby";
 import { NewUser } from "../../backend_interface";
 import { send_json_backend } from "../../utils";
@@ -38,11 +38,9 @@ const Main: React.FC<PageProps> = () => {
       .then((data) => {
         console.log("New user made:", data);
         redirectToLogin();
-        // Handle success or perform additional actions
       })
       .catch((error) => {
         console.error("Error creating new user:", error);
-        // Handle error or provide user feedback
       });
   };
 

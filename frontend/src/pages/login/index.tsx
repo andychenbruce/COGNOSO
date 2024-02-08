@@ -21,7 +21,7 @@ const Main: React.FC<PageProps> = () => {
   const [shouldShowPopup, setShouldShowPopup] = useState(false);
 
   const handleInputChange = (
-    event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
+    event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
   ) => {
     const { value, name } = event.target;
     setUser((prevUser: LoginRequest) => ({
@@ -39,7 +39,8 @@ const Main: React.FC<PageProps> = () => {
         redirectTohome_page();
       })
       .catch((error) => {
-        console.error("Error loggin in:", error); // Handle error or provide user feedback
+        console.error("Error loggin in:", error);
+        setShouldShowPopup(true);
       });
   };
 
@@ -53,75 +54,92 @@ const Main: React.FC<PageProps> = () => {
     setShouldShowPopup(false);
   };
 
+  const HeaderText = () => {
+    return (
+      <div className="header">
+        <h1>Welcome to Cognoso</h1>
+        <p>Learn to Learn.</p>
+      </div>
+    );
+  };
+
   return (
-    <Container
+    <div className='login'>
+      
+      <HeaderText />
+      <Container
       style={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        height: "100vh",
+        justifyContent:'center'
       }}
-    >
-      <Paper
-        style={{
-          padding: 20,
-          width: 300,
-        }}
-        elevation={3}
       >
-        <Typography variant="h5" component="h1" align="center">
-          Login
-        </Typography>
-        <form onSubmit={onSubmit}>
-          <TextField
-            style={{
-              marginBottom: 20,
-            }}
-            label="Email"
-            variant="outlined"
-            fullWidth
-            name="email"
-            value={user.email}
-            onChange={handleInputChange}
-            required
-          />
-          <TextField
-            style={{
-              marginBottom: 20,
-            }}
-            label="Password"
-            type="password"
-            variant="outlined"
-            fullWidth
-            name="password"
-            value={user.password}
-            onChange={handleInputChange}
-            required
-          />
-          <Button type="submit" variant="contained" color="primary" fullWidth>
+        <Paper
+          style={{
+            padding: "20px", // Adjusted padding to make the login area smaller
+            width: 300,
+            backgroundColor: "#c993ed"
+          }}
+          elevation={3}
+        >
+          <Typography variant="h5" component="h1" align="center">
             Login
-          </Button>
-          <Button
-            type="submit"
-            variant="contained"
-            color="primary"
-            fullWidth
-            onClick={redirectToacc_create}
-          >
-            Create Account
-          </Button>
-          {/* <Button type="submit" variant="text" color="primary" fullWidth>
-            Forgot Password?
-          </Button> */}
-        </form>
-        <Snackbar
-          open={shouldShowPopup}
-          autoHideDuration={3000}
-          onClose={handleClosePopup}
-          message="Login failed. Please try again."
-        />
-      </Paper>
-    </Container>
+          </Typography>
+          <form onSubmit={onSubmit}>
+            <TextField
+              style={{
+                marginBottom: 20,
+              }}
+              label="Email"
+              variant="outlined"
+              fullWidth
+              name="email"
+              value={user.email}
+              onChange={handleInputChange}
+              required
+            />
+            <TextField
+              style={{
+                marginBottom: 20,
+                
+              }}
+              label="Password"
+              type="password"
+              variant="outlined"
+              fullWidth
+              name="password"
+              value={user.password}
+              onChange={handleInputChange}
+              required
+            />
+            <Button type="submit" variant="contained" style={{ backgroundColor: "#4d1a7f", color: "white" }} fullWidth>
+              Login
+            </Button>
+            <p>
+               
+            </p>
+            <Button
+              type="submit"
+              variant="contained"
+              style={{ backgroundColor: "#4d1a7f", color: "white" }}
+              fullWidth
+              onClick={redirectToacc_create}
+            >
+              Create Account
+            </Button>
+            {/* <Button type="submit" variant="text" color="primary" fullWidth>
+              Forgot Password?
+            </Button> */}
+          </form>
+          <Snackbar
+            open={shouldShowPopup}
+            autoHideDuration={3000}
+            onClose={handleClosePopup}
+            message="Login failed. Please try again."
+          />
+        </Paper>
+      </Container>
+      
+    </div>
+
   );
 };
 

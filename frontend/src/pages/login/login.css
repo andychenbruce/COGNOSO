@@ -37,6 +37,26 @@
   }
 }
 
-.login_text {
-  margin-bottom: 10px;
+.login {
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(to left, #140952a6, #22032e);
 }
+
+body, html {
+  margin: 0;
+  padding: 0;
+}
+
+.header {
+  text-align: center;
+  color: rgb(221, 194, 236);
+  padding: 20px;
+  justify-content: center;
+}
+
+
