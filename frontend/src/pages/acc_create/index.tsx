@@ -1,6 +1,13 @@
 import React from "react";
 import { useState } from "react";
-import { Container, Paper, TextField, Button, Typography, Snackbar} from "@mui/material";
+import {
+  Container,
+  Paper,
+  TextField,
+  Button,
+  Typography,
+  Snackbar,
+} from "@mui/material";
 import "./acc_create.css";
 import type { PageProps } from "gatsby";
 import { NewUser } from "../../backend_interface";
@@ -56,100 +63,105 @@ const Main: React.FC<PageProps> = () => {
 
   return (
     <div className="acc_create">
-    <Container
-      style={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        height: "100vh",
-      }}
-      
-    >
-      <Paper
+      <Container
         style={{
-          padding: 20,
-          width: 300,
-          backgroundColor: "#c993ed"
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100vh",
         }}
-        elevation={3}
       >
-        <Typography variant="h5" component="h1" align="center">
-          Create Account
-        </Typography>
-        <p> </p>
-        <form onSubmit={onSubmit}>
-          <TextField
-            style={{
-              marginBottom: 20,
-            }}
-            label="Username"
-            variant="outlined"
-            fullWidth
-            name="username"
-            value={user.username}
-            onChange={handleInputChange}
-            required
-          />
-          <TextField
-            style={{
-              marginBottom: 20,
-            }}
-            label="Email"
-            variant="outlined"
-            fullWidth
-            name="email"
-            value={user.email}
-            onChange={handleInputChange}
-            required
-          />
-          <TextField
-            style={{
-              marginBottom: 20,
-            }}
-            label="Password"
-            type="password"
-            variant="outlined"
-            fullWidth
-            name="password1"
-            value={user.password1}
-            onChange={handleInputChange}
-            required
-          />
-          <TextField
-            style={{
-              marginBottom: 20,
-            }}
-            label="Confirm Password"
-            type="password"
-            variant="outlined"
-            fullWidth
-            name="password2"
-            value={user.password2}
-            onChange={handleInputChange}
-            required
-          />
-          <Button type="submit" variant="contained" color="primary" fullWidth style={{ backgroundColor: "#4d1a7f", color: "white" }}>
+        <Paper
+          style={{
+            padding: 20,
+            width: 300,
+            backgroundColor: "#c993ed",
+          }}
+          elevation={3}
+        >
+          <Typography variant="h5" component="h1" align="center">
             Create Account
-          </Button>
+          </Typography>
           <p> </p>
-          <Button
-            variant="contained"
-            color="primary"
-            fullWidth
-            onClick={redirectToLogin}
-            style={{ backgroundColor: "#4d1a7f", color: "white" }}
-          >
-            Back
-          </Button>
-        </form>
-        <Snackbar
-          open={passwordMismatch}
-          autoHideDuration={3000}
-          onClose={handleClosePopup}
-          message="Passwords Do Not Match!"
-        />
-      </Paper>
-    </Container>
+          <form onSubmit={onSubmit}>
+            <TextField
+              style={{
+                marginBottom: 20,
+              }}
+              label="Username"
+              variant="outlined"
+              fullWidth
+              name="username"
+              value={user.username}
+              onChange={handleInputChange}
+              required
+            />
+            <TextField
+              style={{
+                marginBottom: 20,
+              }}
+              label="Email"
+              variant="outlined"
+              fullWidth
+              name="email"
+              value={user.email}
+              onChange={handleInputChange}
+              required
+            />
+            <TextField
+              style={{
+                marginBottom: 20,
+              }}
+              label="Password"
+              type="password"
+              variant="outlined"
+              fullWidth
+              name="password1"
+              value={user.password1}
+              onChange={handleInputChange}
+              required
+            />
+            <TextField
+              style={{
+                marginBottom: 20,
+              }}
+              label="Confirm Password"
+              type="password"
+              variant="outlined"
+              fullWidth
+              name="password2"
+              value={user.password2}
+              onChange={handleInputChange}
+              required
+            />
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              fullWidth
+              style={{ backgroundColor: "#4d1a7f", color: "white" }}
+            >
+              Create Account
+            </Button>
+            <p> </p>
+            <Button
+              variant="contained"
+              color="primary"
+              fullWidth
+              onClick={redirectToLogin}
+              style={{ backgroundColor: "#4d1a7f", color: "white" }}
+            >
+              Back
+            </Button>
+          </form>
+          <Snackbar
+            open={passwordMismatch}
+            autoHideDuration={3000}
+            onClose={handleClosePopup}
+            message="Passwords Do Not Match!"
+          />
+        </Paper>
+      </Container>
     </div>
   );
 };

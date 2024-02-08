@@ -1,33 +1,67 @@
 import React, {
+  Dispatch,
   useState,
   ChangeEventHandler,
+  useEffect,
 } from "react";
 import { Navbar } from "../../navbar";
-import { Dialog, Button, DialogTitle, DialogActions, TextField } from "@mui/material";
-import { UploadPdf, CreateCardDeck } from "../../backend_interface";
+import {
+  Dialog,
+  Button,
+  DialogTitle,
+  DialogActions,
+  TextField,
+  Grid,
+} from "@mui/material";
+import {
+  UploadPdf,
+  CreateCardDeck,
+  ListCardDecks,
+  ListCardDecksResponse,
+  CardDeck,
+} from "../../backend_interface";
 import { send_json_backend, get_session_token } from "../../utils";
-
-
 
 const App: React.FC = () => {
   const [file, setFile] = useState<File | null>(null);
   const [openCreateDialog, setOpenCreateDialog] = useState(false);
   const [deckName, setDeckName] = useState("");
-  
+  const [decks, setDecks]: [CardDeck[], Dispatch<CardDeck[]>] = useState(
+    [] as CardDeck[],
+  );
+
+  const updateDecks = () => {
+    let token = get_session_token();
+    if (token == null) {
+      return;
+    }
+    let request: ListCardDecks = { access_token: token };
+    send_json_backend("/list_card_decks", JSON.stringify(request))
+      .then((data: ListCardDecksResponse) => {
+        setDecks(data.decks);
+      })
+      .catch((error) => {
+        console.error("Error in:", error);
+      });
+    return;
+  };
+
+  useEffect(updateDecks, [setDecks]);
+
   const handleInputChange = (
-    event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
+    event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
   ) => {
     const { value } = event.target;
     setDeckName(value);
-  }
-  
+  };
+
   const handleCreateButtonClick = () => {
     setOpenCreateDialog(true);
   };
 
   const handleCreateConfirm = () => {
     let access_token = get_session_token();
-    if(access_token == null){
+    if (access_token == null) {
       return;
     }
     console.log("access token = ", access_token);
@@ -38,6 +72,7 @@ const App: React.FC = () => {
     send_json_backend("/create_card_deck", JSON.stringify(request))
       .then((data: null) => {
         console.log("ok: ", data);
+        updateDecks();
       })
       .catch((error) => {
         console.error("Error in:", error);
@@ -82,15 +117,43 @@ const App: React.FC = () => {
         deck_id: 123, //todo
         file_bytes_base64: base64_encode,
       };
-      return send_json_backend("/create_card_deck_pdf", JSON.stringify(request_json));
+      return send_json_backend(
+        "/create_card_deck_pdf",
+        JSON.stringify(request_json),
+      );
     });
   };
-  const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-  }
-  
+  const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {};
+
   return (
     <div>
       <Navbar />
+
+      <Grid container rowSpacing={1} columnSpacing={{ xs: 1 }}>
+        {decks.map((deck) => (
+          <>
+            <Grid item xs={6}>
+              {JSON.stringify(deck)}
+              <Button
+                type="submit"
+                variant="contained"
+                color="primary"
+                onClick={() => {
+                  const url = new URL(
+                    "http://localhost:8000/flashcard_viewer/",
+                  );
+                  url.searchParams.append("deck", JSON.stringify(deck.deck_id));
+
+                  window.location.href = url.toString();
+                }}
+              >
+                hi
+              </Button>
+            </Grid>
+          </>
+        ))}
+      </Grid>
+
       <Button
         type="submit"
         variant="contained"
@@ -120,7 +183,7 @@ const App: React.FC = () => {
             Create Your Own!
           </Button>
 
-	  <TextField
+          <TextField
             style={{
               marginBottom: 20,
             }}

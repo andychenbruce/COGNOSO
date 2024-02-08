@@ -21,7 +21,7 @@ const Main: React.FC<PageProps> = () => {
   const [shouldShowPopup, setShouldShowPopup] = useState(false);
 
   const handleInputChange = (
-    event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
+    event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
   ) => {
     const { value, name } = event.target;
     setUser((prevUser: LoginRequest) => ({
@@ -64,69 +64,75 @@ const Main: React.FC<PageProps> = () => {
   };
 
   return (
-    <div className='login'>
+    <div className="login">
       <HeaderText />
       <div className="container">
-      <Paper
-      style={{
-        padding: "20px", // Adjusted padding to make the login area smaller
-        width: 300,
-        backgroundColor: "#c993ed"
-      }}
-      elevation={3}>
-        <Typography variant="h5" component="h1" align="center">
-          Login
-        </Typography>
-        <form onSubmit={onSubmit}>
-          <TextField
-            style={{
-              marginBottom: 20,
-            }}
-            label="Email"
-            variant="outlined"
-            fullWidth
-            name="email"
-            value={user.email}
-            onChange={handleInputChange}
-            required
-          />
-          <TextField
-            style={{
-              marginBottom: 20,
-            }}
-            label="Password"
-            type="password"
-            variant="outlined"
-            fullWidth
-            name="password"
-            value={user.password}
-            onChange={handleInputChange}
-            required
-          />
-          <Button type="submit" variant="contained" style={{ backgroundColor: "#4d1a7f", color: "white" }} fullWidth>
+        <Paper
+          style={{
+            padding: "20px", // Adjusted padding to make the login area smaller
+            width: 300,
+            backgroundColor: "#c993ed",
+          }}
+          elevation={3}
+        >
+          <Typography variant="h5" component="h1" align="center">
             Login
-          </Button>
-          <p> </p>
-          <Button
-            type="submit"
-            variant="contained"
-            style={{ backgroundColor: "#4d1a7f", color: "white" }}
-            fullWidth
-            onClick={redirectToacc_create}
-          >
-            Create Account
-          </Button>
-          {/* <Button type="submit" variant="text" color="primary" fullWidth>
+          </Typography>
+          <form onSubmit={onSubmit}>
+            <TextField
+              style={{
+                marginBottom: 20,
+              }}
+              label="Email"
+              variant="outlined"
+              fullWidth
+              name="email"
+              value={user.email}
+              onChange={handleInputChange}
+              required
+            />
+            <TextField
+              style={{
+                marginBottom: 20,
+              }}
+              label="Password"
+              type="password"
+              variant="outlined"
+              fullWidth
+              name="password"
+              value={user.password}
+              onChange={handleInputChange}
+              required
+            />
+            <Button
+              type="submit"
+              variant="contained"
+              style={{ backgroundColor: "#4d1a7f", color: "white" }}
+              fullWidth
+            >
+              Login
+            </Button>
+            <p> </p>
+            <Button
+              type="submit"
+              variant="contained"
+              style={{ backgroundColor: "#4d1a7f", color: "white" }}
+              fullWidth
+              onClick={redirectToacc_create}
+            >
+              Create Account
+            </Button>
+            {/* <Button type="submit" variant="text" color="primary" fullWidth>
             Forgot Password?
           </Button> */}
-        </form>
-        <Snackbar
-          open={shouldShowPopup}
-          autoHideDuration={3000}
-          onClose={handleClosePopup}
-          message="Login failed. Please try again."
-        />
-      </Paper>
+          </form>
+          <Snackbar
+            open={shouldShowPopup}
+            autoHideDuration={3000}
+            onClose={handleClosePopup}
+            message="Login failed. Please try again."
+          />
+        </Paper>
       </div>
     </div>
   );
