@@ -110,6 +110,11 @@ async fn handle_request(
             hyper::Method::POST,
             api_structs::ENDPOINT_DELETE_USER,
             delete_user
+        ),
+        (
+            hyper::Method::POST,
+            api_structs::ENDPOINT_CHANGE_PASSWORD,
+            change_password
         )
     )
 }
@@ -160,6 +165,16 @@ async fn delete_user(
     state
         .database
         .delete_user( info.email, info.password)?;
+    Ok(())
+}
+
+async fn change_password(
+    info: api_structs::ChangePassword,
+    state: std::sync::Arc<SharedState>,
+) -> Result<(), AndyError> {
+    state
+        .database
+        .change_password( info.email, info.old_password, info.new_password)?;
     Ok(())
 }
 

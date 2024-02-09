@@ -138,6 +138,16 @@ impl Database {
         todo!()
     }
 
+    pub fn change_password(
+        &self,
+        _email: String,
+        _old_password: String,
+        _new_password: String
+    ) -> Result<(), AndyError> {
+        let _user_id = hash(_email); //todo idk
+        todo!()
+    }
+
     
     pub fn new_card_deck(&self, user_id: u64, deck_name: String) -> Result<(), AndyError> {
         let deck_id = hash(&deck_name);
