@@ -1,3 +1,11 @@
+export const ENDPOINT_CREATE_CARD_DECK: string = "/create_card_deck";
+export const ENDPOINT_CREATE_CARD: string = "/create_card";
+export const ENDPOINT_NEW_USER: string = "/new_user";
+export const ENDPOINT_LIST_CARD_DECKS: string = "/list_card_decks";
+export const ENDPOINT_LIST_CARDS: string = "/list_cards";
+export const ENDPOINT_LOGIN: string = "/login";
+export const ENDPOINT_CREATE_DECK_PDF: string = "/create_card_deck_pdf";
+
 // request -> /create_card
 export interface CreateCard {
   access_token: [number, number];

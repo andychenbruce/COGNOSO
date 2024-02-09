@@ -6,6 +6,7 @@ import {
   IconButton,
 } from "@mui/material";
 import React, { useState } from "react";
+import { redirect } from "./utils";
 
 export const Navbar = () => {
   const redirectToAcc_Manage = () => {
@@ -35,7 +36,9 @@ export const Navbar = () => {
       <Button
         variant="contained"
         style={{ fontSize: "20px", width: "400px" }}
-        onClick={redirectToHome_Page}
+        onClick={() => {
+          redirect("/acc_manage");
+        }}
       >
         Home
       </Button>

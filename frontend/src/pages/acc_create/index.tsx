@@ -54,7 +54,7 @@ const Main: React.FC<PageProps> = () => {
   };
 
   const redirectToLogin = () => {
-    window.location.href = "http://localhost:8000/login/";
+    window.location.pathname = "/login/";
   };
 
   const handleClosePopup = () => {

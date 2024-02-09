@@ -45,10 +45,10 @@ const Main: React.FC<PageProps> = () => {
   };
 
   const redirectToacc_create = () => {
-    window.location.href = "http://localhost:8000/acc_create/";
+    window.location.pathname = "/acc_create/";
   };
   const redirectTohome_page = () => {
-    window.location.href = "http://localhost:8000/home_page/";
+    window.location.pathname = "/home_page/";
   };
   const handleClosePopup = () => {
     setShouldShowPopup(false);

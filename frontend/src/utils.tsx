@@ -20,7 +20,7 @@ export function get_session_token(): [number, number] | null {
   let data = sessionStorage.getItem("session_token");
 
   if (data == null) {
-    window.location.href = "http://localhost:8000/login/";
+    redirect("/login/");
     return null;
   }
   return JSON.parse(data);
@@ -32,4 +32,8 @@ export function set_session_token(token: [number, number]) {
 
 export function logout() {
   sessionStorage.removeItem("session_token");
+}
+
+export function redirect(pathname: string) {
+  window.location.pathname = pathname;
 }
