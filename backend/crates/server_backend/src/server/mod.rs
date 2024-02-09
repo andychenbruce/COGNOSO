@@ -8,6 +8,7 @@ use hyper::body::Buf;
 use hyper::body::Bytes;
 use hyper::header::HeaderValue;
 use hyper::{Request, Response};
+use crate::api_structs;
 
 pub struct SharedState {
     pub database: database::Database,
@@ -104,6 +105,11 @@ async fn handle_request(
             hyper::Method::POST,
             api_structs::ENDPOINT_CREATE_DECK_PDF,
             create_deck_pdf
+        ),
+        (
+            hyper::Method::POST,
+            api_structs::ENDPOINT_DELETE_USER,
+            delete_user
         )
     )
 }
@@ -112,7 +118,7 @@ async fn login(
     info: api_structs::LoginRequest,
     state: std::sync::Arc<SharedState>,
 ) -> Result<api_structs::LoginResponse, AndyError> {
-    let user_id = state.database.get_user_id(info.email);
+    let user_id = state.database.get_user_id(&info.email);
     let access_token = state.database.new_session(user_id, info.password)?;
     Ok(api_structs::LoginResponse { access_token })
 }
@@ -147,6 +153,16 @@ async fn new_user(
     Ok(())
 }
 
+async fn delete_user(
+    info: api_structs::DeleteUser,
+    state: std::sync::Arc<SharedState>,
+) -> Result<(), AndyError> {
+    state
+        .database
+        .delete_user( info.email, info.password)?;
+    Ok(())
+}
+
 async fn list_card_decks(
     info: api_structs::ListCardDecks,
     state: std::sync::Arc<SharedState>,
@@ -164,8 +180,8 @@ async fn list_cards(
 }
 
 async fn create_deck_pdf(
-    info: api_structs::UploadPdf,
-    state: std::sync::Arc<SharedState>,
+    _info: api_structs::UploadPdf,
+    _state: std::sync::Arc<SharedState>,
 ) -> Result<api_structs::ListCardsResponse, AndyError> {
     todo!()
 }

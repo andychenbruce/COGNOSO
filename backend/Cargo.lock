@@ -101,13 +101,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "api_structs"
-version = "0.1.0"
-dependencies = [
- "serde",
-]
-
-[[package]]
 name = "approx"
 version = "0.3.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1881,7 +1874,6 @@ dependencies = [
 name = "server_backend"
 version = "0.1.0"
 dependencies = [
- "api_structs",
  "clap",
  "http-body-util",
  "hyper",

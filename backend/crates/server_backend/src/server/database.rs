@@ -4,6 +4,7 @@ use redb::ReadableTable;
 use sha2::Digest;
 use std::hash::Hasher;
 
+use crate::api_structs;
 use api_structs::AccessToken;
 
 const SHA265_NUM_BYTES: usize = 32;
@@ -42,7 +43,7 @@ impl Database {
     const SESSION_TOKENS_TABLE: redb::TableDefinition<'static, AccessToken, u64> =
         redb::TableDefinition::new("tokens");
 
-    pub fn get_user_id(&self, email: String) -> u64 {
+    pub fn get_user_id(&self, email: &str) -> u64 {
         //todo make actually good
         hash(email)
     }
@@ -128,6 +129,16 @@ impl Database {
         Ok(())
     }
 
+    pub fn delete_user(
+        &self,
+        _email: String,
+        _password: String,
+    ) -> Result<(), AndyError> {
+        let _user_id = hash(_email); //todo idk
+        todo!()
+    }
+
+    
     pub fn new_card_deck(&self, user_id: u64, deck_name: String) -> Result<(), AndyError> {
         let deck_id = hash(&deck_name);
         let write_txn = self.db.begin_write()?;

@@ -1,6 +1,7 @@
 pub const ENDPOINT_CREATE_CARD_DECK: &str = "/create_card_deck";
 pub const ENDPOINT_CREATE_CARD: &str = "/create_card";
 pub const ENDPOINT_NEW_USER: &str = "/new_user";
+pub const ENDPOINT_DELETE_USER: &str = "/delete_user";
 pub const ENDPOINT_LIST_CARD_DECKS: &str = "/list_card_decks";
 pub const ENDPOINT_LIST_CARDS: &str = "/list_cards";
 pub const ENDPOINT_LOGIN: &str = "/login";
@@ -25,6 +26,12 @@ pub struct CreateCardDeck {
 #[derive(Debug, serde::Serialize, serde::Deserialize)]
 pub struct NewUser {
     pub user_name: String,
+    pub email: String,
+    pub password: String,
+}
+
+#[derive(Debug, serde::Serialize, serde::Deserialize)]
+pub struct DeleteUser {
     pub email: String,
     pub password: String,
 }

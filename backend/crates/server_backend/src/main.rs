@@ -1,6 +1,7 @@
 mod andy_error;
 mod args;
 mod server;
+mod api_structs;
 
 use clap::Parser;
 

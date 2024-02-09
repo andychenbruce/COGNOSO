@@ -2,16 +2,8 @@
 resolver = "2"
 members = [
   "crates/server_backend",
-  "crates/api_structs",
   "crates/pdf_parser",
 ]
 
 [workspace.dependencies]
-tokio = { version = "1.35.1", features = ["full"] }
-serde = { version = "1.0.195", features = ["derive"] }
-serde_json = "1.0.111"
-hyper = { version = "1.1.0", features = ["full"] }
-hyper-util = { version = "0.1.2", features = ["full"] }
-http-body-util = "0.1.0"
-api_structs = { path = "crates/api_structs" }
 pdf_parser = { path = "crates/pdf_parser" }
