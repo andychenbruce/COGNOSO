@@ -197,7 +197,6 @@ async fn create_deck_pdf(
     info: api_structs::UploadPdf,
     state: std::sync::Arc<SharedState>,
 ) -> Result<(), AndyError> {
-    println!("thing = {:?}", info.file_bytes_base64[0..100].to_owned());
     let _user_id = state.database.validate_token(info.access_token)?;
 
     let url = data_url::DataUrl::process(&info.file_bytes_base64).unwrap();

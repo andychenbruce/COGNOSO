@@ -3,6 +3,7 @@ resolver = "2"
 members = [
   "crates/server_backend",
   "crates/pdf_parser",
+  "crates/sentence_embedder",
 ]
 
 [workspace.dependencies]
