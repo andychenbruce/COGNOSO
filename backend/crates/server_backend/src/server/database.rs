@@ -131,21 +131,46 @@ impl Database {
 
     pub fn delete_user(
         &self,
-        _email: String,
-        _password: String,
+        email: String,
+        password: String,
     ) -> Result<(), AndyError> {
-        let _user_id = hash(_email); //todo idk
-        todo!()
+        let user_id = hash(email); //todo idk
+        self.validate_password(user_id, password)?;
+        
+        let write_txn = self.db.begin_write()?;
+        {
+            let mut table = write_txn.open_table(Self::USERS_TABLE)?;
+            if table.remove(user_id)?.is_none(){
+                return Err(AndyError::UserDoesNotExist);
+            }
+        }
+        write_txn.commit()?;
+        Ok(())
     }
 
     pub fn change_password(
         &self,
-        _email: String,
-        _old_password: String,
-        _new_password: String
+        email: String,
+        old_password: String,
+        new_password: String
     ) -> Result<(), AndyError> {
-        let _user_id = hash(_email); //todo idk
-        todo!()
+        let user_id = hash(email); //todo idk
+        self.validate_password(user_id, old_password)?;
+        
+        let write_txn = self.db.begin_write()?;
+        {
+            let mut table = write_txn.open_table(Self::USERS_TABLE)?;
+            let entry = table.get(user_id)?.unwrap().value();
+
+            let out = UserEntry{
+                password_hash: sha256_hash(new_password.as_bytes()).to_vec(),
+                ..entry
+            };
+
+            table.insert(user_id, out)?.unwrap();
+        }
+        write_txn.commit()?;
+        Ok(())
     }
 
     

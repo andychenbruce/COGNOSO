@@ -1,6 +1,8 @@
 export const ENDPOINT_CREATE_CARD_DECK: string = "/create_card_deck";
 export const ENDPOINT_CREATE_CARD: string = "/create_card";
 export const ENDPOINT_NEW_USER: string = "/new_user";
+export const ENDPOINT_DELETE_USER: string = "/delete_user";
+export const ENDPOINT_CHANGE_PASSWORD: string = "/change_password";
 export const ENDPOINT_LIST_CARD_DECKS: string = "/list_card_decks";
 export const ENDPOINT_LIST_CARDS: string = "/list_cards";
 export const ENDPOINT_LOGIN: string = "/login";
@@ -25,6 +27,19 @@ export interface NewUser {
   user_name: string;
   email: string;
   password: string;
+}
+
+// request -> /delete_user
+export interface DeleteUser {
+  email: string;
+  password: string;
+}
+
+// request -> /change_password
+export interface ChangePassword {
+  email: string,
+  old_password: string,
+  new_password: string,
 }
 
 // request -> /list_card_decks
