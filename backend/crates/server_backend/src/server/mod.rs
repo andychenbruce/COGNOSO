@@ -1,6 +1,7 @@
 pub mod database;
 pub mod utils;
 
+use crate::api_structs;
 use crate::AndyError;
 use http_body_util::BodyExt;
 use http_body_util::Full;
@@ -8,7 +9,6 @@ use hyper::body::Buf;
 use hyper::body::Bytes;
 use hyper::header::HeaderValue;
 use hyper::{Request, Response};
-use crate::api_structs;
 
 pub struct SharedState {
     pub database: database::Database,
@@ -162,9 +162,7 @@ async fn delete_user(
     info: api_structs::DeleteUser,
     state: std::sync::Arc<SharedState>,
 ) -> Result<(), AndyError> {
-    state
-        .database
-        .delete_user( info.email, info.password)?;
+    state.database.delete_user(info.email, info.password)?;
     Ok(())
 }
 
@@ -174,7 +172,7 @@ async fn change_password(
 ) -> Result<(), AndyError> {
     state
         .database
-        .change_password( info.email, info.old_password, info.new_password)?;
+        .change_password(info.email, info.old_password, info.new_password)?;
     Ok(())
 }
 

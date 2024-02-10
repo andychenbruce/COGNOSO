@@ -37,9 +37,9 @@ export interface DeleteUser {
 
 // request -> /change_password
 export interface ChangePassword {
-  email: string,
-  old_password: string,
-  new_password: string,
+  email: string;
+  old_password: string;
+  new_password: string;
 }
 
 // request -> /list_card_decks

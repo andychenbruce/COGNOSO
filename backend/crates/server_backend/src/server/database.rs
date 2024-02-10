@@ -129,18 +129,14 @@ impl Database {
         Ok(())
     }
 
-    pub fn delete_user(
-        &self,
-        email: String,
-        password: String,
-    ) -> Result<(), AndyError> {
+    pub fn delete_user(&self, email: String, password: String) -> Result<(), AndyError> {
         let user_id = hash(email); //todo idk
         self.validate_password(user_id, password)?;
-        
+
         let write_txn = self.db.begin_write()?;
         {
             let mut table = write_txn.open_table(Self::USERS_TABLE)?;
-            if table.remove(user_id)?.is_none(){
+            if table.remove(user_id)?.is_none() {
                 return Err(AndyError::UserDoesNotExist);
             }
         }
@@ -152,17 +148,17 @@ impl Database {
         &self,
         email: String,
         old_password: String,
-        new_password: String
+        new_password: String,
     ) -> Result<(), AndyError> {
         let user_id = hash(email); //todo idk
         self.validate_password(user_id, old_password)?;
-        
+
         let write_txn = self.db.begin_write()?;
         {
             let mut table = write_txn.open_table(Self::USERS_TABLE)?;
             let entry = table.get(user_id)?.unwrap().value();
 
-            let out = UserEntry{
+            let out = UserEntry {
                 password_hash: sha256_hash(new_password.as_bytes()).to_vec(),
                 ..entry
             };
@@ -173,7 +169,6 @@ impl Database {
         Ok(())
     }
 
-    
     pub fn new_card_deck(&self, user_id: u64, deck_name: String) -> Result<(), AndyError> {
         let deck_id = hash(&deck_name);
         let write_txn = self.db.begin_write()?;
