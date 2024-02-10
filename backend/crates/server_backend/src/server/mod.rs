@@ -24,9 +24,10 @@ pub async fn main_service(
             println!("got error: {:?}", e);
             let mut err_response = Response::new(Full::new(Bytes::from(format!("{:?}", e))));
             *err_response.status_mut() = hyper::StatusCode::INTERNAL_SERVER_ERROR;
-            err_response
-                .headers_mut()
-                .insert("content-type", HeaderValue::from_static("application/json"));
+            err_response.headers_mut().insert(
+                "content-type",
+                HeaderValue::from_static("text/plain; charset=utf-8"),
+            );
             err_response
                 .headers_mut()
                 .insert("Access-Control-Allow-Origin", HeaderValue::from_static("*"));
@@ -65,9 +66,9 @@ async fn handle_request(
                     println!("404 REQUEST: endpoint = {}, method = {}", endpoint, method);
                     utils::make_response(
                         hyper::StatusCode::NOT_FOUND,
-                        vec![("content-type", "application/json"),
+                        vec![("content-type", "text/plain; charset=utf-8"),
                         ("Access-Control-Allow-Origin", "*")],
-                        "".to_owned()
+                        "NOT FOUND".to_owned()
                     )
                 }
             }
