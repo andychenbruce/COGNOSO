@@ -140,7 +140,7 @@ const App: React.FC = () => {
                 color="primary"
                 onClick={() => {
                   const url = new URL(
-                    "http://localhost:8000/flashcard_viewer/",
+                    window.location.origin + "/flashcard_viewer/",
                   );
                   url.searchParams.append("deck", JSON.stringify(deck.deck_id));
 

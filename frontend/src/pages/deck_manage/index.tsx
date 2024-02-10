@@ -139,7 +139,9 @@ const App: React.FC = () => {
                 variant="contained"
                 color="primary"
                 onClick={() => {
-                  const url = new URL("/flashcard_viewer/");
+                  const url = new URL(
+                    window.location.origin + "/flashcard_viewer/",
+                  );
                   url.searchParams.append("deck", JSON.stringify(deck.deck_id));
                   window.location.href = url.toString();
                 }}

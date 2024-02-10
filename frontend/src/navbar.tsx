@@ -9,16 +9,6 @@ import React, { useState } from "react";
 import { redirect } from "./utils";
 
 export const Navbar = () => {
-  const redirectToAcc_Manage = () => {
-    window.location.href = "http://localhost:8000/acc_manage/";
-  };
-  const redirectToHome_Page = () => {
-    window.location.href = "http://localhost:8000/home_page/";
-  };
-  const redirectToDeck_manage = () => {
-    window.location.href = "http://localhost:8000/deck_manage/";
-  };
-
   const [searchQuery, setSearchQuery] = useState("");
   return (
     <div
@@ -37,7 +27,7 @@ export const Navbar = () => {
         variant="contained"
         style={{ fontSize: "20px", width: "400px" }}
         onClick={() => {
-          redirect("/acc_manage");
+          redirect("/home_page");
         }}
       >
         Home
@@ -63,14 +53,18 @@ export const Navbar = () => {
       <Button
         variant="contained"
         style={{ fontSize: "20px", width: "400px" }}
-        onClick={redirectToDeck_manage}
+        onClick={() => {
+          redirect("/deck_manage");
+        }}
       >
         Decks
       </Button>
       <Button
         variant="contained"
         style={{ fontSize: "20px", width: "400px" }}
-        onClick={redirectToAcc_Manage}
+        onClick={() => {
+          redirect("/acc_manage");
+        }}
       >
         Account
       </Button>
