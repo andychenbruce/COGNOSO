@@ -4,7 +4,4 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-itertools = "0.12.1"
-#pdf = { git = "https://github.com/pdf-rs/pdf.git", rev = "b06cfdf1696444972260e8860e244bd7a09795fa" }
-pdf = { git = "https://github.com/pdf-rs/pdf.git" }
-pdf_text = { git = "https://github.com/pdf-rs/pdf_text.git", rev = "03d4789b4d23b24a991a18d31a352c8400237afc" }
+pdf-extract = "0.7.4"

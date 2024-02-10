@@ -30,4 +30,6 @@ pub enum AndyError {
     HttpInvalidHeader(#[from] hyper::header::InvalidHeaderValue),
     #[error("invalid hash in database")]
     BadHash(Vec<u8>),
+    #[error("pdf err")]
+    Pdf(#[from] pdf_parser::AndyPdfError),
 }

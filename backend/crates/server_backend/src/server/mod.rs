@@ -194,8 +194,16 @@ async fn list_cards(
 }
 
 async fn create_deck_pdf(
-    _info: api_structs::UploadPdf,
-    _state: std::sync::Arc<SharedState>,
-) -> Result<api_structs::ListCardsResponse, AndyError> {
+    info: api_structs::UploadPdf,
+    state: std::sync::Arc<SharedState>,
+) -> Result<(), AndyError> {
+    println!("thing = {:?}", info.file_bytes_base64[0..100].to_owned());
+    let _user_id = state.database.validate_token(info.access_token)?;
+
+    let url = data_url::DataUrl::process(&info.file_bytes_base64).unwrap();
+    let (body, _fragment) = url.decode_to_vec().unwrap();
+
+    let lines = pdf_parser::extract_text(&body)?;
+    println!("lines = {:?}", lines);
     todo!()
 }

@@ -104,16 +104,20 @@ const App: React.FC = () => {
     });
   }
 
-  const pdfSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+  const pdfSubmit = () => {
     if (file == null) {
       console.error("missing file");
       return;
     }
+    let access_token = get_session_token();
 
     getBase64(file).then((base64_encode: string) => {
+      if (access_token == null) {
+        return;
+      }
+      console.log("base 64 = ", base64_encode);
       let request_json: UploadPdf = {
-        access_token: [123, 456], //todo
+        access_token: access_token,
         deck_id: 123, //todo
         file_bytes_base64: base64_encode,
       };
@@ -123,7 +127,6 @@ const App: React.FC = () => {
       );
     });
   };
-  const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {};
 
   return (
     <div>
@@ -131,7 +134,8 @@ const App: React.FC = () => {
 
       <Grid container rowSpacing={1} columnSpacing={{ xs: 1 }}>
         {decks.map((deck) => (
-          <>
+          <div key={deck.deck_id}>
+            n
             <Grid item xs={6}>
               {JSON.stringify(deck)}
               <Button
@@ -149,7 +153,7 @@ const App: React.FC = () => {
                 hi
               </Button>
             </Grid>
-          </>
+          </div>
         ))}
       </Grid>
 
@@ -199,6 +203,8 @@ const App: React.FC = () => {
             Upload File
             <input type="file" hidden onChange={handleChangeFile} />
           </Button>
+
+          <Button onClick={pdfSubmit}>Uupload</Button>
 
           <Button onClick={handleCreateDialogClose} color="primary">
             Cancel
