@@ -23,6 +23,10 @@ import {
 } from "../../backend_interface";
 import { send_json_backend, get_session_token, redirect } from "../../utils";
 
+interface Card {
+  question: string;
+  answer: string;
+}
 
 
 
@@ -42,13 +46,13 @@ uint32Array[0] = deckId;
 
 let uint32Value = dataView.getUint32(0, true); 
 
-const [flashcards, setFlashcards] = useState([]);
+const [flashcards, setFlashcards] = useState<Card[]>([]);
 const [question, setQuestion] = useState("");
 const [answer, setAnswer] = useState("");
 
 
 //console.log(uint32Value); 
-const handleKeyPress = (e) => {
+const handleKeyPress = (e: React.KeyboardEvent<HTMLDivElement>) => {
   if (e.key === "Enter") {
     Create_card(); // Call Create_card when Enter key is pressed
   }
@@ -74,7 +78,7 @@ const handleKeyPress = (e) => {
         console.error("Error creating card:", error);
       });
   }
-  let temp;
+  //let temp;
   const listCards = () => {
     let access_token = get_session_token();
     if (access_token == null) {
@@ -87,8 +91,7 @@ const handleKeyPress = (e) => {
         send_json_backend("/list_cards", JSON.stringify(prev_cards))
           .then((data: ListCardsResponse) => {
             console.log("Prev_Cards:", data);
-            temp = data.cards
-            setFlashcards(temp);
+            setFlashcards(data.cards);
             console.log(flashcards); 
           })
           .catch((error) => {
@@ -120,8 +123,8 @@ const handleKeyPress = (e) => {
       <Button onClick={Create_card}>CreateCard</Button>
       {flashcards.map((flashcard, index) => (
         <div key={index}>
-          <TextField label="Question" value={flashcard.question} readOnly />
-          <TextField label="Answer" value={flashcard.answer} readOnly />
+          <TextField label="Question" value={flashcard.question}/>
+          <TextField label="Answer" value={flashcard.answer} />
         </div>
       ))}
     </div>

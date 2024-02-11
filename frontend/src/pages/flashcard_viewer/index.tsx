@@ -17,8 +17,13 @@ import {
 } from "../../backend_interface";
 import { send_json_backend, get_session_token, redirect } from "../../utils";
 
+interface Card {
+  question: string;
+  answer: string;
+}
+
 const FlashcardViewerFunc = () => {
-  const [flashcards, setFlashcards] = useState([]);
+  const [flashcards, setFlashcards] = useState<Card[]>([]);
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
   const [frontText, setFrontText] = useState("");
   const [backText, setBackText] = useState("");
@@ -96,26 +101,6 @@ const FlashcardViewerFunc = () => {
           answer={flashcards[currentCardIndex].answer}
         />
       )}
-      <Paper
-        elevation={3}
-        style={{
-          padding: "20px",
-          width: "300px",
-          borderRadius: "8px",
-          position: "absolute",
-          top: `${flashcards.length * 100 + 100}px`,
-          left: "750px",
-          textAlign: "center",
-        }}
-      >
-        <Typography variant="body1" style={{ fontSize: "50px" }}>
-          Card {currentCardIndex + 1}/{flashcards.length}
-        </Typography>
-      </Paper>
-      <ArrowButtons
-        toggleNextCard={handleNextCard}
-        togglePrevCard={handlePrevCard}
-      />
       <Button onClick={addFlashcard}>Edit Deck</Button>
       <Button onClick={handlePrevCard} disabled={currentCardIndex === 0}>
         Previous Card
