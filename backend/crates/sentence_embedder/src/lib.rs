@@ -14,7 +14,7 @@ pub struct SentenceEmbedder {
 
 impl SentenceEmbedder {
     pub fn new(path: &std::path::Path) -> Result<Self, candle_core::Error> {
-        let device = candle_core::Device::Cpu;//change to cuda later
+        let device = candle_core::Device::Cpu; //change to cuda later
 
         let config_filename = path.join("config.json");
         let weights_filename = path.join("model.safetensors");

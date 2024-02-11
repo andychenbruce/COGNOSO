@@ -8,6 +8,8 @@ pub enum AndyError {
     Io(#[from] std::io::Error),
     #[error("nonexistant user")]
     UserDoesNotExist,
+    #[error("deck does not exist")]
+    DeckDoesNotExist,
     #[error("wrong password")]
     WrongPassword,
     #[error("bad access token")]

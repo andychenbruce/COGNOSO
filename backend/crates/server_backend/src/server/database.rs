@@ -156,7 +156,10 @@ impl Database {
         let write_txn = self.db.begin_write()?;
         {
             let mut table = write_txn.open_table(Self::USERS_TABLE)?;
-            let entry = table.get(user_id)?.unwrap().value();
+            let entry = table
+                .get(user_id)?
+                .ok_or(AndyError::UserDoesNotExist)?
+                .value();
 
             let out = UserEntry {
                 password_hash: sha256_hash(new_password.as_bytes()).to_vec(),
@@ -198,7 +201,7 @@ impl Database {
 
         let read_txn = self.db.begin_read()?;
         let table = read_txn.open_table(Self::DECKS_TABLE)?;
-        let mut deck = table.get(key)?.unwrap().value();
+        let mut deck = table.get(key)?.ok_or(AndyError::DeckDoesNotExist)?.value();
         deck.cards.push(Card { question, answer });
 
         self.insert(key, deck, Self::DECKS_TABLE)?;
@@ -239,7 +242,7 @@ impl Database {
 
         let read_txn = self.db.begin_read()?;
         let table = read_txn.open_table(Self::DECKS_TABLE)?;
-        let deck = table.get(key)?.unwrap().value();
+        let deck = table.get(key)?.ok_or(AndyError::DeckDoesNotExist)?.value();
 
         Ok(api_structs::ListCardsResponse {
             cards: deck
