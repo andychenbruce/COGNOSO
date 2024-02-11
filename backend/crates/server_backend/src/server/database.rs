@@ -5,9 +5,12 @@ use sha2::Digest;
 use std::hash::Hasher;
 
 use crate::api_structs;
-use api_structs::AccessToken;
 
 const SHA265_NUM_BYTES: usize = 32;
+
+type AccessToken = (u32, u32);
+type UserId = u32;
+type DeckId = u32;
 
 #[derive(serde::Serialize, serde::Deserialize, Debug)]
 struct UserEntry {
@@ -36,35 +39,32 @@ pub struct Database {
 }
 
 impl Database {
-    const USERS_TABLE: redb::TableDefinition<'static, u64, UserEntry> =
+    const USERS_TABLE: redb::TableDefinition<'static, UserId, UserEntry> =
         redb::TableDefinition::new("users");
-    const DECKS_TABLE: redb::TableDefinition<'static, (u64, u64), CardDeck> =
+    const DECKS_TABLE: redb::TableDefinition<'static, (UserId, DeckId), CardDeck> =
         redb::TableDefinition::new("decks");
-    const SESSION_TOKENS_TABLE: redb::TableDefinition<'static, AccessToken, u64> =
+    const SESSION_TOKENS_TABLE: redb::TableDefinition<'static, AccessToken, UserId> =
         redb::TableDefinition::new("tokens");
 
-    pub fn get_user_id(&self, email: &str) -> u64 {
+    pub fn get_user_id(&self, email: &str) -> UserId {
         //todo make actually good
-        hash(email)
+        hash(email) as u32
     }
 
-    pub fn new_session(&self, user_id: u64, password: String) -> Result<AccessToken, AndyError> {
-        //todo make an actuall token manager instead of just generating 2 random numbers lmao
+    pub fn new_session(&self, user_id: UserId, password: String) -> Result<AccessToken, AndyError> {
+        //todo make an actuall token manager instead of just generating a random number lmao
         self.validate_password(user_id, password)?;
 
         let mut rng = rand::thread_rng();
 
-        let n1: u32 = rng.gen();
-        let n2: u32 = rng.gen();
-
-        let access_token: AccessToken = (n1, n2);
+        let access_token: AccessToken = rng.gen();
 
         self.insert(access_token, user_id, Self::SESSION_TOKENS_TABLE)?;
 
-        Ok((n1, n2))
+        Ok(access_token)
     }
 
-    pub fn validate_password(&self, user_id: u64, password: String) -> Result<(), AndyError> {
+    pub fn validate_password(&self, user_id: UserId, password: String) -> Result<(), AndyError> {
         let read_txn = self.db.begin_read()?;
         let table = read_txn.open_table(Self::USERS_TABLE)?;
         let user_info = table
@@ -84,7 +84,7 @@ impl Database {
         }
     }
 
-    pub fn validate_token(&self, token: AccessToken) -> Result<u64, AndyError> {
+    pub fn validate_token(&self, token: AccessToken) -> Result<UserId, AndyError> {
         //TODO make tokens expire after like a month or something
         let read_txn = self.db.begin_read()?;
         let table = read_txn.open_table(Self::SESSION_TOKENS_TABLE)?;
@@ -111,7 +111,7 @@ impl Database {
         email: String,
         password: String,
     ) -> Result<(), AndyError> {
-        let user_id = hash(&email); //todo idk
+        let user_id = self.get_user_id(&email); //todo idk
         let write_txn = self.db.begin_write()?;
         {
             let mut table = write_txn.open_table(Self::USERS_TABLE)?;
@@ -130,7 +130,7 @@ impl Database {
     }
 
     pub fn delete_user(&self, email: String, password: String) -> Result<(), AndyError> {
-        let user_id = hash(email); //todo idk
+        let user_id = self.get_user_id(&email); //todo idk
         self.validate_password(user_id, password)?;
 
         let write_txn = self.db.begin_write()?;
@@ -150,7 +150,7 @@ impl Database {
         old_password: String,
         new_password: String,
     ) -> Result<(), AndyError> {
-        let user_id = hash(email); //todo idk
+        let user_id = self.get_user_id(&email); //todo idk
         self.validate_password(user_id, old_password)?;
 
         let write_txn = self.db.begin_write()?;
@@ -172,8 +172,8 @@ impl Database {
         Ok(())
     }
 
-    pub fn new_card_deck(&self, user_id: u64, deck_name: String) -> Result<(), AndyError> {
-        let deck_id = hash(&deck_name);
+    pub fn new_card_deck(&self, user_id: UserId, deck_name: String) -> Result<(), AndyError> {
+        let deck_id = self.get_user_id(&deck_name);
         let write_txn = self.db.begin_write()?;
         {
             let mut table = write_txn.open_table(Self::DECKS_TABLE)?;
@@ -192,8 +192,8 @@ impl Database {
 
     pub fn new_card(
         &self,
-        user_id: u64,
-        deck_id: u64,
+        user_id: UserId,
+        deck_id: UserId,
         question: String,
         answer: String,
     ) -> Result<(), AndyError> {
@@ -210,7 +210,7 @@ impl Database {
 
     pub fn list_card_decks(
         &self,
-        user_id: u64,
+        user_id: UserId,
     ) -> Result<api_structs::ListCardDecksResponse, AndyError> {
         let read_txn = self.db.begin_read()?;
         let table = read_txn.open_table(Self::DECKS_TABLE)?;
@@ -235,8 +235,8 @@ impl Database {
 
     pub fn list_cards(
         &self,
-        user_id: u64,
-        deck_id: u64,
+        user_id: UserId,
+        deck_id: DeckId,
     ) -> Result<api_structs::ListCardsResponse, AndyError> {
         let key = (user_id, deck_id);
 

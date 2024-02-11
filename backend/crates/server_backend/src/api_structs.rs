@@ -13,7 +13,7 @@ pub type AccessToken = (u32, u32);
 #[derive(Debug, serde::Deserialize)]
 pub struct CreateCard {
     pub access_token: AccessToken,
-    pub deck_id: u64,
+    pub deck_id: u32,
     pub question: String,
     pub answer: String,
 }
@@ -57,14 +57,14 @@ pub struct ListCardDecksResponse {
 #[derive(Debug, serde::Serialize)]
 pub struct CardDeck {
     pub name: String,
-    pub deck_id: u64,
-    pub num_cards: u64,
+    pub deck_id: u32,
+    pub num_cards: u32,
 }
 
 #[derive(Debug, serde::Deserialize)]
 pub struct ListCards {
     pub access_token: AccessToken,
-    pub deck_id: u64,
+    pub deck_id: u32,
 }
 
 #[derive(Debug, serde::Serialize)]
@@ -92,6 +92,6 @@ pub struct LoginResponse {
 #[derive(Debug, serde::Deserialize)]
 pub struct UploadPdf {
     pub access_token: AccessToken,
-    pub deck_id: u64,
+    pub deck_id: u32,
     pub file_bytes_base64: String,
 }
