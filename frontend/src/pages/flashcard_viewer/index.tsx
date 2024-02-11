@@ -19,12 +19,7 @@ const FlashcardViewerFunc = () => {
   const [backText, setBackText] = useState("");
 
   const addFlashcard = () => {
-    if (frontText && backText) {
-      const newFlashcard = { front: frontText, back: backText };
-      setFlashcards([...flashcards, newFlashcard] as any);
-      setFrontText("");
-      setBackText("");
-    }
+    window.location.pathname = "/flashcard_editor/";
   };
 
   const toggleNextCard = () => {
@@ -74,6 +69,8 @@ const FlashcardViewerFunc = () => {
         </Typography>
       </Paper>
       <ArrowButtons />
+      <button onClick={addFlashcard}>Edit Deck</button>
+
     </div>
   );
 };

@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import Flashcard from "./Flashcard"; // Adjust the import path based on your project structure
+import { ListCards} from "../../backend_interface";
+import { send_json_backend } from "../../utils";
 
 const FlashcardApp = () => {
   const [flashcards, setFlashcards] = useState([]);
@@ -13,6 +15,22 @@ const FlashcardApp = () => {
       setFrontText("");
       setBackText("");
     }
+    
+  //   let new_user_request: ListCards = {
+  //     user_name: user.username,
+  //     email: user.email,
+  //     password: user.password1,
+  //   };
+  //   send_json_backend("/new_user", JSON.stringify(new_user_request))
+  //     .then((data) => {
+  //       console.log("New user made:", data);
+  //       redirectToLogin();
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error creating new user:", error);
+  //     });
+  // };
+
   };
 
   return (
