@@ -33,7 +33,27 @@ const App: React.FC = () => {
   const searchParams = new URLSearchParams(url.search);
   const deckIdJSON = searchParams.get("deck");
   const deckId = deckIdJSON ? JSON.parse(deckIdJSON) : null;
-  //console.log(deckId)
+
+let uint32Array = new Uint32Array(1);
+
+let dataView = new DataView(uint32Array.buffer);
+
+uint32Array[0] = deckId;
+
+let uint32Value = dataView.getUint32(0, true); 
+
+const [flashcards, setFlashcards] = useState([]);
+const [question, setQuestion] = useState("");
+const [answer, setAnswer] = useState("");
+
+
+//console.log(uint32Value); 
+const handleKeyPress = (e) => {
+  if (e.key === "Enter") {
+    Create_card(); // Call Create_card when Enter key is pressed
+  }
+};
+
   const Create_card = () => {
     let access_token = get_session_token();
     if (access_token == null) {
@@ -41,50 +61,70 @@ const App: React.FC = () => {
     }
     let create_card: CreateCard = {
       access_token: access_token,
-      deck_id: deckId,
-      question: "temp_q",
-      answer: "temp_a",
+      deck_id: uint32Value,
+      question: question,
+      answer: answer,
     };
       send_json_backend("/create_card", JSON.stringify(create_card))
       .then((data) => {
         console.log("result:", data);
+        listCards();
       })
       .catch((error) => {
         console.error("Error creating card:", error);
       });
   }
-  
-  
-  const ListCards = () => {
+  let temp;
+  const listCards = () => {
     let access_token = get_session_token();
     if (access_token == null) {
       return;
     }
     let prev_cards: ListCards = {
         access_token: access_token,
-        deck_id: deckId,
+        deck_id: uint32Value,
       };
         send_json_backend("/list_cards", JSON.stringify(prev_cards))
           .then((data: ListCardsResponse) => {
             console.log("Prev_Cards:", data);
+            temp = data.cards
+            setFlashcards(temp);
+            console.log(flashcards); 
           })
           .catch((error) => {
             console.error("Error displaying cards:", error);
           });
     };
+    useEffect(() => {
+      // Fetch initial flashcards when component mounts
+      listCards();
+    }, []);
+  
 
   return (
     <div>
-        <button onClick = {Create_card}>
-            CreateCards
-        </button>
-
-        <button onClick = {ListCards}>
-            ListCards
-        </button>
-
+      <TextField
+        label="Question"
+        value={question}
+        onChange={(e) => setQuestion(e.target.value)}
+        onKeyPress={handleKeyPress} // Listen for Enter key press
+      />
+      <TextField
+        label="Answer"
+        value={answer}
+        onChange={(e) => setAnswer(e.target.value)}
+        onKeyPress={handleKeyPress} // Listen for Enter key press
+      />
+      <Button onClick={Create_card}>CreateCard</Button>
+      {flashcards.map((flashcard, index) => (
+        <div key={index}>
+          <TextField label="Question" value={flashcard.question} readOnly />
+          <TextField label="Answer" value={flashcard.answer} readOnly />
+        </div>
+      ))}
     </div>
+  );
+};
 
-)};
 
 export default App;
