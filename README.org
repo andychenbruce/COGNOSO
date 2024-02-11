@@ -33,5 +33,5 @@ Static html will be in ~frontend/build~, can be served with any HTTP server of c
 
 * Backend endpoints
 For the frontend endpoints are defined in [[./frontend/src/backend_interface.ts]].
-For the backend endpoints are defined in [[./backend/crates/api_structs/src/lib.rs]].
+For the backend endpoints are defined in [[./backend/crates/server_backend/src/api_structs.rs]].
 Keep these files in sync or the code is going to get messy.
