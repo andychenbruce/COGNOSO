@@ -103,6 +103,8 @@ const handleKeyPress = (e) => {
 
   return (
     <div>
+      <Navbar />
+
       <TextField
         label="Question"
         value={question}
