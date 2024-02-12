@@ -24,7 +24,7 @@ import {
 import { send_json_backend, get_session_token, redirect } from "../../utils";
 
 interface Card {
-  id: string;
+  //id: string;
   question: string;
   answer: string;
 }
@@ -50,6 +50,8 @@ const [flashcards, setFlashcards] = useState<Card[]>([]);
 const [question, setQuestion] = useState("");
 const [answer, setAnswer] = useState("");
 const [editingCardIndex, setEditingCardIndex] = useState<number | null>(null);
+const [q1, setq1] = useState("");
+const [a1, seta1] = useState("");
 
 
 
@@ -68,8 +70,8 @@ const handleKeyPress = (e: React.KeyboardEvent<HTMLDivElement>) => {
     let create_card: CreateCard = {
       access_token: access_token,
       deck_id: uint32Value,
-      question: question,
-      answer: answer,
+      question: q1,
+      answer: a1,
     };
       send_json_backend("/create_card", JSON.stringify(create_card))
       .then((data) => {
@@ -121,51 +123,51 @@ const handleKeyPress = (e: React.KeyboardEvent<HTMLDivElement>) => {
         return;
       }
 
-      let updatedCard = {
-        id: flashcards[index].id, // Assuming flashcards have an 'id' field
-        question: question,
-        answer: answer,
-      };
+      // let updatedCard = {
+      //   //id: flashcards[index].id, // Assuming flashcards have an 'id' field
+      //   question: question,
+      //   answer: answer,
+      // };
 
-      send_json_backend("/update_cards", JSON.stringify({ ...updatedCard, access_token }))
-        .then((data) => {
-          console.log("Card updated:", data);
+      // send_json_backend("/update_cards", JSON.stringify({ ...updatedCard, access_token }))
+      //   .then((data) => {
+      //     console.log("Card updated:", data);
 
           // Update the flashcards array with the modified card data
-          const updatedFlashcards = [...flashcards];
-          updatedFlashcards[index] = { ...updatedCard };
-          setFlashcards(updatedFlashcards);
+          // const updatedFlashcards = [...flashcards];
+          // updatedFlashcards[index] = { ...updatedCard };
+          // setFlashcards(updatedFlashcards);
 
           // Reset fields after successful update
-          cancelEdit();
-        })
-        .catch((error) => {
-          console.error("Error updating card:", error);
-        });
-    };
+    //       cancelEdit();
+    //     })
+    //     .catch((error) => {
+    //       console.error("Error updating card:", error);
+    //     });
+    // };
 
     // Function to handle deletion of a card
-    const handleDeleteCard = (index: number) => {
-      let access_token = get_session_token();
-      if (access_token == null) {
-        return;
-      }
+    // const handleDeleteCard = (index: number) => {
+    //   let access_token = get_session_token();
+    //   if (access_token == null) {
+    //     return;
+    //   }
 
-      let cardToDelete = flashcards[index];
+    //   let cardToDelete = flashcards[index];
       
-      // Make a request to the backend to delete the card
-      send_json_backend("/delete_card", JSON.stringify({ access_token, card_id: cardToDelete.id }))
-        .then(() => {
-          console.log("Card deleted:", cardToDelete);
+    //   // Make a request to the backend to delete the card
+    //   send_json_backend("/delete_card", JSON.stringify({ access_token, card_id: cardToDelete.id }))
+    //     .then(() => {
+    //       console.log("Card deleted:", cardToDelete);
 
-          // Update the flashcards array by removing the deleted card
-          const updatedFlashcards = [...flashcards];
-          updatedFlashcards.splice(index, 1);
-          setFlashcards(updatedFlashcards);
-        })
-        .catch((error) => {
-          console.error("Error deleting card:", error);
-        });
+    //       // Update the flashcards array by removing the deleted card
+    //       const updatedFlashcards = [...flashcards];
+    //       updatedFlashcards.splice(index, 1);
+    //       setFlashcards(updatedFlashcards);
+    //     })
+    //     .catch((error) => {
+    //       console.error("Error deleting card:", error);
+    //     });
     };
 
     useEffect(() => {
@@ -181,16 +183,16 @@ const handleKeyPress = (e: React.KeyboardEvent<HTMLDivElement>) => {
         <TextField
           label="Question"
           value={question}
-          onChange={(e) => setQuestion(e.target.value)}
-          onKeyPress={handleKeyPress} // Listen for Enter key press
+          onChange={(e) => {setQuestion(e.target.value); setq1(e.target.value)}}
+          //onKeyPress={handleKeyPress} // Listen for Enter key press
         />
         <TextField
           label="Answer"
           value={answer}
-          onChange={(e) => setAnswer(e.target.value)}
-          onKeyPress={handleKeyPress} // Listen for Enter key press
+          onChange={(e) => {setAnswer(e.target.value); seta1(e.target.value)}}
+          //onKeyPress={handleKeyPress} // Listen for Enter key press
         />
-        <Button onClick={Create_card}>Create Card</Button>
+        <Button onClick={ () => {Create_card(); setAnswer(""); setQuestion("")}}>Create Card</Button>
         <div style={{ marginTop: '20px' }}>
           {flashcards.map((flashcard, index) => (
             <div key={index} style={{ marginBottom: '10px', padding: '20px', border: '1px solid #ccc', borderRadius: '10px', width: '400px' }}>
@@ -215,8 +217,8 @@ const handleKeyPress = (e: React.KeyboardEvent<HTMLDivElement>) => {
                   <Typography>{flashcard.question}</Typography>
                   <Typography variant="h6">Answer:</Typography>
                   <Typography>{flashcard.answer}</Typography>
-                  <Button onClick={() => handleEditCard(index)}>Edit</Button>
-                  <Button onClick={() => handleDeleteCard(index)}>Delete</Button> {/* Delete button */}
+                  <Button /*onClick={() => handleEditCard(index)}*/>Edit</Button>
+                  <Button /*onClick={() => handleDeleteCard(index)}*/>Delete</Button> 
                 </>
               )}
             </div>
