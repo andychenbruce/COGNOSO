@@ -208,6 +208,23 @@ impl Database {
         Ok(())
     }
 
+    pub fn delete_card(
+        &self,
+        user_id: UserId,
+        deck_id: UserId,
+        card_index: u32,
+    ) -> Result<(), AndyError> {
+        let key = (user_id, deck_id);
+
+        let read_txn = self.db.begin_read()?;
+        let table = read_txn.open_table(Self::DECKS_TABLE)?;
+        let mut deck = table.get(key)?.ok_or(AndyError::DeckDoesNotExist)?.value();
+        deck.cards.remove(card_index as usize);
+
+        self.insert(key, deck, Self::DECKS_TABLE)?;
+        Ok(())
+    }
+
     pub fn list_card_decks(
         &self,
         user_id: UserId,
