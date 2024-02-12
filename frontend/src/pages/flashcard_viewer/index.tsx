@@ -16,6 +16,8 @@ import {
   CreateCard,
 } from "../../backend_interface";
 import { send_json_backend, get_session_token, redirect } from "../../utils";
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 interface Card {
   question: string;
@@ -82,16 +84,16 @@ const FlashcardViewerFunc = () => {
       <Paper
         elevation={3}
         style={{
-          padding: "20px",
-          width: "300px",
+          padding: "5px", // Reduce padding
+          width: "250px", // Reduce width
           borderRadius: "8px",
           position: "absolute",
-          top: "200px",
-          left: "750px",
+          top: "135px",
+          left: "590px",
           textAlign: "center",
         }}
       >
-        <Typography variant="body1" style={{ fontSize: "50px" }}>
+        <Typography variant="body1" style={{ fontSize: "20px" }}>
           Deck 1
         </Typography>
       </Paper>
@@ -101,33 +103,54 @@ const FlashcardViewerFunc = () => {
           answer={flashcards[currentCardIndex].answer}
         />
       )}
-      <Button onClick={addFlashcard}>Edit Deck</Button>
-      <Button onClick={handlePrevCard} disabled={currentCardIndex === 0}>
-        Previous Card
-      </Button>
       <Button
+        onClick={addFlashcard}
+        style={{
+          position: "absolute",
+          top: "600px",
+          left: "675px",
+        }}
+      >
+        Edit Deck
+      </Button>
+      <IconButton
+        onClick={handlePrevCard}
+        disabled={currentCardIndex === 0}
+        style={{
+          position: "absolute",
+          bottom: "325px",
+          left: "350px",
+        }}
+      >
+        <ArrowBackIcon />
+      </IconButton>
+      <IconButton
         onClick={handleNextCard}
         disabled={currentCardIndex === flashcards.length - 1}
+        style={{
+          position: "absolute",
+          bottom: "325px",
+          right: "350px",
+        }}
       >
-        Next Card
-      </Button>
+        <ArrowForwardIcon />
+      </IconButton>
       <Paper
         elevation={3}
         style={{
-          padding: "20px",
-          width: "300px",
+          padding: "5px", // Reduce padding
+          width: "250px", // Reduce width
           borderRadius: "8px",
           position: "absolute",
-          top: "850px",
-          left: "750px",
+          top: "550px",
+          left: "590px",
           textAlign: "center",
         }}
       >
-        <Typography variant="body1" style={{ fontSize: "50px" }}>
+        <Typography variant="body1" style={{ fontSize: "20px" }}>
           Card {currentCardIndex + 1}/{flashcards.length}
         </Typography>
       </Paper>
-
     </div>
   );
 };
