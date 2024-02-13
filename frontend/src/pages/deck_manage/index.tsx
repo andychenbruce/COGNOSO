@@ -29,6 +29,7 @@ const App: React.FC = () => {
   const [decks, setDecks]: [CardDeck[], Dispatch<CardDeck[]>] = useState(
     [] as CardDeck[],
   );
+  
 
   const updateDecks = () => {
     let token = get_session_token();
@@ -39,6 +40,7 @@ const App: React.FC = () => {
     send_json_backend("/list_card_decks", JSON.stringify(request))
       .then((data: ListCardDecksResponse) => {
         setDecks(data.decks);
+        console.log(data.decks)
       })
       .catch((error) => {
         console.error("Error in:", error);
@@ -133,11 +135,10 @@ const App: React.FC = () => {
       <Navbar />
 
       <Grid container rowSpacing={1} columnSpacing={{ xs: 1 }}>
-        {decks.map((deck) => (
+        {decks.map((deck, index) => (
           <div key={deck.deck_id}>
-            n
             <Grid item xs={6}>
-              {JSON.stringify(deck)}
+              {/* {JSON.stringify(deck)} */}
               <Button
                 type="submit"
                 variant="contained"
@@ -150,7 +151,7 @@ const App: React.FC = () => {
                   window.location.href = url.toString();
                 }}
               >
-                hi
+                {decks[index].name}
               </Button>
             </Grid>
           </div>
@@ -204,7 +205,7 @@ const App: React.FC = () => {
             <input type="file" hidden onChange={handleChangeFile} />
           </Button>
 
-          <Button onClick={pdfSubmit}>Uupload</Button>
+          <Button onClick={pdfSubmit}>Upload</Button>
 
           <Button onClick={handleCreateDialogClose} color="primary">
             Cancel
