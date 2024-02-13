@@ -1,5 +1,6 @@
 export const ENDPOINT_CREATE_CARD_DECK: string = "/create_card_deck";
 export const ENDPOINT_CREATE_CARD: string = "/create_card";
+export const ENDPOINT_DELETE_CARD: string = "/delete_card";
 export const ENDPOINT_NEW_USER: string = "/new_user";
 export const ENDPOINT_DELETE_USER: string = "/delete_user";
 export const ENDPOINT_CHANGE_PASSWORD: string = "/change_password";
@@ -14,6 +15,13 @@ export interface CreateCard {
   deck_id: number;
   question: string;
   answer: string;
+}
+
+// request -> /delete_card
+export interface DeleteCard {
+  access_token: [number, number];
+  deck_id: number;
+  card_index: number;
 }
 
 // request -> /create_card_deck
