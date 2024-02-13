@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import "./Flashcard.css";
 
 const Flashcard = ({ question, answer }: any) => {
   const [showAnswer, setShowAnswer] = useState(false);
@@ -9,22 +10,17 @@ const Flashcard = ({ question, answer }: any) => {
 
   return (
     <div
-      style={{
-        border: "1px solid #ccc",
-        padding: "20px",
-        borderRadius: "8px",
-        width: "600px",
-        height: "300px",
-        textAlign: "center",
-        fontSize: "50px",
-        cursor: "pointer",
-        position: "absolute", // or 'relative' based on your layout
-        top: "400px", // adjust the top position
-        left: "600px", // adjust the left position
-      }}
+      className={`flashcard ${showAnswer ? "flipped" : ""}`} // Toggle the "flipped" class
       onClick={toggleShowAnswer}
     >
-      {showAnswer ? <p>{answer}</p> : <p>{question}</p>}
+      <div className="card">
+        <div className="front">
+          <p>{question}</p>
+        </div>
+        <div className="back">
+          <p>{answer}</p>
+        </div>
+      </div>
     </div>
   );
 };
