@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@emotion/styled": "^11.11.0",
+    "@mui/icons-material": "^5.15.10",
     "@mui/material": "^5.15.7",
     "gatsby": "^5.13.2",
     "react": "^18.2.0",
