@@ -83,6 +83,11 @@ async fn handle_request(
         ),
         (
             hyper::Method::POST,
+            api_structs::ENDPOINT_DELETE_CARD_DECK,
+            delete_card_deck
+        ),
+        (
+            hyper::Method::POST,
             api_structs::ENDPOINT_CREATE_CARD,
             create_card
         ),
@@ -140,6 +145,15 @@ async fn create_card_deck(
 ) -> Result<(), AndyError> {
     let user_id = state.database.validate_token(info.access_token)?;
     state.database.new_card_deck(user_id, info.deck_name)?;
+    Ok(())
+}
+
+async fn delete_card_deck(
+    info: api_structs::DeleteCardDeck,
+    state: std::sync::Arc<SharedState>,
+) -> Result<(), AndyError> {
+    let user_id = state.database.validate_token(info.access_token)?;
+    state.database.delete_card_deck(user_id, info.deck_name)?;
     Ok(())
 }
 
