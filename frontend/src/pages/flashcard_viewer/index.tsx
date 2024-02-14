@@ -118,8 +118,10 @@ const FlashcardViewerFunc = () => {
         disabled={currentCardIndex === 0}
         style={{
           position: "absolute",
-          bottom: "325px",
-          left: "350px",
+          // bottom: "325px",
+          // left: "350px",
+          display: 'flex',
+          flexDirection: 'row'
         }}
       >
         <ArrowBackIcon />
