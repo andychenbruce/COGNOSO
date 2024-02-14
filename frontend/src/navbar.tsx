@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { Button, InputBase, Menu, MenuItem, Container, Dialog, Paper, DialogContent, DialogTitle, DialogActions, DialogContentText} from "@mui/material";
-import { redirect } from "./utils";
+import { redirect, send_json_backend } from "./utils";
+import { DeleteUser } from "./backend_interface"
+
 
 export const Navbar = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -21,18 +23,12 @@ export const Navbar = () => {
 
   const handleDeleteConfirm = () => {
     console.log("Account deletion initiated!");
-    const deleteUserRequest = {
+    const deleteUserRequest: DeleteUser = {
         email: 'test', 
         password: 'test', 
     };
 
-    fetch('/delete_user', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(deleteUserRequest),
-    })
+    send_json_backend('/delete_user', JSON.stringify(deleteUserRequest))
     .then(response => {
         if (!response.ok) {
             throw new Error('Failed to delete user.');
