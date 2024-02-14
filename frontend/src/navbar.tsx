@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button, InputBase, Menu, MenuItem, Container, Dialog, TextField, DialogContent, DialogTitle, DialogActions, DialogContentText} from "@mui/material";
+import { Button, InputBase, Menu, Snackbar, Container, Dialog, TextField, DialogContent, DialogTitle, DialogActions, DialogContentText} from "@mui/material";
 import { redirect, send_json_backend } from "./utils";
 import { DeleteUser } from "./backend_interface";
 import { ChangePassword } from "./backend_interface";
@@ -10,6 +10,9 @@ export const Navbar = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [openPassChangeDialog, setOpenPassChangeDialog] = useState(false);
+  const [shouldShowPopup, setShouldShowPopup] = useState(false);
+  const [errorFields, setErrorFields] = useState<string[]>([]);
+  const [showSuccessSnackbar, setShowSuccessSnackbar] = useState(false);
   const [user, setUser] = useState({
     email: "",
     password: "",
@@ -74,18 +77,27 @@ export const Navbar = () => {
         new_password: user.pass2,
     };
     send_json_backend('/change_password', JSON.stringify(changePassRequest))
+    .then(() => {
+        console.log('success!');
+        handleChanegPassDialogClose();
+        setShowSuccessSnackbar(true);
+    })
     .catch(error => {
-      console.error('Error changing password:', error);
+        console.error('Error changing password:', error);
+        setErrorFields(['email2', 'pass1', 'pass2']);
+        setTimeout(() => setErrorFields([]), 2000);
+        setShouldShowPopup(true);
     });
-    console.log('success!')
-    handleChanegPassDialogClose()
-  }
-
+}
 
   const handleLogOut = () => {
     sessionStorage.clear()
     window.location.pathname = "/login/"
   }
+
+  const PassChangeNotSame = () => {
+    setShouldShowPopup(false);
+  };
 
   return (
     <div
@@ -218,26 +230,29 @@ export const Navbar = () => {
           </DialogActions>
         </Dialog>
         {/*---------------------------------------------*/}
+        <div style={{background: 'linear-gradient(to left, #140952a6, #22032e'}}>
         <Dialog
             open={openPassChangeDialog}
             onClose={handleChanegPassDialogClose}
             aria-labelledby="alert-dialog-title"
             aria-describedby="alert-dialog-description"
           >
-            <DialogTitle id="alert-dialog-title">
+            <DialogTitle id="alert-dialog-title" style={{background: '#140952a6', color: 'white'}}>
               Change Password
             </DialogTitle>
-            <DialogContent>
-              <DialogContentText id="alert-dialog-description">
-                Please enter your email and confirm your new password
+            <DialogContent style={{background: '#140952a6'}}>
+              <DialogContentText id="alert-dialog-description" style={{color: 'white'}}>
+                Please enter your Email, Old Password and New Password
               </DialogContentText>
             </DialogContent>
-            <DialogActions>
+            <DialogActions style={{background: '#140952a6'}}>
 
               <TextField
               style={{
                 marginBottom: 20,
+                borderColor: errorFields.includes('email2') ? 'red' : undefined
               }}
+              error={errorFields.includes('email2')}
               label="Email"
               variant="outlined"
               fullWidth
@@ -245,11 +260,14 @@ export const Navbar = () => {
               value={user.email2}
               onChange={handleInputChange}
               required
+              InputLabelProps={{style: { color: '#E6E6FA'}}}
             />
             <TextField
               style={{
                 marginBottom: 20,
+                borderColor: errorFields.includes('pass1') ? 'red' : undefined
               }}
+              error={errorFields.includes('pass1')}
               label="Old Password"
               type="password"
               variant="outlined"
@@ -258,11 +276,14 @@ export const Navbar = () => {
               value={user.pass1}
               onChange={handleInputChange}
               required
+              InputLabelProps={{style: { color: '#E6E6FA'}}}
             />
             <TextField
               style={{
                 marginBottom: 20,
+                borderColor: errorFields.includes('pass2') ? 'red' : undefined
               }}
+              error={errorFields.includes('pass2')}
               label="New Password"
               type="password"
               variant="outlined"
@@ -271,19 +292,33 @@ export const Navbar = () => {
               value={user.pass2}
               onChange={handleInputChange}
               required
+              InputLabelProps={{style: { color: '#E6E6FA'}}}
             />
-            <Button onClick={handleChanegPassDialogClose} style={{color: "gray"}}>
+            <Button onClick={handleChanegPassDialogClose} style={{color: "white"}}>
                 Cancel
             </Button>
             <Button
               onClick={handleChangePass}
-              style={{ color: "green" }}
+              style={{ color: "#90EE90" }}
               autoFocus
             >
               Change
             </Button>
           </DialogActions>
         </Dialog>
+        </div>
+        <Snackbar
+            open={shouldShowPopup}
+            autoHideDuration={3000}
+            onClose={PassChangeNotSame}
+            message="Password Change Failed!"
+          />
+          <Snackbar
+            open={showSuccessSnackbar}
+            autoHideDuration={3000}
+            onClose={() => setShowSuccessSnackbar(false)}
+            message="Password Successfully Changed!"
+          />
       </Menu>
     </div>
   );
