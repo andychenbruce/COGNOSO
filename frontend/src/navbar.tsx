@@ -101,16 +101,17 @@ export const Navbar = () => {
 
   return (
     <div
-      style={{
-        border: "5px solid #1976d2",
-        borderRadius: "15px",
-        padding: "5px",
-        display: "flex",
-        justifyContent: "center",
-        flexWrap: "wrap",
-        gap: "10px",
-        marginBottom: "20px",
-      }}
+    style={{
+      backgroundColor: 'rgba(128, 128, 128, 0.5)', // Transparent gray color
+      border: "5px solid #1976d2",
+      borderRadius: "15px",
+      padding: "5px",
+      display: "flex",
+      justifyContent: "center",
+      flexWrap: "wrap",
+      gap: "10px",
+      marginBottom: "20px",
+  }}
     >
       <Button
         variant="contained"
@@ -131,13 +132,13 @@ export const Navbar = () => {
           padding: "5px",
         }}
       >
-        <InputBase
-          placeholder="Search…"
-          inputProps={{ "aria-label": "search" }}
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          style={{ flex: 1, fontSize: "20px", paddingLeft: "10px" }}
-        />
+ <InputBase
+    placeholder="Search…"
+    inputProps={{ "aria-label": "search", style: { color: '#E6E6FA' } }}
+    value={searchQuery}
+    onChange={(e) => setSearchQuery(e.target.value)}
+    style={{ flex: 1, fontSize: "20px", paddingLeft: "10px" }}
+/>
       </div>
       <Button
         variant="contained"
@@ -154,12 +155,15 @@ export const Navbar = () => {
         Account
       </Button>
       <Menu
+      
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
         onClose={handleMenuClose}
       >
           <Container
-            sx={{ display: "flex", flexDirection: "column", gap: "8px"}}
+          
+            sx={{ display: "flex", flexDirection: "column", gap: "8px", background: '#140952a6'}}
+            
           >
             <Button variant="contained" color="primary" onClick={handleLogOut}>
               Log Out
