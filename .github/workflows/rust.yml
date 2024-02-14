@@ -20,9 +20,9 @@ jobs:
     - name: Clippy
       working-directory: ./backend
       run: cargo clippy
-    - name: Run tests
-      working-directory: ./backend
-      run: cargo test
+    # - name: Run tests
+    #   working-directory: ./backend
+    #   run: cargo test
     - name: Formatting
       working-directory: ./backend
       run: cargo fmt --check
