@@ -5,6 +5,7 @@ import React, {
   useEffect,
 } from "react";
 import { Navbar } from "../../navbar";
+import "./flashcard_editor.css";
 import {
   Dialog,
   Button,
@@ -177,7 +178,7 @@ const handleKeyPress = (e: React.KeyboardEvent<HTMLDivElement>) => {
   
 
     return (
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }} >
         <Navbar />
   
         <TextField

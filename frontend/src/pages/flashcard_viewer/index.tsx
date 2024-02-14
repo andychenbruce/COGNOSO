@@ -133,6 +133,8 @@ const FlashcardViewerFunc = () => {
           position: "absolute",
           bottom: "325px",
           right: "350px",
+          /*display: 'flex',
+          flexDirection: 'column'*/
         }}
       >
         <ArrowForwardIcon />
