@@ -133,37 +133,37 @@ const App: React.FC = () => {
   return (
     <div>
       <Navbar />
-
-      <Grid container rowSpacing={1} columnSpacing={{ xs: 1 }}>
-        {decks.map((deck, index) => (
-          <div key={deck.deck_id}>
-            <Grid item xs={6}>
-              {/* {JSON.stringify(deck)} */}
-              <Button
-                type="submit"
-                variant="contained"
-                color="primary"
-                onClick={() => {
-                  const url = new URL(
-                    window.location.origin + "/flashcard_viewer/",
-                  );
-                  url.searchParams.append("deck", JSON.stringify(deck.deck_id));
-                  window.location.href = url.toString();
-                }}
-              >
-                {decks[index].name}
-              </Button>
-            </Grid>
-          </div>
-        ))}
-      </Grid>
+      <Grid container rowSpacing={2} columnSpacing={0} justifyContent="flex-start" style={{ width: '100%', paddingLeft: '10px', paddingRight: '10px' }}>
+      {decks.map((deck, index) => (
+        <Grid item xs={6} key={deck.deck_id}>
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            
+            fullWidth
+            onClick={() => {
+              const url = new URL(
+                window.location.origin + "/flashcard_viewer/",
+              );
+              url.searchParams.append("deck", JSON.stringify(deck.deck_id));
+              window.location.href = url.toString();
+            }}
+            style={{ width: '80%', height: '70px', fontSize: '1.5rem', marginBottom: '10px' }}
+          >
+            {decks[index].name}
+          </Button>
+        </Grid>
+      ))}
+    </Grid>
 
       <Button
         type="submit"
         variant="contained"
         color="primary"
         onClick={handleCreateButtonClick}
-      >
+        style={{ width: '70px', height: '70px', fontSize: '1.5rem', marginTop: '10px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', marginLeft: 'auto', marginRight: '30px' }}
+        >
         +
       </Button>
 
