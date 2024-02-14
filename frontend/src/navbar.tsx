@@ -1,14 +1,33 @@
 import React, { useState } from "react";
-import { Button, InputBase, Menu, MenuItem, Container, Dialog, Paper, DialogContent, DialogTitle, DialogActions, DialogContentText} from "@mui/material";
+import { Button, InputBase, Menu, MenuItem, Container, Dialog, TextField, DialogContent, DialogTitle, DialogActions, DialogContentText} from "@mui/material";
 import { redirect, send_json_backend } from "./utils";
-import { DeleteUser } from "./backend_interface"
-
+import { DeleteUser } from "./backend_interface";
+import { ChangePassword } from "./backend_interface";
+import { logout } from "./utils";
 
 export const Navbar = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
-  
+  const [openPassChangeDialog, setOpenPassChangeDialog] = useState(false);
+  const [user, setUser] = useState({
+    email: "",
+    password: "",
+    email2: "",
+    pass1: "",
+    pass2: "",
+  });
+
+  const handleInputChange = (
+    event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
+  ) => {
+    const { value, name } = event.target;
+    setUser((prevUser) => ({
+      ...prevUser,
+      [name]: value,
+    }));
+  };
+
   const handleMenuOpen = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -21,28 +40,47 @@ export const Navbar = () => {
     setOpenDeleteDialog(true);
   };
 
-  const handleDeleteConfirm = () => {
-    console.log("Account deletion initiated!");
-    const deleteUserRequest: DeleteUser = {
-        email: 'test', 
-        password: 'test', 
-    };
-
-    send_json_backend('/delete_user', JSON.stringify(deleteUserRequest))
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Failed to delete user.');
-        }
-        console.log("Account deleted successfully!"); 
-        })
-    .catch(error => {
-        console.error('Error deleting user:', error);
-    });
-};
-
   const handleDeleteDialogClose = () => {
     setOpenDeleteDialog(false);
   };
+
+  const handleDeleteConfirm = () => {
+    console.log("Account deletion initiated!");
+    const deleteUserRequest: DeleteUser = {
+        email: user.email, 
+        password: user.password, 
+    };
+    send_json_backend('/delete_user', JSON.stringify(deleteUserRequest))
+    .catch(error => {
+        console.error('Error deleting user:', error);
+    });
+    console.log('logging out')
+    logout();
+    window.location.pathname = "/login/"
+};
+
+  const handleChangePassDialog = () => {
+    setOpenPassChangeDialog(true);
+  }
+
+  const handleChanegPassDialogClose = () => {
+    setOpenPassChangeDialog(false);
+  }
+
+  const handleChangePass = () => {
+    const changePassRequest: ChangePassword = {
+        email: user.email2,
+        old_password: user.pass1,
+        new_password: user.pass2,
+    };
+    send_json_backend('/change_password', JSON.stringify(changePassRequest))
+    .catch(error => {
+      console.error('Error changing password:', error);
+    });
+    console.log('success!')
+    handleChanegPassDialogClose()
+  }
+
 
   const handleLogOut = () => {
     sessionStorage.clear()
@@ -114,12 +152,8 @@ export const Navbar = () => {
             <Button variant="contained" color="primary" onClick={handleLogOut}>
               Log Out
             </Button>
-            <Button variant="contained" color="primary">
+            <Button variant="contained" color="primary" onClick={handleChangePassDialog}>
               Change Password
-            </Button>
-
-            <Button variant="contained" color="primary">
-              Change Username
             </Button>
             <Button
               variant="contained"
@@ -145,20 +179,111 @@ export const Navbar = () => {
               </DialogContentText>
             </DialogContent>
             <DialogActions>
-              <Button onClick={handleDeleteDialogClose} color="primary">
+
+              <TextField
+              style={{
+                marginBottom: 20,
+              }}
+              label="Email"
+              variant="outlined"
+              fullWidth
+              name="email"
+              value={user.email}
+              onChange={handleInputChange}
+              required
+            />
+            <TextField
+              style={{
+                marginBottom: 20,
+              }}
+              label="Password"
+              type="password"
+              variant="outlined"
+              fullWidth
+              name="password"
+              value={user.password}
+              onChange={handleInputChange}
+              required
+            />
+            <Button onClick={handleDeleteDialogClose} color="primary">
                 Cancel
-              </Button>
-              <Button
-                onClick={handleDeleteConfirm}
-                style={{ color: "red" }}
-                autoFocus
-              >
-                Delete
-              </Button>
-            </DialogActions>
-          </Dialog>
+            </Button>
+            <Button
+              onClick={handleDeleteConfirm}
+              style={{ color: "red" }}
+              autoFocus
+            >
+              Delete
+            </Button>
+          </DialogActions>
+        </Dialog>
+        {/*---------------------------------------------*/}
+        <Dialog
+            open={openPassChangeDialog}
+            onClose={handleChanegPassDialogClose}
+            aria-labelledby="alert-dialog-title"
+            aria-describedby="alert-dialog-description"
+          >
+            <DialogTitle id="alert-dialog-title">
+              Change Password
+            </DialogTitle>
+            <DialogContent>
+              <DialogContentText id="alert-dialog-description">
+                Please enter your email and confirm your new password
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
 
-
+              <TextField
+              style={{
+                marginBottom: 20,
+              }}
+              label="Email"
+              variant="outlined"
+              fullWidth
+              name="email2"
+              value={user.email2}
+              onChange={handleInputChange}
+              required
+            />
+            <TextField
+              style={{
+                marginBottom: 20,
+              }}
+              label="Old Password"
+              type="password"
+              variant="outlined"
+              fullWidth
+              name="pass1"
+              value={user.pass1}
+              onChange={handleInputChange}
+              required
+            />
+            <TextField
+              style={{
+                marginBottom: 20,
+              }}
+              label="New Password"
+              type="password"
+              variant="outlined"
+              fullWidth
+              name="pass2"
+              value={user.pass2}
+              onChange={handleInputChange}
+              required
+            />
+            <Button onClick={handleChanegPassDialogClose} style={{color: "gray"}}>
+                Cancel
+            </Button>
+            <Button
+              onClick={handleChangePass}
+              style={{ color: "green" }}
+              autoFocus
+            >
+              Change
+            </Button>
+          </DialogActions>
+        </Dialog>
       </Menu>
     </div>
   );
