@@ -4,18 +4,15 @@ import {
   Button,
   Paper,
   Typography,
-  InputBase,
   IconButton,
 } from "@mui/material";
 import Flashcard from "./Flashcard";
-import ArrowButtons from "./ArrowButtons";
 import { Navbar } from "../../navbar";
 import {
   ListCards,
   ListCardsResponse,
-  CreateCard,
 } from "../../backend_interface";
-import { send_json_backend, get_session_token, redirect } from "../../utils";
+import { send_json_backend, get_session_token } from "../../utils";
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
@@ -27,21 +24,14 @@ interface Card {
 const FlashcardViewerFunc = () => {
   const [flashcards, setFlashcards] = useState<Card[]>([]);
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
-  const [frontText, setFrontText] = useState("");
-  const [backText, setBackText] = useState("");
-
-  const urlString = window.location.href;
+  
+  useEffect(() => {
+    const urlString = window.location.href;
   const url = new URL(urlString);
   const searchParams = new URLSearchParams(url.search);
   const deckIdJSON = searchParams.get("deck");
-  const deckId = deckIdJSON ? JSON.parse(deckIdJSON) : null;
-
-  let uint32Array = new Uint32Array(1);
-  let dataView = new DataView(uint32Array.buffer);
-  uint32Array[0] = deckId;
-  let uint32Value = dataView.getUint32(0, true);
-
-  useEffect(() => {
+  const deckId: number = deckIdJSON ? JSON.parse(deckIdJSON) : null;
+    
     const listCards = () => {
       let access_token = get_session_token();
       if (access_token == null) {
@@ -49,7 +39,7 @@ const FlashcardViewerFunc = () => {
       }
       let prev_cards: ListCards = {
         access_token: access_token,
-        deck_id: uint32Value,
+        deck_id: deckId,
       };
       send_json_backend("/list_cards", JSON.stringify(prev_cards))
         .then((data: ListCardsResponse) => {
@@ -62,7 +52,7 @@ const FlashcardViewerFunc = () => {
     };
     // Fetch initial flashcards when component mounts
     listCards();
-  }, [deckId]);
+  }, []);
 
   const addFlashcard = () => {
     window.location.pathname = "/flashcard_editor/";

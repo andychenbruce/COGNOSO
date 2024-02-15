@@ -1,7 +1,5 @@
 import React, { useState } from "react";
 import Flashcard from "./Flashcard"; // Adjust the import path based on your project structure
-import { ListCards} from "../../backend_interface";
-import { send_json_backend } from "../../utils";
 
 const FlashcardApp = () => {
   const [flashcards, setFlashcards] = useState([]);
