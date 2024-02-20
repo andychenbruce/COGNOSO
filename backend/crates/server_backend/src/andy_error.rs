@@ -34,4 +34,6 @@ pub enum AndyError {
     BadHash(Vec<u8>),
     #[error("pdf err")]
     Pdf(#[from] pdf_parser::AndyPdfError),
+    #[error("llm err")]
+    Llm(#[from] crate::server::llm::LlmError),
 }

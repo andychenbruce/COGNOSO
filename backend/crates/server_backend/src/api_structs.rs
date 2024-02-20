@@ -8,6 +8,7 @@ pub const ENDPOINT_LIST_CARD_DECKS: &str = "/list_card_decks";
 pub const ENDPOINT_LIST_CARDS: &str = "/list_cards";
 pub const ENDPOINT_LOGIN: &str = "/login";
 pub const ENDPOINT_CREATE_DECK_PDF: &str = "/create_card_deck_pdf";
+pub const ENDPOINT_AI_TEST: &str = "/ai_test";
 
 pub type AccessToken = (u32, u32);
 
@@ -102,4 +103,9 @@ pub struct UploadPdf {
     pub access_token: AccessToken,
     pub deck_id: u32,
     pub file_bytes_base64: String,
+}
+
+#[derive(Debug, serde::Deserialize)]
+pub struct AiPromptTest {
+    pub prompt: String,
 }

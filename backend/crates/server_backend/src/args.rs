@@ -8,4 +8,7 @@ pub struct Args {
 
     #[arg(long)]
     pub database_path: std::path::PathBuf,
+
+    #[arg(long)]
+    pub llm_runner: std::net::SocketAddr,
 }
