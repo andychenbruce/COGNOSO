@@ -1,3 +1,4 @@
+// nick's UI changes to flashcard viewer
 import "./App.css";
 import React, { useState, useEffect } from "react";
 import {
@@ -27,10 +28,10 @@ const FlashcardViewerFunc = () => {
   
   useEffect(() => {
     const urlString = window.location.href;
-  const url = new URL(urlString);
-  const searchParams = new URLSearchParams(url.search);
-  const deckIdJSON = searchParams.get("deck");
-  const deckId: number = deckIdJSON ? JSON.parse(deckIdJSON) : null;
+    const url = new URL(urlString);
+    const searchParams = new URLSearchParams(url.search);
+    const deckIdJSON = searchParams.get("deck");
+    const deckId: number = deckIdJSON ? JSON.parse(deckIdJSON) : null;
     
     const listCards = () => {
       let access_token = get_session_token();
@@ -74,12 +75,13 @@ const FlashcardViewerFunc = () => {
       <Paper
         elevation={3}
         style={{
-          padding: "5px", // Reduce padding
-          width: "250px", // Reduce width
+          padding: "5px",
+          width: "250px",
           borderRadius: "8px",
           position: "absolute",
           top: "135px",
-          left: "590px",
+          left: "50%", 
+          transform: "translateX(-50%)", 
           textAlign: "center",
         }}
       >
@@ -98,7 +100,8 @@ const FlashcardViewerFunc = () => {
         style={{
           position: "absolute",
           top: "600px",
-          left: "675px",
+          left: "50%", 
+          transform: "translateX(-50%)", 
         }}
       >
         Edit Deck
@@ -108,36 +111,37 @@ const FlashcardViewerFunc = () => {
         disabled={currentCardIndex === 0}
         style={{
           position: "absolute",
-          // bottom: "325px",
-          // left: "350px",
-          display: 'flex',
-          flexDirection: 'row'
+          top: "50%", 
+          left: "40px", 
+          transform: "translateY(-50%)", 
+          color: "white",
         }}
       >
-        <ArrowBackIcon />
+        <ArrowBackIcon style={{ fontSize: '40px' }} /> {}
       </IconButton>
       <IconButton
         onClick={handleNextCard}
         disabled={currentCardIndex === flashcards.length - 1}
         style={{
           position: "absolute",
-          bottom: "325px",
-          right: "350px",
-          /*display: 'flex',
-          flexDirection: 'column'*/
+          top: "50%", 
+          right: "40px", 
+          transform: "translateY(-50%)", 
+          color: "white",
         }}
       >
-        <ArrowForwardIcon />
+        <ArrowForwardIcon style={{ fontSize: '40px' }} /> {}
       </IconButton>
       <Paper
         elevation={3}
         style={{
-          padding: "5px", // Reduce padding
-          width: "250px", // Reduce width
+          padding: "5px",
+          width: "250px",
           borderRadius: "8px",
           position: "absolute",
           top: "550px",
-          left: "590px",
+          left: "50%", 
+          transform: "translateX(-50%)", 
           textAlign: "center",
         }}
       >
