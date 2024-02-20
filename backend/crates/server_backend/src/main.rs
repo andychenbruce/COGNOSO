@@ -7,7 +7,7 @@ use clap::Parser;
 
 use andy_error::AndyError;
 
-use hyper::server::conn::http2;
+use hyper::server::conn::http1;
 use hyper::service::service_fn;
 
 use hyper_util::rt::TokioIo;
@@ -68,7 +68,8 @@ async fn main() -> Result<(), AndyError> {
 
         let tmp = globals.clone();
         tokio::task::spawn(async move {
-            if let Err(err) = http2::Builder::new(hyper_util::rt::TokioExecutor::new())
+            //if let Err(err) = http2::Builder::new(hyper_util::rt::TokioExecutor::new())
+            if let Err(err) = http1::Builder::new()
                 .serve_connection(io, service_fn(|req| server::main_service(req, tmp.clone())))
                 .await
             {
