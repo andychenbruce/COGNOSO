@@ -8,14 +8,14 @@ pub fn cors_preflight_headers(
     methods: Vec<&str>,
 ) -> Result<Response<Full<Bytes>>, AndyError> {
     let headers = [
-        ("Access-Control-Allow-Origin", "*"),
-        ("Access-Control-Allow-Headers", "content-type"),
+        (hyper::header::ACCESS_CONTROL_ALLOW_ORIGIN, "*"),
+        (hyper::header::ACCESS_CONTROL_ALLOW_HEADERS, "content-type"),
     ]
     .into_iter()
     .chain(
         methods
             .into_iter()
-            .map(|method| ("Access-Control-Allow-Methods", method)),
+            .map(|method| (hyper::header::ACCESS_CONTROL_ALLOW_METHODS, method)),
     )
     .collect();
 
@@ -24,7 +24,7 @@ pub fn cors_preflight_headers(
 
 pub fn make_response(
     status_code: hyper::StatusCode,
-    headers: Vec<(&str, &str)>,
+    headers: Vec<(hyper::header::HeaderName, &str)>,
     body: String,
 ) -> Result<Response<Full<Bytes>>, AndyError> {
     let builder = hyper::Response::builder().status(status_code);

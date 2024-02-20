@@ -55,8 +55,8 @@ async fn handle_request(
                     let body_str = serde_json::to_string(&body_struct)?;
                     utils::make_response(
                         hyper::StatusCode::OK,
-                        vec![("content-type", "application/json"),
-                        ("Access-Control-Allow-Origin", "*")],
+                        vec![(hyper::header::CONTENT_TYPE, "application/json"),
+                            (hyper::header::ACCESS_CONTROL_ALLOW_ORIGIN, "*")],
                         body_str
                     )
                 },)*
@@ -68,8 +68,8 @@ async fn handle_request(
                     println!("404 REQUEST: endpoint = {}, method = {}", endpoint, method);
                     utils::make_response(
                         hyper::StatusCode::NOT_FOUND,
-                        vec![("content-type", "text/plain; charset=utf-8"),
-                        ("Access-Control-Allow-Origin", "*")],
+                        vec![(hyper::header::CONTENT_TYPE, "text/plain; charset=utf-8"),
+                        (hyper::header::ACCESS_CONTROL_ALLOW_ORIGIN, "*")],
                         "NOT FOUND".to_owned()
                     )
                 }
