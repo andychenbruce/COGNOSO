@@ -11,9 +11,12 @@ pub enum LlmError {
     Io(#[from] std::io::Error),
     #[error("serialization error")]
     Serde(#[from] serde_json::Error),
-
+    #[error("uri messed up idk")]
+    HyperUri(#[from] http::uri::InvalidUri),
     #[error("bruh moment")]
     Bruh(#[from] std::convert::Infallible),
+    #[error("uri missing authority")]
+    UriNoAuthority,
 }
 
 pub struct LlmRunner {
@@ -32,14 +35,24 @@ impl LlmRunner {
     }
 
     pub async fn submit_prompt(&self, prompt: String) -> Result<String, LlmError> {
-        let tcp = tokio::net::TcpStream::connect(self.server_address).await?;
+        let stream = tokio::net::TcpStream::connect(self.server_address).await?;
 
-        let (mut sender, conn) =
-            hyper::client::conn::http1::handshake(hyper_util::rt::TokioIo::new(tcp)).await?;
+        let io = hyper_util::rt::TokioIo::new(stream);
+        let (mut sender, conn) = hyper::client::conn::http1::handshake(io).await?;
 
-        conn.await?;
+        tokio::task::spawn(async move {
+            if let Err(err) = conn.await {
+                println!("Connection failed: {:?}", err);
+            }
+        });
+
+        let url = ("http://".to_string() + &format!("{:?}", self.server_address) + "/completion")
+            .parse::<hyper::Uri>()?;
+        let authority = url.authority().ok_or(LlmError::UriNoAuthority)?.clone();
 
         let req = hyper::Request::builder()
+            .uri(url.path())
+            .header(hyper::header::HOST, authority.as_str())
             .method("POST")
             .body(http_body_util::Full::new(hyper::body::Bytes::from(
                 serde_json::to_string(&LlmRequest {
@@ -53,8 +66,8 @@ impl LlmRunner {
         let bytes = res.collect().await?.to_bytes();
         //let thing = serde_json::from_reader(bytes.reader())?;
 
-        let poo = std::io::read_to_string(bytes.reader()).unwrap();
-        eprintln!("responseee: {:?}", poo);
+        let poo = std::io::read_to_string(bytes.reader())?;
+
         Ok(poo)
     }
 }
