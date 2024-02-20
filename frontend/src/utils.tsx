@@ -2,7 +2,7 @@ export async function send_json_backend(
   endpoint: string,
   body: string,
 ): Promise<any> {
-  return fetch("https://localhost:3000" + endpoint, {
+  return fetch("http://localhost:3000" + endpoint, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

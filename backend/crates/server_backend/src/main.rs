@@ -14,27 +14,27 @@ use hyper_util::rt::TokioIo;
 use std::net::SocketAddr;
 use tokio::net::TcpListener;
 
-use rustls_pemfile::{certs, rsa_private_keys};
-use rustls_pki_types::{CertificateDer, PrivateKeyDer};
-use std::path::Path;
+// use rustls_pemfile::{certs, rsa_private_keys};
+// use rustls_pki_types::{CertificateDer, PrivateKeyDer};
+// use std::path::Path;
 
-fn load_certs(path: &Path) -> std::io::Result<Vec<CertificateDer<'static>>> {
-    certs(&mut std::io::BufReader::new(std::fs::File::open(path)?)).collect()
-}
+// fn load_certs(path: &Path) -> std::io::Result<Vec<CertificateDer<'static>>> {
+//     certs(&mut std::io::BufReader::new(std::fs::File::open(path)?)).collect()
+// }
 
-fn load_keys(path: &Path) -> std::io::Result<PrivateKeyDer<'static>> {
-    rsa_private_keys(&mut std::io::BufReader::new(
-        std::fs::File::open(path).unwrap(),
-    ))
-    .next()
-    .unwrap()
-    .map(Into::into)
-}
+// fn load_keys(path: &Path) -> std::io::Result<PrivateKeyDer<'static>> {
+//     rsa_private_keys(&mut std::io::BufReader::new(
+//         std::fs::File::open(path).unwrap(),
+//     ))
+//     .next()
+//     .unwrap()
+//     .map(Into::into)
+// }
 
 #[tokio::main]
 async fn main() -> Result<(), AndyError> {
-    let certs = load_certs(std::path::Path::new("./tls_certificate/home.local.crt")).unwrap();
-    let key = load_keys(std::path::Path::new("./tls_certificate/home.local.key")).unwrap();
+    // let certs = load_certs(std::path::Path::new("./tls_certificate/home.local.crt")).unwrap();
+    // let key = load_keys(std::path::Path::new("./tls_certificate/home.local.key")).unwrap();
 
     let args = args::Args::parse();
     let addr = SocketAddr::from(([0, 0, 0, 0], args.port));
@@ -46,23 +46,23 @@ async fn main() -> Result<(), AndyError> {
         llm_runner: server::llm::LlmRunner::new(args.llm_runner),
     });
 
-    let mut config = rustls::ServerConfig::builder()
-        .with_no_client_auth()
-        .with_single_cert(certs, key)
-        .unwrap();
-    config.alpn_protocols = vec![b"h2".to_vec(), b"http/1.1".to_vec(), b"http/1.0".to_vec()];
-    let acceptor = tokio_rustls::TlsAcceptor::from(std::sync::Arc::new(config));
+    // let mut config = rustls::ServerConfig::builder()
+    //     .with_no_client_auth()
+    //     .with_single_cert(certs, key)
+    //     .unwrap();
+    // config.alpn_protocols = vec![b"h2".to_vec(), b"http/1.1".to_vec(), b"http/1.0".to_vec()];
+    // let acceptor = tokio_rustls::TlsAcceptor::from(std::sync::Arc::new(config));
 
     loop {
         let (stream, _peer_addr) = listener.accept().await?;
-        let acceptor = acceptor.clone();
-        let stream = match acceptor.accept(stream).await {
-            Ok(s) => s,
-            Err(e) => {
-                println!("bruh: {:?}", e);
-                continue;
-            }
-        };
+        // let acceptor = acceptor.clone();
+        // let stream = match acceptor.accept(stream).await {
+        //     Ok(s) => s,
+        //     Err(e) => {
+        //         println!("bruh: {:?}", e);
+        //         continue;
+        //     }
+        // };
 
         let io = TokioIo::new(stream);
 
