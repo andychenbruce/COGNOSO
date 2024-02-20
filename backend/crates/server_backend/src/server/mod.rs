@@ -1,4 +1,5 @@
 pub mod database;
+pub mod llm;
 pub mod utils;
 
 use crate::api_structs;
@@ -12,6 +13,7 @@ use hyper::{Request, Response};
 
 pub struct SharedState {
     pub database: database::Database,
+    pub llm_runner: llm::LlmRunner,
 }
 
 pub async fn main_service(
@@ -121,7 +123,8 @@ async fn handle_request(
             hyper::Method::POST,
             api_structs::ENDPOINT_CHANGE_PASSWORD,
             change_password
-        )
+        ),
+        (hyper::Method::POST, api_structs::ENDPOINT_AI_TEST, ai_test)
     )
 }
 
@@ -221,4 +224,14 @@ async fn create_deck_pdf(
     let lines = pdf_parser::extract_text(&body)?;
     println!("lines = {:?}", lines);
     todo!()
+}
+
+async fn ai_test(
+    info: api_structs::AiPromptTest,
+    state: std::sync::Arc<SharedState>,
+) -> Result<String, AndyError> {
+    let ai_response = state.llm_runner.submit_prompt(info.prompt).await?;
+    println!("ai = {:?}", ai_response);
+
+    Ok(ai_response)
 }

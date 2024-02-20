@@ -8,6 +8,8 @@ export const ENDPOINT_LIST_CARD_DECKS: string = "/list_card_decks";
 export const ENDPOINT_LIST_CARDS: string = "/list_cards";
 export const ENDPOINT_LOGIN: string = "/login";
 export const ENDPOINT_CREATE_DECK_PDF: string = "/create_card_deck_pdf";
+export const ENDPOINT_AI_TEST: string = "/ai_test";
+
 
 // request -> /create_card
 export interface CreateCard {
@@ -98,4 +100,9 @@ export interface UploadPdf {
   access_token: [number, number];
   deck_id: number;
   file_bytes_base64: string;
+}
+
+// request -> /create_deck_pdf
+export interface AiPromptTest {
+  prompt: string;
 }
