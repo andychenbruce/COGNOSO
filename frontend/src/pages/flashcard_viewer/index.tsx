@@ -1,4 +1,3 @@
-// nick's UI changes to flashcard viewer
 import "./App.css";
 import React, { useState, useEffect } from "react";
 import {
