@@ -14,11 +14,11 @@ import {
 import {
   ListCards,
   ListCardsResponse,
-  CreateCard,
+
+  
 
 } from "../../backend_interface";
 import { send_json_backend, get_session_token } from "../../utils";
-import { error } from "console";
 import { redirect } from "../../utils";
 
 interface Card {
