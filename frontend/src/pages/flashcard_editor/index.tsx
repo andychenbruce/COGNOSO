@@ -8,7 +8,8 @@ import {
   Button,
   TextField,
   Typography,
-
+  Snackbar,
+  
 } from "@mui/material";
 import {
   ListCards,
@@ -17,6 +18,7 @@ import {
 
 } from "../../backend_interface";
 import { send_json_backend, get_session_token } from "../../utils";
+import { error } from "console";
 
 interface Card {
   //id: string;
@@ -43,8 +45,10 @@ const App: React.FC = () => {
   const [editingCardIndex, setEditingCardIndex] = useState<number | null>(null);
   const [q1, setq1] = useState("");
   const [a1, seta1] = useState("");
-
-
+  const [questionError, setQuestionError] = useState(false);
+  const [answerError, setAnswerError] = useState(false);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [errorFields, setErrorFields] = useState<string[]>([]);
 
   //console.log(uint32Value); 
   // const _handleKeyPress = (e: React.KeyboardEvent<HTMLDivElement>) => {
@@ -59,7 +63,25 @@ const App: React.FC = () => {
     if (access_token == null) {
       return;
     }
-    let create_card: CreateCard = {
+    const newErrorFields: string[] = [];
+    if (!q1) {
+      newErrorFields.push('question');
+    }
+    if (!a1) {
+      newErrorFields.push('answer');
+    }
+    if (newErrorFields.length > 0) {
+      // Show snackbar if any error fields
+      setSnackbarOpen(true);
+      // Set error fields
+      setErrorFields(newErrorFields);
+      setTimeout(() => {
+        // Clear error fields after 2 seconds
+        setErrorFields([]);
+      }, 2000);
+      return;
+    }
+    let create_card = {
       access_token: access_token,
       deck_id: deckId,
       question: q1,
@@ -170,36 +192,60 @@ const App: React.FC = () => {
   
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }} >
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
       <Navbar />
   
+      <div style={{ backgroundColor: '#f1f1f1', padding: '20px', borderRadius: '8px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)', margin: '20px 0', width: '100%', maxWidth: '500px' }}>
       <TextField
         label="Question"
         value={question}
-        onChange={(e) => {setQuestion(e.target.value); setq1(e.target.value)}}
-        //onKeyPress={handleKeyPress} // Listen for Enter key press
+        onChange={(e) => { setQuestion(e.target.value); setq1(e.target.value); }}
+        fullWidth
+        margin="normal"
+        variant="outlined"
+        error={errorFields.includes('question')} // Apply error style
+        style={{
+          borderColor: errorFields.includes('question') ? 'red' : undefined // Apply red border color
+        }}
       />
       <TextField
         label="Answer"
         value={answer}
-        onChange={(e) => {setAnswer(e.target.value); seta1(e.target.value)}}
-        //onKeyPress={handleKeyPress} // Listen for Enter key press
+        onChange={(e) => { setAnswer(e.target.value); seta1(e.target.value); }}
+        fullWidth
+        margin="normal"
+        variant="outlined"
+        error={errorFields.includes('answer')} // Apply error style
+        style={{
+          borderColor: errorFields.includes('answer') ? 'red' : undefined // Apply red border color
+        }}
       />
-      <Button onClick={ () => {Create_card(); setAnswer(""); setQuestion("")}}>Create Card</Button>
+        <div style={{ marginTop: '20px', textAlign: 'center' }}>
+          <Button onClick={() => { Create_card(); setAnswer(""); setQuestion(""); }}>Create Card</Button>
+        </div>
+      </div>
       <div style={{ marginTop: '20px' }}>
         {flashcards.map((flashcard, index) => (
-          <div key={index} style={{ marginBottom: '10px', padding: '20px', border: '1px solid #ccc', borderRadius: '10px', width: '400px' }}>
-            {editingCardIndex === index ? (
+           <div key={index} style={{ marginBottom: '10px', padding: '20px', border: '1px solid #ccc', borderRadius: '10px', width: '400px', backgroundColor: '#f1f1f1' }}>
+           {editingCardIndex === index ? (
               <>
                 <TextField
                   label="Question"
                   value={question}
-                  onChange={(e) => setQuestion(e.target.value)}
+                  onChange={(e) => { setQuestion(e.target.value); setq1(e.target.value); }}
+                  fullWidth
+                  margin="normal"
+                  variant="outlined"
+                  error={questionError} // Add this line
                 />
                 <TextField
                   label="Answer"
                   value={answer}
-                  onChange={(e) => setAnswer(e.target.value)}
+                  onChange={(e) => { setAnswer(e.target.value); seta1(e.target.value); }}
+                  fullWidth
+                  margin="normal"
+                  variant="outlined"
+                  error={answerError} // Add this line
                 />
                 <Button onClick={() => saveChanges(index)}>Save Changes</Button>
                 <Button onClick={cancelEdit}>Cancel</Button>
@@ -214,7 +260,10 @@ const App: React.FC = () => {
                 <Button /*onClick={() => handleDeleteCard(index)}*/>Delete</Button> 
               </>
             )}
+            <Snackbar open={snackbarOpen} autoHideDuration={2000} onClose={() => setSnackbarOpen(false)} message="Please fill out both the question and answer fields!">
+            </Snackbar>
           </div>
+          
         ))}
       </div>
     </div>

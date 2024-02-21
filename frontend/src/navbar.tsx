@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button, InputBase, Menu, Snackbar, Container, Dialog, TextField, DialogContent, DialogTitle, DialogActions, DialogContentText} from "@mui/material";
+import { Button, InputBase, Container, Menu, Snackbar, MenuItem, Dialog, TextField, DialogContent, DialogTitle, DialogActions, DialogContentText} from "@mui/material";
 import { redirect, send_json_backend } from "./utils";
 import { DeleteUser } from "./backend_interface";
 import { ChangePassword } from "./backend_interface";
@@ -155,46 +155,53 @@ export const Navbar = () => {
         Account
       </Button>
       <Menu
-      
+
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
         onClose={handleMenuClose}
-      >
-          <Container
-          
-            sx={{ display: "flex", flexDirection: "column", gap: "8px", background: '#140952a6'}}
-            
-          >
-            <Button variant="contained" color="primary" onClick={handleLogOut}>
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'right',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+        sx={{
+          marginTop: '0 important', // Remove top margin
+          marginBottom: '0 important' // Remove bottom margin
+        }}
+      > 
+            <MenuItem style={{ backgroundColor: "#9370db", color: "black" }} onClick={handleLogOut}>
               Log Out
-            </Button>
-            <Button variant="contained" color="primary" onClick={handleChangePassDialog}>
+            </MenuItem>
+            <MenuItem style={{ backgroundColor: "#9370db", color: "black" }} onClick={handleChangePassDialog}>
               Change Password
-            </Button>
-            <Button
-              variant="contained"
-              style={{ backgroundColor: "red", color: "white" }}
+            </MenuItem>
+            <MenuItem
+              style={{ backgroundColor: "#ff4d4d", color: "white" }}
               onClick={handleDeleteButtonClick}
             >
               Delete Account
-            </Button>
-          </Container>
+            </MenuItem>
+      </Menu>
           <Dialog
             open={openDeleteDialog}
             onClose={handleDeleteDialogClose}
             aria-labelledby="alert-dialog-title"
             aria-describedby="alert-dialog-description"
+            
           >
-            <DialogTitle id="alert-dialog-title">
+            <DialogTitle style={{background: '#140952a6', color: '#E6E6FA'}} id="alert-dialog-title">
               Confirm Delete Account
             </DialogTitle>
-            <DialogContent>
-              <DialogContentText id="alert-dialog-description">
+            <DialogContent style={{background: '#140952a6'}} >
+              <DialogContentText style={{color: '#E6E6FA'}} id="alert-dialog-description">
                 Are you sure you want to delete your account? This action cannot
                 be undone.
               </DialogContentText>
             </DialogContent>
-            <DialogActions>
+            <DialogActions style={{background: '#140952a6'}}>
 
               <TextField
               style={{
@@ -207,6 +214,7 @@ export const Navbar = () => {
               value={user.email}
               onChange={handleInputChange}
               required
+              InputLabelProps={{style: { color: '#E6E6FA'}}}
             />
             <TextField
               style={{
@@ -220,8 +228,9 @@ export const Navbar = () => {
               value={user.password}
               onChange={handleInputChange}
               required
+              InputLabelProps={{style: { color: '#E6E6FA'}}}
             />
-            <Button onClick={handleDeleteDialogClose} color="primary">
+            <Button onClick={handleDeleteDialogClose} style={{color: "white"}}>
                 Cancel
             </Button>
             <Button
@@ -323,7 +332,7 @@ export const Navbar = () => {
             onClose={() => setShowSuccessSnackbar(false)}
             message="Password Successfully Changed!"
           />
-      </Menu>
+
     </div>
   );
 };
