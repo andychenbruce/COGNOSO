@@ -75,23 +75,24 @@ const FlashcardViewerFunc = () => {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
       <Navbar />
+      
       <div style={{
         textAlign: 'left',
         padding: '10px', 
         margin: '20px 0', 
-        backgroundColor: '#fff', 
-        border: '1px solid #ddd', 
+        backgroundColor: 'transparent', 
+        border: '2px solid purple', 
         borderRadius: '4px', 
         boxShadow: '0 2px 4px rgba(0,0,0,0.1)', 
         alignSelf: 'flex-start', 
         marginLeft: '20px', 
       }}>
-        <Button onClick={() => {redirectToDeckManage()}}>
+        <Button onClick={() => {redirectToDeckManage()}} style={{color:'white'}} >
           Back
         </Button>
       </div>
-      <div style={{ position: 'relative', maxWidth: '600px', width: '100%', padding: '0 20px', marginTop: '50px' }}>
-        <Paper elevation={3} style={{ padding: "20px", borderRadius: "8px", textAlign: "center", marginBottom: '20px' }}>
+      <div style={{ position: 'relative', maxWidth: '600px', width: '100%', padding: '0 20px', marginTop: '50px',  }}>
+        <Paper elevation={3} style={{ padding: "20px", borderRadius: "8px", textAlign: "center", marginBottom: '20px', backgroundColor:'#ce93d8' }}>
           <Typography variant="h5">Deck 1</Typography>
         </Paper>
         {flashcards.length > 0 && (
@@ -100,17 +101,18 @@ const FlashcardViewerFunc = () => {
             answer={flashcards[currentCardIndex].answer}
           />
         )}
-        <IconButton onClick={handlePrevCard} disabled={currentCardIndex === 0} sx={{ color: 'white', position: 'absolute', top: '50%', left: '-60px', transform: 'translateY(-50%)', '& svg': { fontSize: 48 } }}>
+        <IconButton onClick={handlePrevCard} disabled={currentCardIndex === 0} sx={{ color:'white', position: 'absolute', top: '50%', left: '-60px', transform: 'translateY(-50%)', '& svg': { fontSize: 48 } }}>
           <ArrowBackIcon />
         </IconButton>
         <IconButton onClick={handleNextCard} disabled={currentCardIndex === flashcards.length - 1} sx={{ color: 'white', position: 'absolute', top: '50%', right: '-60px', transform: 'translateY(-50%)', '& svg': { fontSize: 48 } }}>
           <ArrowForwardIcon />
         </IconButton>
+      
       </div>
-      <Button variant="contained" onClick={addFlashcard}>
+      <Button variant="contained" onClick={addFlashcard} style={{backgroundColor:'#9c2caf', border: '1px solid white'}}>
         Edit Deck
       </Button>
-      <Paper elevation={3} style={{ padding: "10px", borderRadius: "8px", textAlign: "center", marginTop: '20px' }}>
+      <Paper elevation={3} style={{ padding: "10px", borderRadius: "8px", textAlign: "center", marginTop: '20px', backgroundColor: '#ce93d8' }}>
         <Typography variant="body1">
           Card {currentCardIndex + 1}/{flashcards.length}
         </Typography>

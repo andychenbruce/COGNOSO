@@ -140,22 +140,23 @@ const App: React.FC = () => {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
       <Navbar />
+
       <div style={{
         textAlign: 'left',
         padding: '10px', 
         margin: '20px 0', 
-        backgroundColor: '#fff', 
-        border: '1px solid #ddd', 
+        backgroundColor: 'transparent', 
+        border: '2px solid purple', 
         borderRadius: '4px', 
         boxShadow: '0 2px 4px rgba(0,0,0,0.1)', 
         alignSelf: 'flex-start', 
         marginLeft: '20px', 
       }}>
-        <Button onClick={() => {redirect("/flashcard_viewer")}}>
+        <Button onClick={() => {redirect("/flashcard_viewer")}} style={{color:'white'}} >
           Back
         </Button>
       </div>
-      <div style={{ backgroundColor: '#f1f1f1', padding: '20px', borderRadius: '8px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)', margin: '20px 0', width: '100%', maxWidth: '500px' }}>
+      <div style={{ backgroundColor: '#d9a1f7', padding: '20px', borderRadius: '8px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)', margin: '20px 0', width: '100%', maxWidth: '500px' }}>
       <TextField
         label="Question"
         value={question}
@@ -180,11 +181,11 @@ const App: React.FC = () => {
           borderColor: errorFields.includes('emptyerror') ? 'red' : undefined
         }}
       />
-        <div style={{ marginTop: '20px', textAlign: 'center' }}>
-          <Button onClick={() => { Create_card(); setAnswer(""); setQuestion(""); }}>Create Card</Button>
+        <div style={{ marginTop: '20px', textAlign: 'center', }}>
+          <Button onClick={() => { Create_card(); setAnswer(""); setQuestion(""); }} style={{border:'1px solid blue'}}>Create Card</Button>
         </div>
       </div>
-      <div style={{ marginTop: '20px' }}>
+      <div style={{ marginTop: '20px'}}>
         {flashcards.map((flashcard, index) => (
            <div key={index} style={{ marginBottom: '10px', padding: '20px', border: '1px solid #ccc', borderRadius: '10px', width: '400px', backgroundColor: '#f1f1f1' }}>
            {editingCardIndex === index ? (
@@ -209,7 +210,7 @@ const App: React.FC = () => {
               </>
             ) : (
               <>
-                <Typography variant="h6">Question:</Typography>
+                <Typography variant="h6" >Question:</Typography>
                 <Typography>{flashcard.question}</Typography>
                 <Typography variant="h6">Answer:</Typography>
                 <Typography>{flashcard.answer}</Typography>

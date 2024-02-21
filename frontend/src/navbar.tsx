@@ -103,7 +103,7 @@ export const Navbar = () => {
     <div
     style={{
       backgroundColor: 'rgba(128, 128, 128, 0.5)', 
-      border: "5px solid #1976d2",
+      border: "5px solid #ab47bc",
       borderRadius: "15px",
       padding: "5px",
       display: "flex",
@@ -111,11 +111,12 @@ export const Navbar = () => {
       flexWrap: "wrap",
       gap: "10px",
       marginBottom: "20px",
+      
   }}
     >
       <Button
         variant="contained"
-        style={{ fontSize: "20px", width: "400px" }}
+        style={{ fontSize: "20px", width: "400px", backgroundColor: '#9c27b0' }}
         onClick={() => {
           redirect("/home_page");
         }}
@@ -127,7 +128,7 @@ export const Navbar = () => {
           display: "flex",
           alignItems: "center",
           width: "500px",
-          border: "2px solid #1976d2",
+          border: "2px solid #9c27b0",
           borderRadius: "4px",
           padding: "5px",
         }}
@@ -137,19 +138,19 @@ export const Navbar = () => {
     inputProps={{ "aria-label": "search", style: { color: '#E6E6FA' } }}
     value={searchQuery}
     onChange={(e) => setSearchQuery(e.target.value)}
-    style={{ flex: 1, fontSize: "20px", paddingLeft: "10px" }}
+    style={{ flex: 1, fontSize: "20px", paddingLeft: "10px"}}
 />
       </div>
       <Button
         variant="contained"
-        style={{ fontSize: "20px", width: "400px" }}
+        style={{ fontSize: "20px", width: "400px", backgroundColor: '#9c27b0' }}
         onClick={() => { redirect("/deck_manage"); }}
       >
         Decks
       </Button>
       <Button
         variant="contained"
-        style={{ fontSize: "20px", width: "400px" }}
+        style={{ fontSize: "20px", width: "400px", backgroundColor: '#9c27b0' }}
         onClick={handleMenuOpen}
       >
         Account

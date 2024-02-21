@@ -211,6 +211,7 @@ const App: React.FC = () => {
                   height: "70px",
                   fontSize: "1.5rem",
                   marginBottom: "10px",
+                  backgroundColor: '#af52bf'
                 }}
               >
                 {decks[index].name}
@@ -248,6 +249,7 @@ const App: React.FC = () => {
           justifyContent: "center",
           marginLeft: "auto",
           marginRight: "30px",
+          backgroundColor: '#af52bf'
         }}
       >
         +

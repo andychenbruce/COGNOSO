@@ -28,10 +28,10 @@
 }
 
 .front {
-  background-color: #f0f0f0;
+  background-color: #ce93d8;
 }
 
 .back {
-  background-color: #f0f0f0;
+  background-color: #ce93d8;
   transform: rotateY(180deg);
 }
