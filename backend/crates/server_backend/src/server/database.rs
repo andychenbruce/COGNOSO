@@ -190,19 +190,16 @@ impl Database {
         Ok(())
     }
 
-    pub fn delete_card_deck(&self, 
-        user_id: UserId, 
-        deck_name: String
-    ) -> Result<(), AndyError> {
+    pub fn delete_card_deck(&self, user_id: UserId, deck_name: String) -> Result<(), AndyError> {
         let deck_id = self.get_user_id(&deck_name);
         let write_txn = self.db.begin_write()?;
-        let mut table = write_txn.open_table(Self::DECKS_TABLE)?;
-        table.remove((user_id, deck_id)); 
+        {
+            let mut table = write_txn.open_table(Self::DECKS_TABLE)?;
+            table.remove((user_id, deck_id))?;
+        }
         write_txn.commit()?;
         Ok(())
     }
-
-    
 
     pub fn new_card(
         &self,
