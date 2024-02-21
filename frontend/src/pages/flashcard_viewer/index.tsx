@@ -15,6 +15,7 @@ import {
 import { send_json_backend, get_session_token } from "../../utils";
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { redirect } from "../../utils";
 
 interface Card {
   question: string;
@@ -68,9 +69,28 @@ const FlashcardViewerFunc = () => {
     );
   };
 
+  const redirectToDeckManage = () => {
+    window.location.pathname = "/deck_manage/"
+  }
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
       <Navbar />
+      <div style={{
+        textAlign: 'left',
+        padding: '10px', 
+        margin: '20px 0', 
+        backgroundColor: '#fff', 
+        border: '1px solid #ddd', 
+        borderRadius: '4px', 
+        boxShadow: '0 2px 4px rgba(0,0,0,0.1)', 
+        alignSelf: 'flex-start', 
+        marginLeft: '20px', 
+      }}>
+        <Button onClick={() => {redirectToDeckManage()}}>
+          Back
+        </Button>
+      </div>
       <div style={{ position: 'relative', maxWidth: '600px', width: '100%', padding: '0 20px', marginTop: '50px' }}>
         <Paper elevation={3} style={{ padding: "20px", borderRadius: "8px", textAlign: "center", marginBottom: '20px' }}>
           <Typography variant="h5">Deck 1</Typography>

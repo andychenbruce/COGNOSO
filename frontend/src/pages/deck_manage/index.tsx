@@ -162,13 +162,13 @@ const App: React.FC = () => {
       <Navbar />
       <Grid
         container
-        rowSpacing={2}
-        columnSpacing={0}
+        rowSpacing={1}
+        columnSpacing={1}
         justifyContent="flex-start"
-        style={{ width: "100%", paddingLeft: "10px", paddingRight: "10px" }}
+        style={{ width: "100%", paddingLeft: "10px", paddingRight: "10px"}}
       >
         {decks.map((deck, index) => (
-          <Grid item xs={6} key={deck.deck_id}>
+          <Grid item xs={3} key={deck.deck_id} >
             <Button
               type="submit"
               variant="contained"
@@ -185,7 +185,7 @@ const App: React.FC = () => {
                 window.location.href = url.toString();
               }}
               style={{
-                width: "50%",
+                width: "100%",
                 height: "70px",
                 fontSize: "1.5rem",
                 marginBottom: "10px",
@@ -196,6 +196,8 @@ const App: React.FC = () => {
           </Grid>
         ))}
       </Grid>
+   
+    
 
       <Button
         type="submit"
