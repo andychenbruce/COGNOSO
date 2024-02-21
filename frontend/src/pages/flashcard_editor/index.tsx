@@ -19,6 +19,7 @@ import {
 } from "../../backend_interface";
 import { send_json_backend, get_session_token } from "../../utils";
 import { error } from "console";
+import { redirect } from "../../utils";
 
 interface Card {
   //id: string;
@@ -45,10 +46,10 @@ const App: React.FC = () => {
   const [editingCardIndex, setEditingCardIndex] = useState<number | null>(null);
   const [q1, setq1] = useState("");
   const [a1, seta1] = useState("");
-  const [questionError, setQuestionError] = useState(false);
-  const [answerError, setAnswerError] = useState(false);
+
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [errorFields, setErrorFields] = useState<string[]>([]);
+  
 
   //console.log(uint32Value); 
   // const _handleKeyPress = (e: React.KeyboardEvent<HTMLDivElement>) => {
@@ -63,24 +64,17 @@ const App: React.FC = () => {
     if (access_token == null) {
       return;
     }
-    const newErrorFields: string[] = [];
-    if (!q1) {
-      newErrorFields.push('question');
-    }
-    if (!a1) {
-      newErrorFields.push('answer');
-    }
-    if (newErrorFields.length > 0) {
-      // Show snackbar if any error fields
+    if (!q1 || !a1) {
       setSnackbarOpen(true);
-      // Set error fields
-      setErrorFields(newErrorFields);
+      setErrorFields(!q1 ? ['emptyerror'] : ['emptyerror']);
       setTimeout(() => {
-        // Clear error fields after 2 seconds
         setErrorFields([]);
       }, 2000);
+      setq1("");
+      seta1("");
       return;
     }
+  
     let create_card = {
       access_token: access_token,
       deck_id: deckId,
@@ -91,6 +85,9 @@ const App: React.FC = () => {
       .then((data) => {
         console.log("result:", data);
         listCards();
+        // Clear q1 and a1 after successful card creation
+        setq1("");
+        seta1("");
       })
       .catch((error) => {
         console.error("Error creating card:", error);
@@ -194,7 +191,21 @@ const App: React.FC = () => {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
       <Navbar />
-  
+      <div style={{
+        textAlign: 'left',
+        padding: '10px', 
+        margin: '20px 0', 
+        backgroundColor: '#fff', 
+        border: '1px solid #ddd', 
+        borderRadius: '4px', 
+        boxShadow: '0 2px 4px rgba(0,0,0,0.1)', 
+        alignSelf: 'flex-start', 
+        marginLeft: '20px', 
+      }}>
+        <Button onClick={() => {redirect("/flashcard_viewer")}}>
+          Back
+        </Button>
+      </div>
       <div style={{ backgroundColor: '#f1f1f1', padding: '20px', borderRadius: '8px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)', margin: '20px 0', width: '100%', maxWidth: '500px' }}>
       <TextField
         label="Question"
@@ -203,9 +214,9 @@ const App: React.FC = () => {
         fullWidth
         margin="normal"
         variant="outlined"
-        error={errorFields.includes('question')} // Apply error style
+        error={errorFields.includes('emptyerror')} 
         style={{
-          borderColor: errorFields.includes('question') ? 'red' : undefined // Apply red border color
+          borderColor: errorFields.includes('emptyerror') ? 'red' : undefined 
         }}
       />
       <TextField
@@ -215,9 +226,9 @@ const App: React.FC = () => {
         fullWidth
         margin="normal"
         variant="outlined"
-        error={errorFields.includes('answer')} // Apply error style
+        error={errorFields.includes('emptyerror')}
         style={{
-          borderColor: errorFields.includes('answer') ? 'red' : undefined // Apply red border color
+          borderColor: errorFields.includes('emptyerror') ? 'red' : undefined
         }}
       />
         <div style={{ marginTop: '20px', textAlign: 'center' }}>
@@ -236,7 +247,7 @@ const App: React.FC = () => {
                   fullWidth
                   margin="normal"
                   variant="outlined"
-                  error={questionError} // Add this line
+
                 />
                 <TextField
                   label="Answer"
@@ -245,7 +256,7 @@ const App: React.FC = () => {
                   fullWidth
                   margin="normal"
                   variant="outlined"
-                  error={answerError} // Add this line
+
                 />
                 <Button onClick={() => saveChanges(index)}>Save Changes</Button>
                 <Button onClick={cancelEdit}>Cancel</Button>

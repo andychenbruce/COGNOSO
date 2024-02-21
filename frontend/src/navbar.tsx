@@ -102,7 +102,7 @@ export const Navbar = () => {
   return (
     <div
     style={{
-      backgroundColor: 'rgba(128, 128, 128, 0.5)', // Transparent gray color
+      backgroundColor: 'rgba(128, 128, 128, 0.5)', 
       border: "5px solid #1976d2",
       borderRadius: "15px",
       padding: "5px",

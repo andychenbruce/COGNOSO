@@ -12,6 +12,8 @@ import {
   DialogActions,
   TextField,
   Grid,
+  Snackbar,
+  Alert,
 } from "@mui/material";
 import {
   UploadPdf,
@@ -29,7 +31,8 @@ const App: React.FC = () => {
   const [decks, setDecks]: [CardDeck[], Dispatch<CardDeck[]>] = useState(
     [] as CardDeck[],
   );
-  
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [errorField, setTextFieldError] = useState(false);
 
   const updateDecks = () => {
     let token = get_session_token();
@@ -40,7 +43,7 @@ const App: React.FC = () => {
     send_json_backend("/list_card_decks", JSON.stringify(request))
       .then((data: ListCardDecksResponse) => {
         setDecks(data.decks);
-        console.log(data.decks)
+        console.log(data.decks);
       })
       .catch((error) => {
         console.error("Error in:", error);
@@ -55,6 +58,7 @@ const App: React.FC = () => {
   ) => {
     const { value } = event.target;
     setDeckName(value);
+    setTextFieldError(false); // Resetting error when user types
   };
 
   const handleCreateButtonClick = () => {
@@ -62,6 +66,14 @@ const App: React.FC = () => {
   };
 
   const handleCreateConfirm = () => {
+    if (deckName.trim() === "") {
+      setSnackbarOpen(true);
+      setTextFieldError(true);
+      setTimeout(() => {
+        setSnackbarOpen(false);
+      }, 2000);
+      return;
+    }
     let access_token = get_session_token();
     if (access_token == null) {
       return;
@@ -133,37 +145,61 @@ const App: React.FC = () => {
   return (
     <div>
       <Navbar />
-      <Grid container rowSpacing={2} columnSpacing={0} justifyContent="flex-start" style={{ width: '100%', paddingLeft: '10px', paddingRight: '10px' }}>
-      {decks.map((deck, index) => (
-        <Grid item xs={6} key={deck.deck_id}>
-          <Button
-            type="submit"
-            variant="contained"
-            color="primary"
-            
-            fullWidth
-            onClick={() => {
-              const url = new URL(
-                window.location.origin + "/flashcard_viewer/",
-              );
-              url.searchParams.append("deck", JSON.stringify(deck.deck_id));
-              window.location.href = url.toString();
-            }}
-            style={{ width: '80%', height: '70px', fontSize: '1.5rem', marginBottom: '10px' }}
-          >
-            {decks[index].name}
-          </Button>
-        </Grid>
-      ))}
-    </Grid>
+      <Grid
+        container
+        rowSpacing={2}
+        columnSpacing={0}
+        justifyContent="flex-start"
+        style={{ width: "100%", paddingLeft: "10px", paddingRight: "10px" }}
+      >
+        {decks.map((deck, index) => (
+          <Grid item xs={6} key={deck.deck_id}>
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              fullWidth
+              onClick={() => {
+                const url = new URL(
+                  window.location.origin + "/flashcard_viewer/",
+                );
+                url.searchParams.append(
+                  "deck",
+                  JSON.stringify(deck.deck_id),
+                );
+                window.location.href = url.toString();
+              }}
+              style={{
+                width: "80%",
+                height: "70px",
+                fontSize: "1.5rem",
+                marginBottom: "10px",
+              }}
+            >
+              {decks[index].name}
+            </Button>
+          </Grid>
+        ))}
+      </Grid>
 
       <Button
         type="submit"
         variant="contained"
         color="primary"
         onClick={handleCreateButtonClick}
-        style={{ width: '70px', height: '70px', fontSize: '1.5rem', marginTop: '10px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', marginLeft: 'auto', marginRight: '30px' }}
-        >
+        style={{
+          width: "70px",
+          height: "70px",
+          fontSize: "1.5rem",
+          marginTop: "10px",
+          borderRadius: "50%",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          marginLeft: "auto",
+          marginRight: "30px",
+        }}
+      >
         +
       </Button>
 
@@ -190,6 +226,8 @@ const App: React.FC = () => {
           <TextField
             style={{
               marginBottom: 20,
+              borderColor: errorField ? 'red' : undefined ,
+            
             }}
             label="Deck Name"
             variant="outlined"
@@ -212,6 +250,14 @@ const App: React.FC = () => {
           </Button>
         </DialogActions>
       </Dialog>
+
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={null}
+        onClose={() => setSnackbarOpen(false)}
+        message='Title cannot be empty!'
+      >
+      </Snackbar>
     </div>
   );
 };
