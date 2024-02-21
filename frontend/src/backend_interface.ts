@@ -1,4 +1,5 @@
 export const ENDPOINT_CREATE_CARD_DECK: string = "/create_card_deck";
+export const ENDPOINT_DELETE_CARD_DECK: string = "/delete_card_deck";
 export const ENDPOINT_CREATE_CARD: string = "/create_card";
 export const ENDPOINT_DELETE_CARD: string = "/delete_card";
 export const ENDPOINT_NEW_USER: string = "/new_user";
@@ -31,6 +32,13 @@ export interface CreateCardDeck {
   access_token: [number, number];
   deck_name: string;
 }
+
+// request -> /delete_card_deck
+export interface DeleteCardDeck {
+  access_token: [number, number];
+  deck_name: string;
+}
+
 
 // request -> /new_user
 export interface NewUser {
