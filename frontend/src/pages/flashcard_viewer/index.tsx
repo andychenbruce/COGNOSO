@@ -24,14 +24,14 @@ interface Card {
 const FlashcardViewerFunc = () => {
   const [flashcards, setFlashcards] = useState<Card[]>([]);
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
-  
+
   useEffect(() => {
     const urlString = window.location.href;
     const url = new URL(urlString);
     const searchParams = new URLSearchParams(url.search);
     const deckIdJSON = searchParams.get("deck");
     const deckId: number = deckIdJSON ? JSON.parse(deckIdJSON) : null;
-    
+
     const listCards = () => {
       let access_token = get_session_token();
       if (access_token == null) {
@@ -69,82 +69,30 @@ const FlashcardViewerFunc = () => {
   };
 
   return (
-    <div>
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
       <Navbar />
-      <Paper
-        elevation={3}
-        style={{
-          padding: "5px",
-          width: "250px",
-          borderRadius: "8px",
-          position: "absolute",
-          top: "135px",
-          left: "50%", 
-          transform: "translateX(-50%)", 
-          textAlign: "center",
-        }}
-      >
-        <Typography variant="body1" style={{ fontSize: "20px" }}>
-          Deck 1
-        </Typography>
-      </Paper>
-      {flashcards.length > 0 && (
-        <Flashcard
-          question={flashcards[currentCardIndex].question}
-          answer={flashcards[currentCardIndex].answer}
-        />
-      )}
-      <Button
-        onClick={addFlashcard}
-        style={{
-          position: "absolute",
-          top: "600px",
-          left: "50%", 
-          transform: "translateX(-50%)", 
-        }}
-      >
+      <div style={{ position: 'relative', maxWidth: '600px', width: '100%', padding: '0 20px', marginTop: '50px' }}>
+        <Paper elevation={3} style={{ padding: "20px", borderRadius: "8px", textAlign: "center", marginBottom: '20px' }}>
+          <Typography variant="h5">Deck 1</Typography>
+        </Paper>
+        {flashcards.length > 0 && (
+          <Flashcard
+            question={flashcards[currentCardIndex].question}
+            answer={flashcards[currentCardIndex].answer}
+          />
+        )}
+        <IconButton onClick={handlePrevCard} disabled={currentCardIndex === 0} sx={{ color: 'white', position: 'absolute', top: '50%', left: '-60px', transform: 'translateY(-50%)', '& svg': { fontSize: 48 } }}>
+          <ArrowBackIcon />
+        </IconButton>
+        <IconButton onClick={handleNextCard} disabled={currentCardIndex === flashcards.length - 1} sx={{ color: 'white', position: 'absolute', top: '50%', right: '-60px', transform: 'translateY(-50%)', '& svg': { fontSize: 48 } }}>
+          <ArrowForwardIcon />
+        </IconButton>
+      </div>
+      <Button variant="contained" onClick={addFlashcard}>
         Edit Deck
       </Button>
-      <IconButton
-        onClick={handlePrevCard}
-        disabled={currentCardIndex === 0}
-        style={{
-          position: "absolute",
-          top: "50%", 
-          left: "40px", 
-          transform: "translateY(-50%)", 
-          color: "white",
-        }}
-      >
-        <ArrowBackIcon style={{ fontSize: '40px' }} /> {}
-      </IconButton>
-      <IconButton
-        onClick={handleNextCard}
-        disabled={currentCardIndex === flashcards.length - 1}
-        style={{
-          position: "absolute",
-          top: "50%", 
-          right: "40px", 
-          transform: "translateY(-50%)", 
-          color: "white",
-        }}
-      >
-        <ArrowForwardIcon style={{ fontSize: '40px' }} /> {}
-      </IconButton>
-      <Paper
-        elevation={3}
-        style={{
-          padding: "5px",
-          width: "250px",
-          borderRadius: "8px",
-          position: "absolute",
-          top: "550px",
-          left: "50%", 
-          transform: "translateX(-50%)", 
-          textAlign: "center",
-        }}
-      >
-        <Typography variant="body1" style={{ fontSize: "20px" }}>
+      <Paper elevation={3} style={{ padding: "10px", borderRadius: "8px", textAlign: "center", marginTop: '20px' }}>
+        <Typography variant="body1">
           Card {currentCardIndex + 1}/{flashcards.length}
         </Typography>
       </Paper>

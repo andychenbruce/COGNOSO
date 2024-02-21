@@ -1,9 +1,4 @@
-import React, {
-  Dispatch,
-  useState,
-  ChangeEventHandler,
-  useEffect,
-} from "react";
+import React, { Dispatch, useState, ChangeEventHandler, useEffect } from "react";
 import { Navbar } from "../../navbar";
 import {
   Dialog,
@@ -12,7 +7,11 @@ import {
   DialogActions,
   TextField,
   Grid,
-  Snackbar
+  Snackbar,
+  Divider,
+  DialogContent,
+  FormControlLabel,
+  Checkbox,
 } from "@mui/material";
 import {
   UploadPdf,
@@ -27,9 +26,8 @@ const App: React.FC = () => {
   const [file, setFile] = useState<File | null>(null);
   const [openCreateDialog, setOpenCreateDialog] = useState(false);
   const [deckName, setDeckName] = useState("");
-  const [decks, setDecks]: [CardDeck[], Dispatch<CardDeck[]>] = useState(
-    [] as CardDeck[],
-  );
+  const [usePDF, setUsePDF] = useState(false);
+  const [decks, setDecks]: [CardDeck[], Dispatch<CardDeck[]>] = useState([] as CardDeck[]);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [errorField, setTextFieldError] = useState(false);
 
@@ -47,17 +45,16 @@ const App: React.FC = () => {
       .catch((error) => {
         console.error("Error in:", error);
       });
-    return;
   };
 
-  useEffect(updateDecks, [setDecks]);
+  useEffect(updateDecks, []);
 
   const handleInputChange = (
-    event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
+    event: React.ChangeEvent<HTMLInputElement>,
   ) => {
     const { value } = event.target;
     setDeckName(value);
-    setTextFieldError(false); // Resetting error when user types
+    setTextFieldError(false);
   };
 
   const handleCreateButtonClick = () => {
@@ -93,10 +90,6 @@ const App: React.FC = () => {
     setOpenCreateDialog(false);
   };
 
-  const handleCreateDialogClose = () => {
-    setOpenCreateDialog(false);
-  };
-
   const handleChangeFile: ChangeEventHandler<HTMLInputElement> = (event) => {
     if (event.target.files == null) {
       console.error("missing file");
@@ -106,7 +99,7 @@ const App: React.FC = () => {
     }
   };
 
-  function getBase64(file: File): Promise<string> {
+  const getBase64 = (file: File): Promise<string> => {
     return new Promise((resolve, reject) => {
       var reader = new FileReader();
       reader.onerror = reject;
@@ -115,9 +108,25 @@ const App: React.FC = () => {
         resolve(reader.result as string);
       };
     });
-  }
+  };
 
-  const pdfSubmit = () => {
+  const handleCheckboxChange = () => {
+    setUsePDF(!usePDF);
+  };
+
+  const handleCreateDialogClose = () => {
+    setOpenCreateDialog(false);
+  };
+
+  const handleCreateConfirmPDF = () => {
+    if (deckName.trim() === "") {
+      setSnackbarOpen(true);
+      setTextFieldError(true);
+      setTimeout(() => {
+        setSnackbarOpen(false);
+      }, 2000);
+      return;
+    }
     if (file == null) {
       console.error("missing file");
       return;
@@ -137,7 +146,14 @@ const App: React.FC = () => {
       return send_json_backend(
         "/create_card_deck_pdf",
         JSON.stringify(request_json),
-      );
+      )
+        .then(() => {
+          updateDecks();
+          setOpenCreateDialog(false);
+        })
+        .catch((error) => {
+          console.error("Error in:", error);
+        });
     });
   };
 
@@ -169,7 +185,7 @@ const App: React.FC = () => {
                 window.location.href = url.toString();
               }}
               style={{
-                width: "80%",
+                width: "50%",
                 height: "70px",
                 fontSize: "1.5rem",
                 marginBottom: "10px",
@@ -208,53 +224,67 @@ const App: React.FC = () => {
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">
-          Select a Set creation method:
+        <DialogTitle style={{ backgroundColor: "#9370db" }} id="alert-dialog-title">
+          Create New Deck
         </DialogTitle>
-        <DialogActions>
-          <Button
-            type="submit"
-            variant="contained"
-            onClick={handleCreateConfirm}
-            color="primary"
-            fullWidth
-          >
-            Create Your Own!
-          </Button>
-
-          <TextField
-            style={{
-              marginBottom: 20,
-              borderColor: errorField ? 'red' : undefined ,
-            
-            }}
-            label="Deck Name"
-            variant="outlined"
-            fullWidth
-            name="deck_name"
-            value={deckName}
-            onChange={handleInputChange}
-            required
-          />
-
-          <Button variant="contained" component="label" fullWidth>
-            Upload File
-            <input type="file" hidden onChange={handleChangeFile} />
-          </Button>
-
-          <Button onClick={pdfSubmit}>Upload</Button>
-
-          <Button onClick={handleCreateDialogClose} color="primary">
+        <Divider style={{ backgroundColor: "#9370db" }} />
+        <DialogContent style={{ backgroundColor: "#9370db" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+            <TextField
+              style={{ marginBottom: 20, borderColor: errorField ? "red" : undefined }}
+              label="Deck Name"
+              variant="outlined"
+              fullWidth
+              name="deck_name"
+              value={deckName}
+              onChange={handleInputChange}
+              required
+            />
+            <FormControlLabel
+              control={<Checkbox checked={usePDF} onChange={handleCheckboxChange} />}
+              label="Create from PDF"
+            />
+            {usePDF && (
+              <>
+                <Button variant="contained" component="label" fullWidth style={{ border: '1px solid white', color: 'white' }}>
+                  Upload a file
+                  <input type="file" hidden onChange={handleChangeFile} />
+                </Button>
+                <Button
+                  type="submit"
+                  variant="contained"
+                  onClick={handleCreateConfirmPDF}
+                  color="primary"
+                  fullWidth
+                >
+                  Confirm
+                </Button>
+              </>
+            )}
+            {!usePDF && (
+              <Button
+                type="submit"
+                variant="contained"
+                onClick={handleCreateConfirm}
+                color="primary"
+                fullWidth
+              >
+                Confirm
+              </Button>
+            )}
+          </div>
+        </DialogContent>
+        <DialogActions style={{ backgroundColor: "#9370db" }}>
+          <Button onClick={handleCreateDialogClose} style={{ border: '1px solid white', color: 'white' }}>
             Cancel
           </Button>
         </DialogActions>
       </Dialog>
-
       <Snackbar
         open={snackbarOpen}
         autoHideDuration={null}
         onClose={() => setSnackbarOpen(false)}
-        message='Title cannot be empty!'
+        message="Title cannot be empty!"
       >
       </Snackbar>
     </div>
