@@ -15,7 +15,6 @@ import {
 import { send_json_backend, get_session_token } from "../../utils";
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import { redirect } from "../../utils";
 
 interface Card {
   question: string;

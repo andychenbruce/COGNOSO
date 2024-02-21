@@ -12,6 +12,7 @@ import {
   DialogContent,
   FormControlLabel,
   Checkbox,
+  IconButton, // Import IconButton from Material-UI
 } from "@mui/material";
 import {
   UploadPdf,
@@ -21,6 +22,9 @@ import {
   CardDeck,
 } from "../../backend_interface";
 import { send_json_backend, get_session_token } from "../../utils";
+import DeleteIcon from '@mui/icons-material/Delete';
+import { DeleteCardDeck } from "../../backend_interface";
+
 
 const App: React.FC = () => {
   const [file, setFile] = useState<File | null>(null);
@@ -157,6 +161,24 @@ const App: React.FC = () => {
     });
   };
 
+  const handleDeleteDeck = (deckId: number) => {
+    let access_token = get_session_token();
+    if (access_token == null) {
+      return;
+    }
+    let deleteRequest: DeleteCardDeck = {
+      access_token: access_token,
+      deck_id: deckId,
+    };
+    send_json_backend("/delete_card_deck", JSON.stringify(deleteRequest))
+      .then(() => {
+        updateDecks();
+      })
+      .catch((error) => {
+        console.error("Error deleting deck:", error);
+      });
+  };
+
   return (
     <div>
       <Navbar />
@@ -169,30 +191,41 @@ const App: React.FC = () => {
       >
         {decks.map((deck, index) => (
           <Grid item xs={3} key={deck.deck_id} >
-            <Button
-              type="submit"
-              variant="contained"
-              color="primary"
-              fullWidth
-              onClick={() => {
-                const url = new URL(
-                  window.location.origin + "/flashcard_viewer/",
-                );
-                url.searchParams.append(
-                  "deck",
-                  JSON.stringify(deck.deck_id),
-                );
-                window.location.href = url.toString();
-              }}
-              style={{
-                width: "100%",
-                height: "70px",
-                fontSize: "1.5rem",
-                marginBottom: "10px",
-              }}
-            >
-              {decks[index].name}
-            </Button>
+            <div style={{ position: 'relative' }}>
+              <Button
+                variant="contained"
+                color="primary"
+                fullWidth
+                onClick={() => {
+                  const url = new URL(
+                    window.location.origin + "/flashcard_viewer/",
+                  );
+                  url.searchParams.append(
+                    "deck",
+                    JSON.stringify(deck.deck_id),
+                  );
+                  window.location.href = url.toString();
+                }}
+                style={{
+                  width: "100%",
+                  height: "70px",
+                  fontSize: "1.5rem",
+                  marginBottom: "10px",
+                }}
+              >
+                {decks[index].name}
+              </Button>
+              <IconButton
+                onClick={() => handleDeleteDeck(deck.deck_id)}
+                style={{
+                  position: 'absolute',
+                  top: 0,
+                  right: 0,
+                }}
+              >
+                <DeleteIcon />
+              </IconButton>
+            </div>
           </Grid>
         ))}
       </Grid>

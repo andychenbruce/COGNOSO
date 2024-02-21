@@ -9,24 +9,19 @@ import {
   TextField,
   Typography,
   Snackbar,
-  
 } from "@mui/material";
 import {
   ListCards,
   ListCardsResponse,
-
-  
-
 } from "../../backend_interface";
 import { send_json_backend, get_session_token } from "../../utils";
 import { redirect } from "../../utils";
+import { DeleteCard } from "../../backend_interface";
 
 interface Card {
-  //id: string;
   question: string;
   answer: string;
 }
-
 
 const App: React.FC = () => {
   const get_deckid = () => {
@@ -37,8 +32,6 @@ const App: React.FC = () => {
     const deckId = deckIdJSON ? JSON.parse(deckIdJSON) : null;
     return deckId;
   };
-  
-  
 
   const [flashcards, setFlashcards] = useState<Card[]>([]);
   const [question, setQuestion] = useState("");
@@ -49,14 +42,6 @@ const App: React.FC = () => {
 
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [errorFields, setErrorFields] = useState<string[]>([]);
-  
-
-  //console.log(uint32Value); 
-  // const _handleKeyPress = (e: React.KeyboardEvent<HTMLDivElement>) => {
-  //   if (e.key === "Enter") {
-  //     Create_card(); // Call Create_card when Enter key is pressed
-  //   }
-  // };
 
   const Create_card = () => {
     let deckId = get_deckid();
@@ -85,7 +70,6 @@ const App: React.FC = () => {
       .then((data) => {
         console.log("result:", data);
         listCards();
-        // Clear q1 and a1 after successful card creation
         setq1("");
         seta1("");
       })
@@ -93,7 +77,7 @@ const App: React.FC = () => {
         console.error("Error creating card:", error);
       });
   }
-  //let temp;
+
   const listCards = () => {
     let deckId = get_deckid();
     let access_token = get_session_token();
@@ -114,76 +98,41 @@ const App: React.FC = () => {
         console.error("Error displaying cards:", error);
       });
   };
-
-  // const handleEditCard = (index: number) => {
-  //   setQuestion(flashcards[index].question);
-  //   setAnswer(flashcards[index].answer);
-  //   setEditingCardIndex(index);
-  // };
     
-  // Function to cancel editing
   const cancelEdit = () => {
     setQuestion("");
     setAnswer("");
     setEditingCardIndex(null);
   };
 
-  // Function to save changes to the card
-  const saveChanges = (_index: number) => {
+  const handleDeleteCard = (index: number) => {
     let access_token = get_session_token();
     if (access_token == null) {
       return;
     }
 
-    // let updatedCard = {
-    //   //id: flashcards[index].id, // Assuming flashcards have an 'id' field
-    //   question: question,
-    //   answer: answer,
-    // };
+    const cardIndexToDelete = index;
 
-    // send_json_backend("/update_cards", JSON.stringify({ ...updatedCard, access_token }))
-    //   .then((data) => {
-    //     console.log("Card updated:", data);
+    let deleteCardPayload: DeleteCard = {
+      access_token: access_token,
+      deck_id: get_deckid(),
+      card_index: cardIndexToDelete,
+    };
 
-    // Update the flashcards array with the modified card data
-    // const updatedFlashcards = [...flashcards];
-    // updatedFlashcards[index] = { ...updatedCard };
-    // setFlashcards(updatedFlashcards);
+    send_json_backend("/delete_card", JSON.stringify(deleteCardPayload))
+      .then(() => {
+        console.log("Card deleted with index:", cardIndexToDelete);
 
-    // Reset fields after successful update
-    //       cancelEdit();
-    //     })
-    //     .catch((error) => {
-    //       console.error("Error updating card:", error);
-    //     });
-    // };
-
-    // Function to handle deletion of a card
-    // const handleDeleteCard = (index: number) => {
-    //   let access_token = get_session_token();
-    //   if (access_token == null) {
-    //     return;
-    //   }
-
-    //   let cardToDelete = flashcards[index];
-      
-    //   // Make a request to the backend to delete the card
-    //   send_json_backend("/delete_card", JSON.stringify({ access_token, card_id: cardToDelete.id }))
-    //     .then(() => {
-    //       console.log("Card deleted:", cardToDelete);
-
-    //       // Update the flashcards array by removing the deleted card
-    //       const updatedFlashcards = [...flashcards];
-    //       updatedFlashcards.splice(index, 1);
-    //       setFlashcards(updatedFlashcards);
-    //     })
-    //     .catch((error) => {
-    //       console.error("Error deleting card:", error);
-    //     });
+        const updatedFlashcards = [...flashcards];
+        updatedFlashcards.splice(index, 1);
+        setFlashcards(updatedFlashcards);
+      })
+      .catch((error) => {
+        console.error("Error deleting card:", error);
+      });
   };
 
   useEffect(() => {
-    // Fetch initial flashcards when component mounts
     listCards();
   }, []);
   
@@ -247,7 +196,6 @@ const App: React.FC = () => {
                   fullWidth
                   margin="normal"
                   variant="outlined"
-
                 />
                 <TextField
                   label="Answer"
@@ -256,9 +204,7 @@ const App: React.FC = () => {
                   fullWidth
                   margin="normal"
                   variant="outlined"
-
                 />
-                <Button onClick={() => saveChanges(index)}>Save Changes</Button>
                 <Button onClick={cancelEdit}>Cancel</Button>
               </>
             ) : (
@@ -268,18 +214,17 @@ const App: React.FC = () => {
                 <Typography variant="h6">Answer:</Typography>
                 <Typography>{flashcard.answer}</Typography>
                 <Button /*onClick={() => handleEditCard(index)}*/>Edit</Button>
-                <Button /*onClick={() => handleDeleteCard(index)}*/>Delete</Button> 
+                <Button onClick={() => handleDeleteCard(index)}>Delete</Button> 
               </>
             )}
             <Snackbar open={snackbarOpen} autoHideDuration={2000} onClose={() => setSnackbarOpen(false)} message="Please fill out both the question and answer fields!">
             </Snackbar>
           </div>
-          
         ))}
       </div>
     </div>
   );
 };
 
-
 export default App;
+
