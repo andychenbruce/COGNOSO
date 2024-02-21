@@ -37,7 +37,7 @@ pub struct CreateCardDeck {
 #[derive(Debug, serde::Deserialize)]
 pub struct DeleteCardDeck {
     pub access_token: AccessToken,
-    pub deck_name: String,
+    pub deck_id: u32,
 }
 
 #[derive(Debug, serde::Deserialize)]

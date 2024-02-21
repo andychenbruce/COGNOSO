@@ -36,7 +36,7 @@ export interface CreateCardDeck {
 // request -> /delete_card_deck
 export interface DeleteCardDeck {
   access_token: [number, number];
-  deck_name: string;
+  deck_id: number;
 }
 
 

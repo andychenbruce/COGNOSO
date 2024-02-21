@@ -190,8 +190,7 @@ impl Database {
         Ok(())
     }
 
-    pub fn delete_card_deck(&self, user_id: UserId, deck_name: String) -> Result<(), AndyError> {
-        let deck_id = self.get_user_id(&deck_name);
+    pub fn delete_card_deck(&self, user_id: UserId, deck_id: DeckId) -> Result<(), AndyError> {
         let write_txn = self.db.begin_write()?;
         {
             let mut table = write_txn.open_table(Self::DECKS_TABLE)?;

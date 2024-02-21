@@ -156,7 +156,7 @@ async fn delete_card_deck(
     state: std::sync::Arc<SharedState>,
 ) -> Result<(), AndyError> {
     let user_id = state.database.validate_token(info.access_token)?;
-    state.database.delete_card_deck(user_id, info.deck_name)?;
+    state.database.delete_card_deck(user_id, info.deck_id)?;
     Ok(())
 }
 
