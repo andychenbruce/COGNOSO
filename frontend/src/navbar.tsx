@@ -156,33 +156,33 @@ export const Navbar = () => {
         Account
       </Button>
       <Menu
-  anchorEl={anchorEl}
-  open={Boolean(anchorEl)}
-  onClose={handleMenuClose}
-  anchorOrigin={{
-    vertical: "bottom",
-    horizontal: "right",
-  }}
-  transformOrigin={{
-    vertical: "top",
-    horizontal: "right",
-  }}
-  PaperProps={{
-    sx: {
-      backgroundColor: "#9370db", // Background color of the menu
-    },
-  }}
->
-  <MenuItem onClick={handleLogOut} style={{backgroundColor:'#bb6bc9'}}>
-    <ListItemText primary="Log Out" sx={{ color: "white" }} /> {/* Text color of menu items */}
-  </MenuItem>
-  <MenuItem onClick={handleChangePassDialog} style={{backgroundColor:'#bb6bc9'}}>
-    <ListItemText primary="Change Password" sx={{ color: "white" }} />
-  </MenuItem>
-  <MenuItem onClick={handleDeleteButtonClick} style={{backgroundColor:'red'}}>
-    <ListItemText primary="Delete Account" sx={{color: "white" }} />
-  </MenuItem>
-</Menu>
+        anchorEl={anchorEl}
+        open={Boolean(anchorEl)}
+        onClose={handleMenuClose}
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: "right",
+        }}
+        transformOrigin={{
+          vertical: "top",
+          horizontal: "right",
+        }}
+        PaperProps={{
+          sx: {
+            backgroundColor: "#9370db", // Background color of the menu
+          },
+        }}
+      >
+        <MenuItem onClick={handleLogOut} style={{backgroundColor:'transparent', }}>
+          <ListItemText primary="Log Out" sx={{ color: "white" }} /> {/* Text color of menu items */}
+        </MenuItem>
+        <MenuItem onClick={handleChangePassDialog} style={{backgroundColor:'transparent', }}>
+          <ListItemText primary="Change Password" sx={{ color: "white" }} />
+        </MenuItem>
+        <MenuItem onClick={handleDeleteButtonClick} style={{backgroundColor:'red', border: '1px solid black'}}>
+          <ListItemText primary="Delete Account" sx={{color: "white" }} />
+        </MenuItem>
+      </Menu>
         <Dialog
           open={openDeleteDialog}
           onClose={handleDeleteDialogClose}
