@@ -247,8 +247,9 @@ const App: React.FC = () => {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          marginLeft: "auto",
-          marginRight: "30px",
+          position: "fixed",
+          bottom: "20px",
+          right: "20px",
           backgroundColor: '#af52bf'
         }}
       >
