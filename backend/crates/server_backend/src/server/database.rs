@@ -204,7 +204,7 @@ impl Database {
     pub fn new_card(
         &self,
         user_id: UserId,
-        deck_id: UserId,
+        deck_id: DeckId,
         question: String,
         answer: String,
     ) -> Result<(), AndyError> {
@@ -222,7 +222,7 @@ impl Database {
     pub fn delete_card(
         &self,
         user_id: UserId,
-        deck_id: UserId,
+        deck_id: DeckId,
         card_index: u32,
     ) -> Result<(), AndyError> {
         let key = (user_id, deck_id);
