@@ -16,6 +16,7 @@ import { send_json_backend } from "../../utils";
 
 const App: React.FC = () => {
   const [prompt, setPrompt] = useState("");
+  const [response, setResponse] = useState("");
   
 
   
@@ -24,8 +25,10 @@ const App: React.FC = () => {
       prompt: prompt,
     };
     send_json_backend(ENDPOINT_AI_TEST, JSON.stringify(ai_send))
-      .then((data) => {
-        console.log("result:", data);
+      .then((data: any) => {
+	let thing = JSON.parse(data);
+        console.log(thing);
+	setResponse(thing.content);
       })
       .catch((error) => {
         console.error("Error creating card:", error);
@@ -36,7 +39,7 @@ const App: React.FC = () => {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }} >
       <Navbar />
-  
+      ai testing
       <TextField
         label="Prompt"
         value={prompt}
@@ -44,8 +47,8 @@ const App: React.FC = () => {
 	  setPrompt(e.target.value);
 	}}
       />
-      <Button onClick={submit_prompt}
-      >Create Card</Button>
+      <Button onClick={submit_prompt}>Submit prompt</Button>
+      <p> {response} </p>
     </div>
   );
 };
