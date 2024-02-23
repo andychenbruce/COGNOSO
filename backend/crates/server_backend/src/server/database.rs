@@ -190,6 +190,15 @@ impl Database {
         Ok(())
     }
 
+    pub fn get_deck_name(&self, user_id: UserId, deck_id: DeckId) -> Result<String, AndyError> {
+        let read_txn = self.db.begin_read()?;
+        
+            let table = read_txn.open_table(Self::DECKS_TABLE)?;
+            let deck_name: String = table.get((user_id, deck_id))?.ok_or(AndyError::DeckDoesNotExist)?.value().name;
+        
+        Ok(deck_name)
+    }
+
     pub fn delete_card_deck(&self, user_id: UserId, deck_id: DeckId) -> Result<(), AndyError> {
         let write_txn = self.db.begin_write()?;
         {
