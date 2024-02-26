@@ -1,4 +1,4 @@
-.App {
+.App { 
   text-align: center;
 }
 
@@ -39,4 +39,22 @@
 
 body {
   background: linear-gradient(to left, #140952a6, #530b70);
+}
+
+.Favorites {
+  padding: 10px;
+  margin: 20px;
+  color: white
+}
+
+.Decks {
+  padding: 10px;
+  margin: 20px;
+  color: white;
+}
+
+.Content-box {
+  border: 2px solid #ccc;
+  min-height: 200px; /*adjust height here*/
+  margin-top: 20px;
 }
