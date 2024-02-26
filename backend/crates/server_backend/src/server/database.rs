@@ -190,6 +190,19 @@ impl Database {
         Ok(())
     }
 
+    pub fn get_deck_name(&self, user_id: UserId, deck_id: DeckId) -> Result<String, AndyError> {
+        let read_txn = self.db.begin_read()?;
+
+        let table = read_txn.open_table(Self::DECKS_TABLE)?;
+        let deck_name: String = table
+            .get((user_id, deck_id))?
+            .ok_or(AndyError::DeckDoesNotExist)?
+            .value()
+            .name;
+
+        Ok(deck_name)
+    }
+
     pub fn delete_card_deck(&self, user_id: UserId, deck_id: DeckId) -> Result<(), AndyError> {
         let write_txn = self.db.begin_write()?;
         {
@@ -229,9 +242,39 @@ impl Database {
         let read_txn = self.db.begin_read()?;
         let table = read_txn.open_table(Self::DECKS_TABLE)?;
         let mut deck = table.get(key)?.ok_or(AndyError::DeckDoesNotExist)?.value();
+        if deck.cards.len() <= (card_index as usize) {
+            return Err(AndyError::CardIndexOutOfBounds);
+        }
         deck.cards.remove(card_index as usize);
 
         self.insert(key, deck, Self::DECKS_TABLE)?;
+        Ok(())
+    }
+
+    pub fn edit_card(
+        &self,
+        user_id: UserId,
+        deck_id: DeckId,
+        card_index: u32,
+        new_question: String,
+        new_answer: String,
+    ) -> Result<(), AndyError> {
+        let key = (user_id, deck_id);
+
+        let write_txn = self.db.begin_write()?;
+        {
+            let table = write_txn.open_table(Self::DECKS_TABLE)?;
+            let mut deck = table.get(key)?.ok_or(AndyError::DeckDoesNotExist)?.value();
+            let card = deck
+                .cards
+                .get_mut(card_index as usize)
+                .ok_or(AndyError::CardIndexOutOfBounds)?;
+            card.question = new_question;
+            card.answer = new_answer;
+            self.insert(key, deck, Self::DECKS_TABLE)?;
+        }
+
+        write_txn.commit()?;
         Ok(())
     }
 

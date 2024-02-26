@@ -129,7 +129,17 @@ async fn handle_request(
             api_structs::ENDPOINT_CHANGE_PASSWORD,
             change_password
         ),
-        (hyper::Method::POST, api_structs::ENDPOINT_AI_TEST, ai_test)
+        (hyper::Method::POST, api_structs::ENDPOINT_AI_TEST, ai_test),
+        (
+            hyper::Method::POST,
+            api_structs::ENDPOINT_GET_DECK_NAME,
+            get_deck_name
+        ),
+        (
+            hyper::Method::POST,
+            api_structs::ENDPOINT_EDIT_CARD,
+            edit_card
+        )
     )
 }
 
@@ -148,6 +158,15 @@ async fn create_card_deck(
 ) -> Result<(), AndyError> {
     let user_id = state.database.validate_token(info.access_token)?;
     state.database.new_card_deck(user_id, info.deck_name)?;
+    Ok(())
+}
+
+async fn get_deck_name(
+    info: api_structs::GetDeckName,
+    state: std::sync::Arc<SharedState>,
+) -> Result<(), AndyError> {
+    let user_id = state.database.validate_token(info.access_token)?;
+    state.database.get_deck_name(user_id, info.deck_id)?;
     Ok(())
 }
 
@@ -179,6 +198,21 @@ async fn delete_card(
     state
         .database
         .delete_card(user_id, info.deck_id, info.card_index)?;
+    Ok(())
+}
+
+async fn edit_card(
+    info: api_structs::EditCard,
+    state: std::sync::Arc<SharedState>,
+) -> Result<(), AndyError> {
+    let user_id = state.database.validate_token(info.access_token)?;
+    state.database.edit_card(
+        user_id,
+        info.deck_id,
+        info.card_index,
+        info.new_question,
+        info.new_answer,
+    )?;
     Ok(())
 }
 
