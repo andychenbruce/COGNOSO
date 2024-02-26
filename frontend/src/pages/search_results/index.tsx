@@ -7,7 +7,7 @@ const App: React.FC = () => {
     <div>
       <div>
         <Navbar />
-        <p>Nothing here yet</p>
+        <p>SEARCH RESULTS</p>
       </div>
     </div>
   );
