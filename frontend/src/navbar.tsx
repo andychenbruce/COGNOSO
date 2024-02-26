@@ -139,6 +139,11 @@ export const Navbar = () => {
     value={searchQuery}
     onChange={(e) => setSearchQuery(e.target.value)}
     style={{ flex: 1, fontSize: "20px", paddingLeft: "10px"}}
+    onKeyDown={(e) => {
+      if(e.key === 'Enter') {
+        redirect("/search_results")
+      }
+    }}
 />
       </div>
       <Button
