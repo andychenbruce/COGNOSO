@@ -28,6 +28,9 @@ const Main: React.FC<PageProps> = () => {
       <p>
         <a href="flashcard_editor">flashcard_editor</a>
       </p>
+      <p>
+        <a href="minigame">minigame</a>
+      </p>
       <p>bruh bruh</p>
     </>
   );

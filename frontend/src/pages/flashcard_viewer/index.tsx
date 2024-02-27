@@ -72,25 +72,90 @@ const FlashcardViewerFunc = () => {
     window.location.pathname = "/deck_manage/"
   }
 
+  const redirectToMinigame = () => {
+    window.location.pathname = "/minigame/"
+  }
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
       <Navbar />
-      
       <div style={{
-        textAlign: 'left',
-        padding: '10px', 
-        margin: '20px 0', 
-        backgroundColor: 'transparent', 
-        border: '2px solid purple', 
-        borderRadius: '4px', 
-        boxShadow: '0 2px 4px rgba(0,0,0,0.1)', 
-        alignSelf: 'flex-start', 
-        marginLeft: '20px', 
+        position: 'relative',
+        width: '100%',
+        height: '50px',
+        backgroundColor: 'transparent',
       }}>
-        <Button onClick={() => {redirectToDeckManage()}} style={{color:'white'}} >
+        <Button 
+          onClick={() => {redirectToDeckManage()}}
+          style={{
+            position: 'absolute',
+            left: '10px',
+            top: '50%', 
+            transform: 'translateY(-50%)',
+            padding: '10px',
+            margin: '20px 0', 
+            backgroundColor: "#9370db", 
+            border: '2px solid purple', 
+            borderRadius: '4px', 
+            boxShadow: '0 2px 4px rgba(0,0,0,0.1)', 
+            color:'white'
+          }}
+        >
           Back
         </Button>
+        <Button 
+          onClick={() => {redirectToMinigame()}}
+          style={{
+            position: 'absolute',
+            right: '10px',
+            top: '50%', 
+            transform: 'translateY(-50%)',
+            padding: '10px',
+            margin: '20px 0', 
+            backgroundColor: "#9370db", 
+            border: '2px solid purple', 
+            borderRadius: '4px', 
+            boxShadow: '0 2px 4px rgba(0,0,0,0.1)', 
+            color:'white'
+          }}
+        >
+          Minigame
+        </Button>
       </div>
+
+
+
+        {/* <div style={{
+          textAlign: 'left',
+          padding: '10px', 
+          margin: '20px 0', 
+          backgroundColor: 'transparent', 
+          border: '2px solid purple', 
+          borderRadius: '4px', 
+          boxShadow: '0 2px 4px rgba(0,0,0,0.1)', 
+          alignSelf: 'flex-start', 
+          marginLeft: '20px', 
+        }}>
+          <Button onClick={() => {redirectToDeckManage()}} style={{color:'white'}} >
+            Back
+          </Button>
+        </div>
+        <div style={{
+          textAlign: 'left',
+          padding: '10px', 
+          margin: '20px 0', 
+          backgroundColor: 'transparent', 
+          border: '2px solid purple', 
+          borderRadius: '4px', 
+          boxShadow: '0 2px 4px rgba(0,0,0,0.1)', 
+          alignSelf: 'flex-right', 
+          marginLeft: '20px', 
+        }}>
+          <Button onClick={() => {redirectToMinigame()}} style={{color:'white'}} >
+            Minigame
+          </Button>
+        </div> */}
+
       <div style={{ position: 'relative', maxWidth: '600px', width: '100%', padding: '0 20px', marginTop: '50px',  }}>
         <Paper elevation={3} style={{ padding: "20px", borderRadius: "8px", textAlign: "center", marginBottom: '20px', backgroundColor:'#ce93d8' }}>
           <Typography variant="h5">Deck 1</Typography>
