@@ -1,9 +1,10 @@
 import React, {
   useState,
   useEffect,
+  DragEventHandler,
 } from "react";
 import { Navbar } from "../../navbar";
-//import './.css'
+//import "./sty.css"
 import {
   ListCards,
   ListCardsResponse,
@@ -21,6 +22,11 @@ const App: React.FC = () => {
   const [flashcards, setFlashcards] = useState<Card[]>([]);
   const [rightCard, setRightCard] = useState<Card>();
   const [leftCard, setLeftCard] = useState<Card>();
+  const [visibleFlashcards, setVisibleFlashcards] = useState<number>(4);
+  const [shuffledFlashcards, setShuffledFlashcards] = useState<Card[]>([]);
+
+
+  //const [droppedItems, setDroppedItems] = useState<Card[]>([]);
 
   const get_deckid = () => {
     const urlString = window.location.href;
@@ -68,34 +74,155 @@ const App: React.FC = () => {
       useEffect(() => {
         listCards();
       }, []);
+
+      const handleDragStart = (e: React.DragEvent<HTMLButtonElement>, card: Card) => {
+        e.dataTransfer.setData("card", JSON.stringify(card));
+      };
     
+      const handleDragOver: DragEventHandler<HTMLDivElement> = (e) => {
+        e.preventDefault();
+      };
     
-    return (
+      const handleDropLeft: DragEventHandler<HTMLDivElement> = (e) => {
+        e.preventDefault();
+        const droppedCard = JSON.parse(e.dataTransfer.getData("card"));
+        setLeftCard(droppedCard);
+      };
+    
+      const handleDropRight: DragEventHandler<HTMLDivElement> = (e) => {
+        e.preventDefault();
+        const droppedCard = JSON.parse(e.dataTransfer.getData("card"));
+        setRightCard(droppedCard);
+      };
+
+      const shuffleHandler = () => {
+        const newFlashcards = flashcards.slice(4, 8);
+        const shuffledNewFlashcards = [...newFlashcards].sort(() => Math.random() - 0.5);
+        setShuffledFlashcards(shuffledNewFlashcards);
+        setVisibleFlashcards(4);
+      };
+      
+      useEffect(() => {
+        shuffleHandler(); 
+      }, []);
+    
+      const submitHandler = () => {
+        if (leftCard && rightCard) {
+          if (leftCard.answer === rightCard.answer) {
+            alert("Correct");
+          } else {
+            alert("Incorrect");
+          }
+        }
+      };
+
+      return (
         <div>
           <Navbar />
-          <div style={{ display: 'flex', justifyContent: 'space-between', padding: '20px' }}>
-            {flashcards.map((flashcard, index) => (
-                <button onClick={() => { setLeftCard(flashcard); check_correct(); }} style={buttonStyle}>{flashcard.question}</button>
-        ))}
-        {flashcards.map((flashcard, index) => (
-                <button onClick={() => { setRightCard(flashcard); check_correct(); }} style={buttonStyle}>{flashcard.answer}</button>
-        ))}
-
-            {/* <button onClick={handleLeftButtonClick} style={buttonStyle}>Question</button>
-            <button onClick={handleLeftButtonClick} style={buttonStyle}>Answer</button> */}
+          <div style={{ textAlign: "center", marginTop: "50px" }}>
+            <h1>Match-Minigame</h1>
+          </div>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              padding: "20px",
+            }}
+          >
+            <div style={{ width: "25%", marginRight: "20px" }}>
+              {shuffledFlashcards.slice(0, visibleFlashcards).map((flashcard, index) => (
+                <div key={index} style={{ marginBottom: "10px" }}>
+                  <button
+                  draggable
+                  onDragStart={(e) => handleDragStart(e, flashcard)}
+                    onClick={() => {
+                      setLeftCard(flashcard);
+                      check_correct();
+                    }}
+                    style={{ ...buttonStyle, width: "100%" }}
+                  >
+                    {flashcard.question}
+                  </button>
+                </div>
+              ))}
+            </div>
+            <div
+          style={{
+            width: "30%",
+            border: "1px dashed #ccc",
+            padding: "20px",
+            height: "200px",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            borderRadius: "10px",
+            boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+            marginBottom: "20px",
+          }}
+          onDragOver={handleDragOver}
+          onDrop={handleDropLeft}
+          
+        >
+          <h2>Question</h2>
+          {leftCard && <div>{leftCard.question}</div>}
+        </div>
+        
+        <div
+          style={{
+            width: "30%",
+            border: "1px dashed #ccc",
+            padding: "20px",
+            height: "200px",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            borderRadius: "10px",
+            boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+          }}
+          onDragOver={handleDragOver}
+          onDrop={handleDropRight}
+        >
+          <h2>Answer</h2>
+          {rightCard && <div>{rightCard.answer}</div>}
+        </div>
+            <div style={{ width: "25%", marginLeft: "20px" }}>
+              {shuffledFlashcards.slice(0, visibleFlashcards).map((flashcard, index) => (
+                <div key={index} style={{ marginBottom: "10px" }}>
+                  <button
+                  draggable
+                  onDragStart={(e) => handleDragStart(e, flashcard)}
+                    onClick={() => {
+                      setRightCard(flashcard);
+                      check_correct();
+                    }}
+                    style={{ ...buttonStyle, width: "100%" }}
+                  >
+                    {flashcard.answer}
+                  </button>
+                </div>
+              ))}
+            </div>
+            
+          </div>
+          <div style={{ display: "flex", justifyContent: "center", marginTop: "10px" }}>
+                <button onClick={shuffleHandler} style={{ marginRight: "10px" }}>
+                 Shuffle
+                </button>
+                <button onClick={submitHandler}>Submit</button>
           </div>
         </div>
       );
-};
-
-const buttonStyle = {
-    backgroundColor: '#fff',
-    border: '1px solid #ccc',
-    borderRadius: '10px',
-    padding: '10px 20px',
-    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-    cursor: 'pointer',
-    transition: 'background-color 0.3s',
-  };
-
+    };
+    
+    const buttonStyle = {
+      backgroundColor: "#fff",
+      border: "1px solid #ccc",
+      borderRadius: "5px",
+      padding: "25%",
+      boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+      cursor: "pointer",
+      transition: "background-color 0.3s",
+    };
 export default App;
