@@ -1,0 +1,18 @@
+[package]
+name = "llm_runner"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+anyhow = "1.0.80"
+candle-core = { git = "https://github.com/huggingface/candle.git", rev = "badf886583fdca3c0730aa368bb99c21ad0a5e67"}
+candle-nn = { git = "https://github.com/huggingface/candle.git", rev = "badf886583fdca3c0730aa368bb99c21ad0a5e67"}
+candle-transformers = { git = "https://github.com/huggingface/candle.git", rev = "badf886583fdca3c0730aa368bb99c21ad0a5e67"}
+serde_json = "1.0.113"
+tokenizers = "0.15.1"
+
+
+
+

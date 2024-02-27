@@ -1,6 +1,7 @@
 pub mod database;
 pub mod llm;
 pub mod utils;
+pub mod vector_db;
 
 use crate::api_structs;
 use crate::AndyError;
@@ -269,8 +270,8 @@ async fn create_deck_pdf(
     let url = data_url::DataUrl::process(&info.file_bytes_base64).unwrap();
     let (body, _fragment) = url.decode_to_vec().unwrap();
 
-    let lines = pdf_parser::extract_text(&body)?;
-    println!("lines = {:?}", lines);
+    let _lines = pdf_parser::extract_text(&body)?;
+
     todo!()
 }
 
@@ -279,7 +280,6 @@ async fn ai_test(
     state: std::sync::Arc<SharedState>,
 ) -> Result<String, AndyError> {
     let ai_response = state.llm_runner.submit_prompt(info.prompt).await?;
-    println!("ai = {:?}", ai_response);
-
+    
     Ok(ai_response)
 }
