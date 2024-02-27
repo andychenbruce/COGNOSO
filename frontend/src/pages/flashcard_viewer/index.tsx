@@ -16,6 +16,8 @@ import { send_json_backend, get_session_token } from "../../utils";
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
+const ENDPOINT_GET_DECK_NAME = "/get_deck_name";
+
 interface Card {
   question: string;
   answer: string;
@@ -24,6 +26,7 @@ interface Card {
 const FlashcardViewerFunc = () => {
   const [flashcards, setFlashcards] = useState<Card[]>([]);
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
+  const [deckName, setDeckName] = useState('Loading...');
 
   useEffect(() => {
     const urlString = window.location.href;
@@ -31,6 +34,23 @@ const FlashcardViewerFunc = () => {
     const searchParams = new URLSearchParams(url.search);
     const deckIdJSON = searchParams.get("deck");
     const deckId: number = deckIdJSON ? JSON.parse(deckIdJSON) : null;
+
+    const fetchDeckName = async () => {
+      let access_token = get_session_token();
+      if (access_token == null) {
+        return;
+      }
+      let payload = {
+        access_token: access_token,
+        deck_id: deckId,
+      };
+      try {
+        const nameResponse = await send_json_backend(ENDPOINT_GET_DECK_NAME, JSON.stringify(payload));
+        setDeckName(nameResponse);
+      } catch (error) {
+        console.error("Error fetching deck name:", error);
+      }
+    };
 
     const listCards = () => {
       let access_token = get_session_token();
@@ -43,14 +63,14 @@ const FlashcardViewerFunc = () => {
       };
       send_json_backend("/list_cards", JSON.stringify(prev_cards))
         .then((data: ListCardsResponse) => {
-          console.log("Prev_Cards:", data);
           setFlashcards(data.cards);
         })
         .catch((error) => {
           console.error("Error displaying cards:", error);
         });
     };
-    // Fetch initial flashcards when component mounts
+
+    fetchDeckName();
     listCards();
   }, []);
 
@@ -159,7 +179,7 @@ const FlashcardViewerFunc = () => {
 
       <div style={{ position: 'relative', maxWidth: '600px', width: '100%', padding: '0 20px', marginTop: '50px',  }}>
         <Paper elevation={3} style={{ padding: "20px", borderRadius: "8px", textAlign: "center", marginBottom: '20px', backgroundColor:'#ce93d8' }}>
-          <Typography variant="h5">Deck 1</Typography>
+          <Typography variant="h5">{deckName}</Typography>
         </Paper>
         {flashcards.length > 0 && (
           <Flashcard
