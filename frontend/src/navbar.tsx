@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button, InputBase, Menu, Snackbar, Container, Dialog, TextField, DialogContent, DialogTitle, DialogActions, DialogContentText} from "@mui/material";
+import { Button, InputBase, Menu, Snackbar, MenuItem, Dialog, TextField, DialogContent, DialogTitle, DialogActions, ListItemText, DialogContentText} from "@mui/material";
 import { redirect, send_json_backend } from "./utils";
 import { DeleteUser } from "./backend_interface";
 import { ChangePassword } from "./backend_interface";
@@ -102,8 +102,8 @@ export const Navbar = () => {
   return (
     <div
     style={{
-      backgroundColor: 'rgba(128, 128, 128, 0.5)', // Transparent gray color
-      border: "5px solid #1976d2",
+      backgroundColor: 'rgba(128, 128, 128, 0.5)', 
+      border: "5px solid #ab47bc",
       borderRadius: "15px",
       padding: "5px",
       display: "flex",
@@ -111,11 +111,12 @@ export const Navbar = () => {
       flexWrap: "wrap",
       gap: "10px",
       marginBottom: "20px",
+      
   }}
     >
       <Button
         variant="contained"
-        style={{ fontSize: "20px", width: "400px" }}
+        style={{ fontSize: "20px", width: "400px", backgroundColor: '#9c27b0' }}
         onClick={() => {
           redirect("/home_page");
         }}
@@ -127,7 +128,7 @@ export const Navbar = () => {
           display: "flex",
           alignItems: "center",
           width: "500px",
-          border: "2px solid #1976d2",
+          border: "2px solid #9c27b0",
           borderRadius: "4px",
           padding: "5px",
         }}
@@ -137,102 +138,112 @@ export const Navbar = () => {
     inputProps={{ "aria-label": "search", style: { color: '#E6E6FA' } }}
     value={searchQuery}
     onChange={(e) => setSearchQuery(e.target.value)}
-    style={{ flex: 1, fontSize: "20px", paddingLeft: "10px" }}
+    style={{ flex: 1, fontSize: "20px", paddingLeft: "10px"}}
+    onKeyDown={(e) => {
+      if(e.key === 'Enter') {
+        redirect("/search_results")
+      }
+    }}
 />
       </div>
       <Button
         variant="contained"
-        style={{ fontSize: "20px", width: "400px" }}
+        style={{ fontSize: "20px", width: "400px", backgroundColor: '#9c27b0' }}
         onClick={() => { redirect("/deck_manage"); }}
       >
         Decks
       </Button>
       <Button
         variant="contained"
-        style={{ fontSize: "20px", width: "400px" }}
+        style={{ fontSize: "20px", width: "400px", backgroundColor: '#9c27b0' }}
         onClick={handleMenuOpen}
       >
         Account
       </Button>
       <Menu
-      
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
         onClose={handleMenuClose}
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: "right",
+        }}
+        transformOrigin={{
+          vertical: "top",
+          horizontal: "right",
+        }}
+        PaperProps={{
+          sx: {
+            backgroundColor: "#9370db",
+          },
+        }}
       >
-          <Container
-          
-            sx={{ display: "flex", flexDirection: "column", gap: "8px", background: '#140952a6'}}
-            
-          >
-            <Button variant="contained" color="primary" onClick={handleLogOut}>
-              Log Out
-            </Button>
-            <Button variant="contained" color="primary" onClick={handleChangePassDialog}>
-              Change Password
-            </Button>
-            <Button
-              variant="contained"
-              style={{ backgroundColor: "red", color: "white" }}
-              onClick={handleDeleteButtonClick}
-            >
-              Delete Account
-            </Button>
-          </Container>
-          <Dialog
-            open={openDeleteDialog}
-            onClose={handleDeleteDialogClose}
-            aria-labelledby="alert-dialog-title"
-            aria-describedby="alert-dialog-description"
-          >
-            <DialogTitle id="alert-dialog-title">
-              Confirm Delete Account
-            </DialogTitle>
-            <DialogContent>
-              <DialogContentText id="alert-dialog-description">
-                Are you sure you want to delete your account? This action cannot
-                be undone.
-              </DialogContentText>
-            </DialogContent>
-            <DialogActions>
+        <MenuItem onClick={handleLogOut} style={{backgroundColor:'transparent', }}>
+          <ListItemText primary="Log Out" sx={{ color: "white" }} />
+        </MenuItem>
+        <MenuItem onClick={handleChangePassDialog} style={{backgroundColor:'transparent', }}>
+          <ListItemText primary="Change Password" sx={{ color: "white" }} />
+        </MenuItem>
+        <MenuItem onClick={handleDeleteButtonClick} style={{backgroundColor:'red', border: '1px solid black'}}>
+          <ListItemText primary="Delete Account" sx={{color: "white" }} />
+        </MenuItem>
+      </Menu>
+        <Dialog
+          open={openDeleteDialog}
+          onClose={handleDeleteDialogClose}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description" 
+        >
+          <DialogTitle style={{background: '#140952a6', color: '#E6E6FA'}} id="alert-dialog-title">
+            Confirm Delete Account
+          </DialogTitle>
+          <DialogContent style={{background: '#140952a6'}} >
+            <DialogContentText style={{color: '#E6E6FA'}} id="alert-dialog-description">
+              Are you sure you want to delete your account? This action cannot
+              be undone.
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions style={{background: '#140952a6'}}>
 
-              <TextField
-              style={{
-                marginBottom: 20,
-              }}
-              label="Email"
-              variant="outlined"
-              fullWidth
-              name="email"
-              value={user.email}
-              onChange={handleInputChange}
-              required
-            />
             <TextField
-              style={{
-                marginBottom: 20,
-              }}
-              label="Password"
-              type="password"
-              variant="outlined"
-              fullWidth
-              name="password"
-              value={user.password}
-              onChange={handleInputChange}
-              required
-            />
-            <Button onClick={handleDeleteDialogClose} color="primary">
-                Cancel
-            </Button>
-            <Button
-              onClick={handleDeleteConfirm}
-              style={{ color: "red" }}
-              autoFocus
-            >
-              Delete
-            </Button>
-          </DialogActions>
-        </Dialog>
+            style={{
+              marginBottom: 20,
+            }}
+            label="Email"
+            variant="outlined"
+            fullWidth
+            name="email"
+            value={user.email}
+            onChange={handleInputChange}
+            required
+            InputLabelProps={{style: { color: '#E6E6FA'}}}
+          />
+          <TextField
+            style={{
+              marginBottom: 20,
+            }}
+            label="Password"
+            type="password"
+            variant="outlined"
+            fullWidth
+            name="password"
+            value={user.password}
+            onChange={handleInputChange}
+            required
+            InputLabelProps={{style: { color: '#E6E6FA'}}}
+          />
+          <Button onClick={handleDeleteDialogClose} style={{color: "white"}}>
+              Cancel
+          </Button>
+          <Button
+            onClick={handleDeleteConfirm}
+            style={{ color: "red" }}
+            autoFocus
+          >
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
         {/*---------------------------------------------*/}
         <div style={{background: 'linear-gradient(to left, #140952a6, #22032e'}}>
         <Dialog
@@ -323,7 +334,7 @@ export const Navbar = () => {
             onClose={() => setShowSuccessSnackbar(false)}
             message="Password Successfully Changed!"
           />
-      </Menu>
+
     </div>
   );
 };

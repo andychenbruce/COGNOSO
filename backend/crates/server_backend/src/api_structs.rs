@@ -1,15 +1,20 @@
 pub const ENDPOINT_CREATE_CARD_DECK: &str = "/create_card_deck";
 pub const ENDPOINT_DELETE_CARD_DECK: &str = "/delete_card_deck";
+pub const ENDPOINT_GET_DECK_NAME: &str = "/get_deck_name";
+pub const ENDPOINT_LIST_CARD_DECKS: &str = "/list_card_decks";
+
 pub const ENDPOINT_CREATE_CARD: &str = "/create_card";
 pub const ENDPOINT_DELETE_CARD: &str = "/delete_card";
+pub const ENDPOINT_EDIT_CARD: &str = "/edit_card";
+pub const ENDPOINT_LIST_CARDS: &str = "/list_cards";
+
+pub const ENDPOINT_LOGIN: &str = "/login";
 pub const ENDPOINT_NEW_USER: &str = "/new_user";
 pub const ENDPOINT_DELETE_USER: &str = "/delete_user";
 pub const ENDPOINT_CHANGE_PASSWORD: &str = "/change_password";
-pub const ENDPOINT_LIST_CARD_DECKS: &str = "/list_card_decks";
-pub const ENDPOINT_LIST_CARDS: &str = "/list_cards";
-pub const ENDPOINT_LOGIN: &str = "/login";
-pub const ENDPOINT_CREATE_DECK_PDF: &str = "/create_card_deck_pdf";
+
 pub const ENDPOINT_AI_TEST: &str = "/ai_test";
+pub const ENDPOINT_CREATE_DECK_PDF: &str = "/create_card_deck_pdf";
 
 pub type AccessToken = (u32, u32);
 
@@ -29,15 +34,30 @@ pub struct DeleteCard {
 }
 
 #[derive(Debug, serde::Deserialize)]
+pub struct EditCard {
+    pub access_token: AccessToken,
+    pub deck_id: u32,
+    pub card_index: u32,
+    pub new_question: String,
+    pub new_answer: String,
+}
+
+#[derive(Debug, serde::Deserialize)]
 pub struct CreateCardDeck {
     pub access_token: AccessToken,
     pub deck_name: String,
 }
 
 #[derive(Debug, serde::Deserialize)]
+pub struct GetDeckName {
+    pub access_token: AccessToken,
+    pub deck_id: u32,
+}
+
+#[derive(Debug, serde::Deserialize)]
 pub struct DeleteCardDeck {
     pub access_token: AccessToken,
-    pub deck_name: String,
+    pub deck_id: u32,
 }
 
 #[derive(Debug, serde::Deserialize)]

@@ -8,22 +8,20 @@ import {
   Button,
   TextField,
   Typography,
-
+  Snackbar,
 } from "@mui/material";
 import {
   ListCards,
   ListCardsResponse,
-  CreateCard,
-
 } from "../../backend_interface";
 import { send_json_backend, get_session_token } from "../../utils";
+import { redirect } from "../../utils";
+import { DeleteCard } from "../../backend_interface";
 
 interface Card {
-  //id: string;
   question: string;
   answer: string;
 }
-
 
 const App: React.FC = () => {
   const get_deckid = () => {
@@ -34,8 +32,6 @@ const App: React.FC = () => {
     const deckId = deckIdJSON ? JSON.parse(deckIdJSON) : null;
     return deckId;
   };
-  
-  
 
   const [flashcards, setFlashcards] = useState<Card[]>([]);
   const [question, setQuestion] = useState("");
@@ -44,14 +40,8 @@ const App: React.FC = () => {
   const [q1, setq1] = useState("");
   const [a1, seta1] = useState("");
 
-
-
-  //console.log(uint32Value); 
-  // const _handleKeyPress = (e: React.KeyboardEvent<HTMLDivElement>) => {
-  //   if (e.key === "Enter") {
-  //     Create_card(); // Call Create_card when Enter key is pressed
-  //   }
-  // };
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [errorFields, setErrorFields] = useState<string[]>([]);
 
   const Create_card = () => {
     let deckId = get_deckid();
@@ -59,7 +49,18 @@ const App: React.FC = () => {
     if (access_token == null) {
       return;
     }
-    let create_card: CreateCard = {
+    if (!q1 || !a1) {
+      setSnackbarOpen(true);
+      setErrorFields(!q1 ? ['emptyerror'] : ['emptyerror']);
+      setTimeout(() => {
+        setErrorFields([]);
+      }, 2000);
+      setq1("");
+      seta1("");
+      return;
+    }
+  
+    let create_card = {
       access_token: access_token,
       deck_id: deckId,
       question: q1,
@@ -69,12 +70,14 @@ const App: React.FC = () => {
       .then((data) => {
         console.log("result:", data);
         listCards();
+        setq1("");
+        seta1("");
       })
       .catch((error) => {
         console.error("Error creating card:", error);
       });
   }
-  //let temp;
+
   const listCards = () => {
     let deckId = get_deckid();
     let access_token = get_session_token();
@@ -95,125 +98,128 @@ const App: React.FC = () => {
         console.error("Error displaying cards:", error);
       });
   };
-
-  // const handleEditCard = (index: number) => {
-  //   setQuestion(flashcards[index].question);
-  //   setAnswer(flashcards[index].answer);
-  //   setEditingCardIndex(index);
-  // };
     
-  // Function to cancel editing
   const cancelEdit = () => {
     setQuestion("");
     setAnswer("");
     setEditingCardIndex(null);
   };
 
-  // Function to save changes to the card
-  const saveChanges = (_index: number) => {
+  const handleDeleteCard = (index: number) => {
     let access_token = get_session_token();
     if (access_token == null) {
       return;
     }
 
-    // let updatedCard = {
-    //   //id: flashcards[index].id, // Assuming flashcards have an 'id' field
-    //   question: question,
-    //   answer: answer,
-    // };
+    const cardIndexToDelete = index;
 
-    // send_json_backend("/update_cards", JSON.stringify({ ...updatedCard, access_token }))
-    //   .then((data) => {
-    //     console.log("Card updated:", data);
+    let deleteCardPayload: DeleteCard = {
+      access_token: access_token,
+      deck_id: get_deckid(),
+      card_index: cardIndexToDelete,
+    };
 
-    // Update the flashcards array with the modified card data
-    // const updatedFlashcards = [...flashcards];
-    // updatedFlashcards[index] = { ...updatedCard };
-    // setFlashcards(updatedFlashcards);
+    send_json_backend("/delete_card", JSON.stringify(deleteCardPayload))
+      .then(() => {
+        console.log("Card deleted with index:", cardIndexToDelete);
 
-    // Reset fields after successful update
-    //       cancelEdit();
-    //     })
-    //     .catch((error) => {
-    //       console.error("Error updating card:", error);
-    //     });
-    // };
-
-    // Function to handle deletion of a card
-    // const handleDeleteCard = (index: number) => {
-    //   let access_token = get_session_token();
-    //   if (access_token == null) {
-    //     return;
-    //   }
-
-    //   let cardToDelete = flashcards[index];
-      
-    //   // Make a request to the backend to delete the card
-    //   send_json_backend("/delete_card", JSON.stringify({ access_token, card_id: cardToDelete.id }))
-    //     .then(() => {
-    //       console.log("Card deleted:", cardToDelete);
-
-    //       // Update the flashcards array by removing the deleted card
-    //       const updatedFlashcards = [...flashcards];
-    //       updatedFlashcards.splice(index, 1);
-    //       setFlashcards(updatedFlashcards);
-    //     })
-    //     .catch((error) => {
-    //       console.error("Error deleting card:", error);
-    //     });
+        const updatedFlashcards = [...flashcards];
+        updatedFlashcards.splice(index, 1);
+        setFlashcards(updatedFlashcards);
+      })
+      .catch((error) => {
+        console.error("Error deleting card:", error);
+      });
   };
 
   useEffect(() => {
-    // Fetch initial flashcards when component mounts
     listCards();
   }, []);
   
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }} >
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
       <Navbar />
-  
+
+      <div style={{
+        textAlign: 'left',
+        padding: '10px', 
+        margin: '20px 0', 
+        backgroundColor: 'transparent', 
+        border: '2px solid purple', 
+        borderRadius: '4px', 
+        boxShadow: '0 2px 4px rgba(0,0,0,0.1)', 
+        alignSelf: 'flex-start', 
+        marginLeft: '20px', 
+      }}>
+        <Button onClick={() => {redirect("/flashcard_viewer")}} style={{color:'white'}} >
+          Back
+        </Button>
+      </div>
+      <div style={{ backgroundColor: '#d9a1f7', padding: '20px', borderRadius: '8px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)', margin: '20px 0', width: '100%', maxWidth: '500px' }}>
       <TextField
         label="Question"
         value={question}
-        onChange={(e) => {setQuestion(e.target.value); setq1(e.target.value)}}
-        //onKeyPress={handleKeyPress} // Listen for Enter key press
+        onChange={(e) => { setQuestion(e.target.value); setq1(e.target.value); }}
+        fullWidth
+        margin="normal"
+        variant="outlined"
+        error={errorFields.includes('emptyerror')} 
+        style={{
+          borderColor: errorFields.includes('emptyerror') ? 'red' : undefined 
+        }}
       />
       <TextField
         label="Answer"
         value={answer}
-        onChange={(e) => {setAnswer(e.target.value); seta1(e.target.value)}}
-        //onKeyPress={handleKeyPress} // Listen for Enter key press
+        onChange={(e) => { setAnswer(e.target.value); seta1(e.target.value); }}
+        fullWidth
+        margin="normal"
+        variant="outlined"
+        error={errorFields.includes('emptyerror')}
+        style={{
+          borderColor: errorFields.includes('emptyerror') ? 'red' : undefined
+        }}
       />
-      <Button onClick={ () => {Create_card(); setAnswer(""); setQuestion("")}}>Create Card</Button>
-      <div style={{ marginTop: '20px' }}>
+        <div style={{ marginTop: '20px', textAlign: 'center', }}>
+          <Button onClick={() => { Create_card(); setAnswer(""); setQuestion(""); }} style={{border:'1px solid blue'}}>Create Card</Button>
+        </div>
+      </div>
+      <div style={{ marginTop: '20px'}}>
         {flashcards.map((flashcard, index) => (
-          <div key={index} style={{ marginBottom: '10px', padding: '20px', border: '1px solid #ccc', borderRadius: '10px', width: '400px' }}>
-            {editingCardIndex === index ? (
+           <div key={index} style={{ marginBottom: '10px', padding: '20px', border: '1px solid #ccc', borderRadius: '10px', width: '400px', backgroundColor: '#f1f1f1' }}>
+           {editingCardIndex === index ? (
               <>
                 <TextField
                   label="Question"
                   value={question}
-                  onChange={(e) => setQuestion(e.target.value)}
+                  onChange={(e) => { setQuestion(e.target.value); setq1(e.target.value); }}
+                  fullWidth
+                  margin="normal"
+                  variant="outlined"
                 />
                 <TextField
                   label="Answer"
                   value={answer}
-                  onChange={(e) => setAnswer(e.target.value)}
+                  onChange={(e) => { setAnswer(e.target.value); seta1(e.target.value); }}
+                  fullWidth
+                  margin="normal"
+                  variant="outlined"
                 />
-                <Button onClick={() => saveChanges(index)}>Save Changes</Button>
                 <Button onClick={cancelEdit}>Cancel</Button>
               </>
             ) : (
               <>
-                <Typography variant="h6">Question:</Typography>
+                <Typography variant="h6" >Question:</Typography>
                 <Typography>{flashcard.question}</Typography>
                 <Typography variant="h6">Answer:</Typography>
                 <Typography>{flashcard.answer}</Typography>
                 <Button /*onClick={() => handleEditCard(index)}*/>Edit</Button>
-                <Button /*onClick={() => handleDeleteCard(index)}*/>Delete</Button> 
+                <Button onClick={() => handleDeleteCard(index)}>Delete</Button> 
               </>
             )}
+            <Snackbar open={snackbarOpen} autoHideDuration={2000} onClose={() => setSnackbarOpen(false)} message="Please fill out both the question and answer fields!">
+            </Snackbar>
           </div>
         ))}
       </div>
@@ -221,5 +227,5 @@ const App: React.FC = () => {
   );
 };
 
-
 export default App;
+
