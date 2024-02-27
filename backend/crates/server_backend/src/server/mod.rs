@@ -165,10 +165,10 @@ async fn create_card_deck(
 async fn get_deck_name(
     info: api_structs::GetDeckName,
     state: std::sync::Arc<SharedState>,
-) -> Result<(), AndyError> {
+) -> Result<String, AndyError> {
     let user_id = state.database.validate_token(info.access_token)?;
-    state.database.get_deck_name(user_id, info.deck_id)?;
-    Ok(())
+    let name = state.database.get_deck_name(user_id, info.deck_id)?;
+    Ok(name)
 }
 
 async fn delete_card_deck(
