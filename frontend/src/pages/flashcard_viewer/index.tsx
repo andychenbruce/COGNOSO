@@ -89,16 +89,17 @@ const FlashcardViewerFunc = () => {
           onClick={() => {redirectToDeckManage()}}
           style={{
             position: 'absolute',
-            left: '10px',
+            left: '20px',
             top: '50%', 
             transform: 'translateY(-50%)',
-            padding: '10px',
+            padding: '20px',
             margin: '20px 0', 
             backgroundColor: "#9370db", 
             border: '2px solid purple', 
             borderRadius: '4px', 
             boxShadow: '0 2px 4px rgba(0,0,0,0.1)', 
             color:'white'
+            
           }}
         >
           Back
@@ -107,10 +108,10 @@ const FlashcardViewerFunc = () => {
           onClick={() => {redirectToMinigame()}}
           style={{
             position: 'absolute',
-            right: '10px',
+            right: '20px',
             top: '50%', 
             transform: 'translateY(-50%)',
-            padding: '10px',
+            padding: '20px',
             margin: '20px 0', 
             backgroundColor: "#9370db", 
             border: '2px solid purple', 

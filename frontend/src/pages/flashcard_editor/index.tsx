@@ -142,20 +142,32 @@ const App: React.FC = () => {
       <Navbar />
 
       <div style={{
-        textAlign: 'left',
-        padding: '10px', 
-        margin: '20px 0', 
-        backgroundColor: 'transparent', 
-        border: '2px solid purple', 
-        borderRadius: '4px', 
-        boxShadow: '0 2px 4px rgba(0,0,0,0.1)', 
-        alignSelf: 'flex-start', 
-        marginLeft: '20px', 
+        position: 'relative',
+        width: '100%',
+        height: '50px',
+        backgroundColor: 'transparent',
       }}>
-        <Button onClick={() => {redirect("/flashcard_viewer")}} style={{color:'white'}} >
+        <Button 
+          onClick={() => {redirect("/flashcard_viewer")}}
+          style={{
+            position: 'absolute',
+            left: '20px',
+            top: '50%', 
+            transform: 'translateY(-50%)',
+            padding: '20px',
+            margin: '20px 0', 
+            backgroundColor: "#9370db", 
+            border: '2px solid purple', 
+            borderRadius: '4px', 
+            boxShadow: '0 2px 4px rgba(0,0,0,0.1)', 
+            color:'white'
+            
+          }}
+        >
           Back
         </Button>
       </div>
+      
       <div style={{ backgroundColor: '#d9a1f7', padding: '20px', borderRadius: '8px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)', margin: '20px 0', width: '100%', maxWidth: '500px' }}>
       <TextField
         label="Question"
