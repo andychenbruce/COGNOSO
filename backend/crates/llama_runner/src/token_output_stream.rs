@@ -65,5 +65,4 @@ impl TokenOutputStream {
     pub fn tokenizer(&self) -> &tokenizers::Tokenizer {
         &self.tokenizer
     }
-
 }

@@ -8,7 +8,6 @@ pub const ENDPOINT_DELETE_CARD: &str = "/delete_card";
 pub const ENDPOINT_EDIT_CARD: &str = "/edit_card";
 pub const ENDPOINT_LIST_CARDS: &str = "/list_cards";
 
-
 pub const ENDPOINT_LOGIN: &str = "/login";
 pub const ENDPOINT_NEW_USER: &str = "/new_user";
 pub const ENDPOINT_DELETE_USER: &str = "/delete_user";

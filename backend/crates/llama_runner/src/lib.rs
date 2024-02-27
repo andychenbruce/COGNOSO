@@ -28,7 +28,7 @@ pub struct AndyModel {
     tokenizer: Tokenizer,
     temperature: Option<f64>,
     repeat_penalty: f32,
-    repeat_last_n: usize
+    repeat_last_n: usize,
 }
 
 impl AndyModel {
@@ -75,23 +75,19 @@ impl AndyModel {
 
         println!("model built");
 
-
         let tokenizer = Tokenizer::from_file("tokenizer.txt.idk.lol").unwrap();
 
-
-        
-        Ok(Self { weights: model,
-            tokenizer, device,
+        Ok(Self {
+            weights: model,
+            tokenizer,
+            device,
             repeat_last_n: options.repeat_last_n,
             repeat_penalty: options.repeat_penalty,
-            temperature: options.temperature
-            
+            temperature: options.temperature,
         })
     }
 
-    pub fn run(&mut self) -> candle_core::Result<()>{
-        
-
+    pub fn run(&mut self) -> candle_core::Result<()> {
         let mut tos = TokenOutputStream::new(self.tokenizer.clone());
 
         let mut pre_prompt_tokens = vec![];
@@ -112,9 +108,7 @@ impl AndyModel {
                 format!("<|system|>\n</s>\n<|user|>\n{prompt}</s>\n<|assistant|>",)
             };
             print!("{}", &prompt_str);
-            let tokens = tos
-                .tokenizer()
-                .encode(prompt_str, true).unwrap();
+            let tokens = tos.tokenizer().encode(prompt_str, true).unwrap();
             if VERBOSE_PROMPT {
                 for (token, id) in tokens.get_tokens().iter().zip(tokens.get_ids().iter()) {
                     let token = token.replace('▁', " ").replace("<0x0A>", "\n");
@@ -192,10 +186,7 @@ impl AndyModel {
             );
 
             pre_prompt_tokens = [prompt_tokens.as_slice(), all_tokens.as_slice()].concat()
-
         }
         Ok(())
     }
 }
-
-

@@ -280,6 +280,6 @@ async fn ai_test(
     state: std::sync::Arc<SharedState>,
 ) -> Result<String, AndyError> {
     let ai_response = state.llm_runner.submit_prompt(info.prompt).await?;
-    
+
     Ok(ai_response)
 }
