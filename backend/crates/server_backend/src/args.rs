@@ -10,5 +10,7 @@ pub struct Args {
     pub database_path: std::path::PathBuf,
 
     #[arg(long)]
-    pub llm_runner: std::net::SocketAddr,
+    pub model_path: std::path::PathBuf,
+    #[arg(long)]
+    pub tokenizer_path: std::path::PathBuf,
 }

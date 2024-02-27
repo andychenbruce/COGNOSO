@@ -22,3 +22,4 @@ rustls-pemfile = "2.1.0"
 rustls = "0.22.2"
 tokio-rustls = "0.25.0"
 http = "1.0.0"
+llm_runner = { workspace=true }

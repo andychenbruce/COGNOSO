@@ -1,5 +1,4 @@
 pub mod database;
-pub mod llm;
 pub mod utils;
 pub mod vector_db;
 
@@ -14,7 +13,7 @@ use hyper::{Request, Response};
 
 pub struct SharedState {
     pub database: database::Database,
-    pub llm_runner: llm::LlmRunner,
+    pub llm_runner: tokio::sync::Mutex<Option<llm_runner::AndyModel>>,
 }
 
 pub async fn main_service(
@@ -279,7 +278,23 @@ async fn ai_test(
     info: api_structs::AiPromptTest,
     state: std::sync::Arc<SharedState>,
 ) -> Result<String, AndyError> {
-    let ai_response = state.llm_runner.submit_prompt(info.prompt).await?;
+    state
+        .llm_runner
+        .lock()
+        .await
+        .take()
+        .unwrap()
+        .run(llm_runner::RunOptions {
+            prompt: info.prompt,
+            sample_len: 100,
+            seed: 1234,
+            top_p: None,
+            temperature: None,
+            repeat_last_n: 10,
+            repeat_penalty: 1.0,
+        })
+        .unwrap();
 
-    Ok(ai_response)
+    todo!()
+    //Ok(ai_response)
 }

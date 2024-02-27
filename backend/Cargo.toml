@@ -9,3 +9,4 @@ members = [
 
 [workspace.dependencies]
 pdf_parser = { path = "crates/pdf_parser" }
+llm_runner = { path = "crates/llama_runner" }

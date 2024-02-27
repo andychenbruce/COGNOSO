@@ -11,41 +11,30 @@ use candle_transformers::models::quantized_llama as model;
 use model::ModelWeights;
 use token_output_stream::TokenOutputStream;
 
-const VERBOSE_PROMPT: bool = false;
-const SAMPLE_LEN: usize = 3;
-const SEED: u64 = 5;
-const TOP_P: Option<f64> = None;
-
 pub struct ModelOptions {
-    temperature: Option<f64>,
-    repeat_penalty: f32,
-    repeat_last_n: usize,
+    pub model_path: std::path::PathBuf,
+    pub tokenizer_path: std::path::PathBuf,
+}
+
+pub struct RunOptions {
+    pub prompt: String,
+    pub sample_len: usize,
+    pub seed: u64,
+    pub top_p: Option<f64>,
+    pub temperature: Option<f64>,
+    pub repeat_penalty: f32,
+    pub repeat_last_n: usize,
 }
 
 pub struct AndyModel {
     device: candle_core::Device,
     weights: ModelWeights,
     tokenizer: Tokenizer,
-    temperature: Option<f64>,
-    repeat_penalty: f32,
-    repeat_last_n: usize,
 }
 
 impl AndyModel {
     pub fn new(options: ModelOptions) -> candle_core::Result<Self> {
-        println!(
-            "avx: {}, neon: {}, simd128: {}, f16c: {}",
-            candle_core::utils::with_avx(),
-            candle_core::utils::with_neon(),
-            candle_core::utils::with_simd128(),
-            candle_core::utils::with_f16c()
-        );
-        println!(
-            "temp: {:?} repeat-penalty: {} repeat-last-n: {}",
-            options.temperature, options.repeat_penalty, options.repeat_last_n
-        );
-
-        let model_path: std::path::PathBuf = "bruh.gguf".to_owned().into();
+        let model_path = options.model_path;
         let mut file = std::fs::File::open(&model_path)?;
         let start = std::time::Instant::now();
         let device = candle_core::Device::new_cuda(0)?;
@@ -75,19 +64,16 @@ impl AndyModel {
 
         println!("model built");
 
-        let tokenizer = Tokenizer::from_file("tokenizer.txt.idk.lol").unwrap();
+        let tokenizer = Tokenizer::from_file(options.tokenizer_path).unwrap();
 
         Ok(Self {
             weights: model,
             tokenizer,
             device,
-            repeat_last_n: options.repeat_last_n,
-            repeat_penalty: options.repeat_penalty,
-            temperature: options.temperature,
         })
     }
 
-    pub fn run(&mut self) -> candle_core::Result<()> {
+    pub fn run(&mut self, options: RunOptions) -> candle_core::Result<()> {
         let mut tos = TokenOutputStream::new(self.tokenizer.clone());
 
         let mut pre_prompt_tokens = vec![];
@@ -96,7 +82,7 @@ impl AndyModel {
                 //let is_interactive = matches!(prompt, Prompt::Interactive);
                 print!("> ");
                 std::io::stdout().flush()?;
-                let mut prompt = String::new();
+                let mut prompt = options.prompt.clone();
                 std::io::stdin().read_line(&mut prompt)?;
                 if prompt.ends_with('\n') {
                     prompt.pop();
@@ -109,15 +95,9 @@ impl AndyModel {
             };
             print!("{}", &prompt_str);
             let tokens = tos.tokenizer().encode(prompt_str, true).unwrap();
-            if VERBOSE_PROMPT {
-                for (token, id) in tokens.get_tokens().iter().zip(tokens.get_ids().iter()) {
-                    let token = token.replace('▁', " ").replace("<0x0A>", "\n");
-                    println!("{id:7} -> '{token}'");
-                }
-            }
 
             let prompt_tokens = [&pre_prompt_tokens, tokens.get_ids()].concat();
-            let to_sample = SAMPLE_LEN.saturating_sub(1);
+            let to_sample = options.sample_len.saturating_sub(1);
             let prompt_tokens = if prompt_tokens.len() + to_sample > model::MAX_SEQ_LEN - 10 {
                 let to_remove = prompt_tokens.len() + to_sample + 10 - model::MAX_SEQ_LEN;
                 prompt_tokens[prompt_tokens.len().saturating_sub(to_remove)..].to_vec()
@@ -125,7 +105,8 @@ impl AndyModel {
                 prompt_tokens
             };
             let mut all_tokens = vec![];
-            let mut logits_processor = LogitsProcessor::new(SEED, self.temperature, TOP_P);
+            let mut logits_processor =
+                LogitsProcessor::new(options.seed, options.temperature, options.top_p);
 
             let start_prompt_processing = std::time::Instant::now();
             let mut next_token = {
@@ -149,13 +130,13 @@ impl AndyModel {
                 let input = Tensor::new(&[next_token], &self.device)?.unsqueeze(0)?;
                 let logits = self.weights.forward(&input, prompt_tokens.len() + index)?;
                 let logits = logits.squeeze(0)?;
-                let logits = if self.repeat_penalty == 1. {
+                let logits = if options.repeat_penalty == 1. {
                     logits
                 } else {
-                    let start_at = all_tokens.len().saturating_sub(self.repeat_last_n);
+                    let start_at = all_tokens.len().saturating_sub(options.repeat_last_n);
                     candle_transformers::utils::apply_repeat_penalty(
                         &logits,
-                        self.repeat_penalty,
+                        options.repeat_penalty,
                         &all_tokens[start_at..],
                     )?
                 };
