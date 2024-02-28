@@ -1,3 +1,4 @@
+home.css
 .App { 
   text-align: center;
 }
@@ -44,17 +45,27 @@ body {
 .Favorites {
   padding: 10px;
   margin: 20px;
-  color: white
+  color: yellow;
+  text-align: left;
 }
 
 .Decks {
   padding: 10px;
   margin: 20px;
   color: white;
+  text-align: left; 
 }
 
 .Content-box {
-  border: 2px solid #ccc;
-  min-height: 200px; /*adjust height here*/
+  border: 5px solid #ffffff; 
+  min-height: 200px; 
   margin-top: 20px;
+}
+
+.Favorites-box {
+  border-color: yellow; 
+}
+
+.Decks-box {
+  border-color: rgb(255, 255, 255); 
 }
