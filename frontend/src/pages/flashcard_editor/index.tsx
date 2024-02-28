@@ -16,7 +16,7 @@ import {
 } from "../../backend_interface";
 import { send_json_backend, get_session_token } from "../../utils";
 import { redirect } from "../../utils";
-import { DeleteCard } from "../../backend_interface";
+import { DeleteCard, EditCard} from "../../backend_interface";
 // import { EditCard } from "../../backend_interface";
 
 interface Card {
@@ -41,21 +41,19 @@ const App: React.FC = () => {
   const [q1, setq1] = useState("");
   const [a1, seta1] = useState("");
 
+  const [editedQuestion, setEditedQuestion] = useState<string>("");
+const [editedAnswer, setEditedAnswer] = useState<string>("");
+
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [errorFields, setErrorFields] = useState<string[]>([]);
 
-  // const handleEditCard = () => {
-
-
-  //   send_json_backend("/edit_card", JSON.stringify(edit_card))
-  //     .then((data) => {
-  //       console.log('editing');
-        
-  //     })
-  //   access_token = Number
-  //   deck_name
-  // }
-
+  const handleEditCard = (index: number) => {
+    setEditingCardIndex(index);
+    const card = flashcards[index];
+    setEditedQuestion(card.question);
+    setEditedAnswer(card.answer);
+  };
+  
   const Create_card = () => {
     let deckId = get_deckid();
     let access_token = get_session_token();
@@ -123,6 +121,7 @@ const App: React.FC = () => {
     if (access_token == null) {
       return;
     }
+    
 
     const cardIndexToDelete = index;
 
@@ -144,6 +143,33 @@ const App: React.FC = () => {
         console.error("Error deleting card:", error);
       });
   };
+  
+  const handleSaveEdit = (index: number) => {
+    let access_token = get_session_token();
+    if (access_token == null) {
+      return;
+    }  
+    const cardIndexToEdit = index;
+    console.log(editedQuestion,editedAnswer )
+    let edit_card: EditCard = {
+      access_token: access_token,
+      deck_id: get_deckid(),
+      card_index: cardIndexToEdit,
+      new_question: editedQuestion,
+      new_answer: editedAnswer,
+    };
+  
+    send_json_backend("/edit_card", JSON.stringify(edit_card))
+      .then((data) => {
+        console.log("result:", data);
+        //listCards();
+        //cancelEdit();
+      })
+      .catch((error) => {
+        console.error("Error editing card:", error);
+      });
+  };
+  
 
   useEffect(() => {
     listCards();
@@ -211,37 +237,39 @@ const App: React.FC = () => {
         </div>
       </div>
       <div style={{ marginTop: '20px'}}>
-        {flashcards.map((flashcard, index) => (
-           <div key={index} style={{ marginBottom: '10px', padding: '20px', border: '1px solid #ccc', borderRadius: '10px', width: '400px', backgroundColor: '#f1f1f1' }}>
-           {editingCardIndex === index ? (
-              <>
-                <TextField
-                  label="Question"
-                  value={question}
-                  onChange={(e) => { setQuestion(e.target.value); setq1(e.target.value); }}
-                  fullWidth
-                  margin="normal"
-                  variant="outlined"
-                />
-                <TextField
-                  label="Answer"
-                  value={answer}
-                  onChange={(e) => { setAnswer(e.target.value); seta1(e.target.value); }}
-                  fullWidth
-                  margin="normal"
-                  variant="outlined"
-                />
-                <Button onClick={cancelEdit}>Cancel</Button>
-              </>
-            ) : (
-              <>
-                <Typography variant="h6" >Question:</Typography>
-                <Typography>{flashcard.question}</Typography>
-                <Typography variant="h6">Answer:</Typography>
-                <Typography>{flashcard.answer}</Typography>
-                {/* <Button onClick={() => handleEditCard(index)}>Edit</Button> */}
-                <Button onClick={() => handleDeleteCard(index)}>Delete</Button> 
-              </>
+      {flashcards.map((flashcard, index) => (
+  <div key={index} style={{ marginBottom: '10px', padding: '20px', border: '1px solid #ccc', borderRadius: '10px', width: '400px', backgroundColor: '#f1f1f1' }}>
+    {editingCardIndex === index ? (
+      <>
+        <TextField
+          label="Question"
+          value={editedQuestion}
+          onChange={(e) => setEditedQuestion(e.target.value)}
+          fullWidth
+          margin="normal"
+          variant="outlined"
+        />
+        <TextField
+          label="Answer"
+          value={editedAnswer}
+          onChange={(e) => setEditedAnswer(e.target.value)}
+          fullWidth
+          margin="normal"
+          variant="outlined"
+        />
+        <Button onClick={() => cancelEdit()}>Cancel</Button>
+        <Button onClick={() => handleSaveEdit(index)}>Save</Button>
+      </>
+    ) : (
+      <>
+        <Typography variant="h6">Question:</Typography>
+        <Typography>{flashcard.question}</Typography>
+        <Typography variant="h6">Answer:</Typography>
+        <Typography>{flashcard.answer}</Typography>
+        <Button onClick={() => handleEditCard(index)}>Edit</Button>
+        <Button onClick={() => handleDeleteCard(index)}>Delete</Button>
+      </>
+
             )}
             <Snackbar open={snackbarOpen} autoHideDuration={2000} onClose={() => setSnackbarOpen(false)} message="Please fill out both the question and answer fields!">
             </Snackbar>
