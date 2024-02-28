@@ -1,16 +1,20 @@
 export const ENDPOINT_CREATE_CARD_DECK: string = "/create_card_deck";
 export const ENDPOINT_DELETE_CARD_DECK: string = "/delete_card_deck";
+export const ENDPOINT_GET_DECK_NAME: string = "/get_deck_name";
+export const ENDPOINT_LIST_CARD_DECKS: string = "/list_card_decks";
+
 export const ENDPOINT_CREATE_CARD: string = "/create_card";
 export const ENDPOINT_DELETE_CARD: string = "/delete_card";
+export const ENDPOINT_EDIT_CARD: string = "/edit_card";
+export const ENDPOINT_LIST_CARDS: string = "/list_cards";
+
+export const ENDPOINT_LOGIN: string = "/login";
 export const ENDPOINT_NEW_USER: string = "/new_user";
 export const ENDPOINT_DELETE_USER: string = "/delete_user";
 export const ENDPOINT_CHANGE_PASSWORD: string = "/change_password";
-export const ENDPOINT_LIST_CARD_DECKS: string = "/list_card_decks";
-export const ENDPOINT_LIST_CARDS: string = "/list_cards";
-export const ENDPOINT_LOGIN: string = "/login";
-export const ENDPOINT_CREATE_DECK_PDF: string = "/create_card_deck_pdf";
-export const ENDPOINT_AI_TEST: string = "/ai_test";
 
+export const ENDPOINT_AI_TEST: string = "/ai_test";
+export const ENDPOINT_CREATE_DECK_PDF: string = "/create_card_deck_pdf";
 
 // request -> /create_card
 export interface CreateCard {
@@ -27,11 +31,27 @@ export interface DeleteCard {
   card_index: number;
 }
 
-// request -> /create_card_deck
+// request -> /edit_card
+export interface EditCard {
+  access_token: [number, number];
+  deck_id: number,
+  card_index: number,
+  new_question: String,
+  new_answer: string,
+}
+
+// request -> /create_card_decki
 export interface CreateCardDeck {
   access_token: [number, number];
   deck_name: string;
 }
+
+//request -> /get_deck_name
+export interface GetDeckName {
+  access_token: [number, number];
+  deck_id: number;
+}
+
 
 // request -> /delete_card_deck
 export interface DeleteCardDeck {

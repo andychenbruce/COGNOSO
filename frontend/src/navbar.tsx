@@ -139,6 +139,11 @@ export const Navbar = () => {
     value={searchQuery}
     onChange={(e) => setSearchQuery(e.target.value)}
     style={{ flex: 1, fontSize: "20px", paddingLeft: "10px"}}
+    onKeyDown={(e) => {
+      if(e.key === 'Enter') {
+        redirect("/search_results")
+      }
+    }}
 />
       </div>
       <Button
@@ -169,12 +174,12 @@ export const Navbar = () => {
         }}
         PaperProps={{
           sx: {
-            backgroundColor: "#9370db", // Background color of the menu
+            backgroundColor: "#9370db",
           },
         }}
       >
         <MenuItem onClick={handleLogOut} style={{backgroundColor:'transparent', }}>
-          <ListItemText primary="Log Out" sx={{ color: "white" }} /> {/* Text color of menu items */}
+          <ListItemText primary="Log Out" sx={{ color: "white" }} />
         </MenuItem>
         <MenuItem onClick={handleChangePassDialog} style={{backgroundColor:'transparent', }}>
           <ListItemText primary="Change Password" sx={{ color: "white" }} />
