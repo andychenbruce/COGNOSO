@@ -40,7 +40,7 @@ export interface EditCard {
   new_answer: string,
 }
 
-// request -> /create_card_deck
+// request -> /create_card_decki
 export interface CreateCardDeck {
   access_token: [number, number];
   deck_name: string;

@@ -17,7 +17,7 @@ import {
 import { send_json_backend, get_session_token } from "../../utils";
 import { redirect } from "../../utils";
 import { DeleteCard } from "../../backend_interface";
-import { EditCard } from "../../backend_interface";
+// import { EditCard } from "../../backend_interface";
 
 interface Card {
   question: string;
