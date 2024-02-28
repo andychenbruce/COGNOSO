@@ -17,6 +17,7 @@ import {
 import { send_json_backend, get_session_token } from "../../utils";
 import { redirect } from "../../utils";
 import { DeleteCard } from "../../backend_interface";
+import { EditCard } from "../../backend_interface";
 
 interface Card {
   question: string;
@@ -42,6 +43,18 @@ const App: React.FC = () => {
 
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [errorFields, setErrorFields] = useState<string[]>([]);
+
+  // const handleEditCard = () => {
+
+
+  //   send_json_backend("/edit_card", JSON.stringify(edit_card))
+  //     .then((data) => {
+  //       console.log('editing');
+        
+  //     })
+  //   access_token = Number
+  //   deck_name
+  // }
 
   const Create_card = () => {
     let deckId = get_deckid();
@@ -226,7 +239,7 @@ const App: React.FC = () => {
                 <Typography>{flashcard.question}</Typography>
                 <Typography variant="h6">Answer:</Typography>
                 <Typography>{flashcard.answer}</Typography>
-                <Button /*onClick={() => handleEditCard(index)}*/>Edit</Button>
+                {/* <Button onClick={() => handleEditCard(index)}>Edit</Button> */}
                 <Button onClick={() => handleDeleteCard(index)}>Delete</Button> 
               </>
             )}

@@ -12,7 +12,7 @@ import {
   DialogContent,
   FormControlLabel,
   Checkbox,
-  IconButton, // Import IconButton from Material-UI
+  IconButton,
 } from "@mui/material";
 import {
   UploadPdf,

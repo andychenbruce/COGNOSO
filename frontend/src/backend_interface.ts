@@ -31,7 +31,7 @@ export interface DeleteCard {
   card_index: number;
 }
 
-// request -> /exit_card
+// request -> /edit_card
 export interface EditCard {
   access_token: [number, number];
   deck_id: number,
