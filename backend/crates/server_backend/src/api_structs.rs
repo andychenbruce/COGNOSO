@@ -13,6 +13,8 @@ pub const ENDPOINT_NEW_USER: &str = "/new_user";
 pub const ENDPOINT_DELETE_USER: &str = "/delete_user";
 pub const ENDPOINT_CHANGE_PASSWORD: &str = "/change_password";
 
+pub const ENDPOINT_SEARCH_DECKS: &str = "/search_decks";
+
 pub const ENDPOINT_AI_TEST: &str = "/ai_test";
 pub const ENDPOINT_CREATE_DECK_PDF: &str = "/create_card_deck_pdf";
 
@@ -123,6 +125,16 @@ pub struct LoginRequest {
 #[derive(Debug, serde::Serialize)]
 pub struct LoginResponse {
     pub access_token: AccessToken,
+}
+
+#[derive(Debug, serde::Deserialize)]
+pub struct SearchDecksRequest {
+    pub prompt: String,
+}
+
+#[derive(Debug, serde::Serialize)]
+pub struct SearchDecksResponse {
+    pub decks: Vec<u32>,
 }
 
 #[derive(Debug, serde::Deserialize)]

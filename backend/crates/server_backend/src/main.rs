@@ -44,6 +44,13 @@ async fn main() -> Result<(), AndyError> {
     let globals: std::sync::Arc<server::SharedState> = std::sync::Arc::new(server::SharedState {
         database: server::database::Database::new(args.database_path)?,
         llm_runner: server::llm::LlmRunner::new(args.llm_runner),
+        search_engine: tokio::sync::Mutex::new(
+            server::search_engine::SearchEngine::new(
+                args.qdrant_addr,
+                args.embedder_path.as_ref().map(|x| x.as_ref()),
+            )
+            .await?,
+        ),
     });
 
     // let mut config = rustls::ServerConfig::builder()

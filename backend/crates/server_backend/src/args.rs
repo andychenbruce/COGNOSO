@@ -11,4 +11,10 @@ pub struct Args {
 
     #[arg(long)]
     pub llm_runner: std::net::SocketAddr,
+
+    #[arg(long)]
+    pub qdrant_addr: Option<String>,
+
+    #[arg(long)]
+    pub embedder_path: Option<std::path::PathBuf>,
 }
