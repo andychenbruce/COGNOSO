@@ -261,9 +261,8 @@ checksum = "a2bd12c1caf447e69cd4528f47f94d203fd2582878ecb9e9465484c4148a8223"
 
 [[package]]
 name = "candle-core"
-version = "0.3.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6db8659ea87ee8197d2fc627348916cce0561330ee7ae3874e771691d3cecb2f"
+version = "0.4.0"
+source = "git+https://github.com/huggingface/candle.git?rev=badf886583fdca3c0730aa368bb99c21ad0a5e67#badf886583fdca3c0730aa368bb99c21ad0a5e67"
 dependencies = [
  "byteorder",
  "gemm",
@@ -282,8 +281,9 @@ dependencies = [
 
 [[package]]
 name = "candle-core"
-version = "0.4.0"
-source = "git+https://github.com/huggingface/candle.git?rev=badf886583fdca3c0730aa368bb99c21ad0a5e67#badf886583fdca3c0730aa368bb99c21ad0a5e67"
+version = "0.4.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "6f1b20174c1707e20f4cb364a355b449803c03e9b0c9193324623cf9787a4e00"
 dependencies = [
  "byteorder",
  "gemm",
@@ -302,11 +302,10 @@ dependencies = [
 
 [[package]]
 name = "candle-nn"
-version = "0.3.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7ddce8312032760a6791d6adc9c56dc54fd7c1be38d85dcc4862f1c75228bbc7"
+version = "0.4.0"
+source = "git+https://github.com/huggingface/candle.git?rev=badf886583fdca3c0730aa368bb99c21ad0a5e67#badf886583fdca3c0730aa368bb99c21ad0a5e67"
 dependencies = [
- "candle-core 0.3.3",
+ "candle-core 0.4.0",
  "half",
  "num-traits",
  "rayon",
@@ -317,10 +316,11 @@ dependencies = [
 
 [[package]]
 name = "candle-nn"
-version = "0.4.0"
-source = "git+https://github.com/huggingface/candle.git?rev=badf886583fdca3c0730aa368bb99c21ad0a5e67#badf886583fdca3c0730aa368bb99c21ad0a5e67"
+version = "0.4.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "66a27533c8edfc915a6459f9850641ef523a829fa1a181c670766c1f752d873a"
 dependencies = [
- "candle-core 0.4.0",
+ "candle-core 0.4.1",
  "half",
  "num-traits",
  "rayon",
@@ -331,13 +331,12 @@ dependencies = [
 
 [[package]]
 name = "candle-transformers"
-version = "0.3.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "68834a0cacb7e002d1f4abfe26a7cd1237e2ba342fddcf2e30913c4edb96409d"
+version = "0.4.0"
+source = "git+https://github.com/huggingface/candle.git?rev=badf886583fdca3c0730aa368bb99c21ad0a5e67#badf886583fdca3c0730aa368bb99c21ad0a5e67"
 dependencies = [
  "byteorder",
- "candle-core 0.3.3",
- "candle-nn 0.3.3",
+ "candle-core 0.4.0",
+ "candle-nn 0.4.0",
  "num-traits",
  "rand",
  "rayon",
@@ -345,17 +344,17 @@ dependencies = [
  "serde_json",
  "serde_plain",
  "tracing",
- "wav",
 ]
 
 [[package]]
 name = "candle-transformers"
-version = "0.4.0"
-source = "git+https://github.com/huggingface/candle.git?rev=badf886583fdca3c0730aa368bb99c21ad0a5e67#badf886583fdca3c0730aa368bb99c21ad0a5e67"
+version = "0.4.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b5847699f0643da05e57fc473672566e93dc36d82c1b7eeb970c6154d3434fe1"
 dependencies = [
  "byteorder",
- "candle-core 0.4.0",
- "candle-nn 0.4.0",
+ "candle-core 0.4.1",
+ "candle-nn 0.4.1",
  "num-traits",
  "rand",
  "rayon",
@@ -1938,12 +1937,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "riff"
-version = "1.0.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b9b1a3d5f46d53f4a3478e2be4a5a5ce5108ea58b100dcd139830eae7f79a3a1"
-
-[[package]]
 name = "ring"
 version = "0.17.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2131,9 +2124,9 @@ dependencies = [
 name = "sentence_embedder"
 version = "0.1.0"
 dependencies = [
- "candle-core 0.3.3",
- "candle-nn 0.3.3",
- "candle-transformers 0.3.3",
+ "candle-core 0.4.1",
+ "candle-nn 0.4.1",
+ "candle-transformers 0.4.1",
  "serde_json",
  "tokenizers",
 ]
@@ -2859,15 +2852,6 @@ dependencies = [
  "wasm-bindgen",
  "wasm-bindgen-futures",
  "web-sys",
-]
-
-[[package]]
-name = "wav"
-version = "1.0.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a65e199c799848b4f997072aa4d673c034f80f40191f97fe2f0a23f410be1609"
-dependencies = [
- "riff",
 ]
 
 [[package]]

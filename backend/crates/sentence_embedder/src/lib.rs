@@ -19,15 +19,19 @@ impl SentenceEmbedder {
         let device = candle_core::Device::Cpu; //change to cuda later
 
         let config_filename = path.join("config.json");
-        let weights_filename = path.join("model.safetensors");
+        //let weights_filename = path.join("model.safetensors");
+        let weights_filename = path.join("pytorch_model.bin");
         let tokenizer_filename = path.join("tokenizer.json");
 
         let config = std::fs::read_to_string(config_filename)?;
         let mut config: Config = serde_json::from_str(&config).unwrap();
         let tokenizer = Tokenizer::from_file(tokenizer_filename).unwrap();
 
+        // let vb =
+        //     unsafe { VarBuilder::from_mmaped_safetensors(&[weights_filename], DTYPE, &device)? };
+
         let vb =
-            unsafe { VarBuilder::from_mmaped_safetensors(&[weights_filename], DTYPE, &device)? };
+            VarBuilder::from_pth(&weights_filename, DTYPE, &device)?;
 
         if APPROXIMAGE_GELU {
             config.hidden_act = HiddenAct::GeluApproximate;
