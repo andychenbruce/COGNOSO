@@ -9,8 +9,8 @@ use crate::api_structs;
 const SHA265_NUM_BYTES: usize = 32;
 
 type AccessToken = (u32, u32);
-type UserId = u32;
-type DeckId = u32;
+pub type UserId = u32;
+pub type DeckId = u32;
 
 #[derive(serde::Serialize, serde::Deserialize, Debug)]
 struct UserEntry {
@@ -29,9 +29,9 @@ struct CardDeck {
 }
 
 #[derive(serde::Serialize, serde::Deserialize, Debug)]
-struct Card {
-    question: String,
-    answer: String,
+pub struct Card {
+    pub question: String,
+    pub answer: String,
 }
 
 pub struct Database {

@@ -6,6 +6,8 @@ use tokenizers::{PaddingParams, Tokenizer};
 const APPROXIMAGE_GELU: bool = true;
 const NORMALIZE: bool = true;
 
+pub type EmbedderError = candle_core::Error;
+
 pub struct SentenceEmbedder {
     model: BertModel,
     tokenizer: Tokenizer,
@@ -13,7 +15,7 @@ pub struct SentenceEmbedder {
 }
 
 impl SentenceEmbedder {
-    pub fn new(path: &std::path::Path) -> Result<Self, candle_core::Error> {
+    pub fn new(path: &std::path::Path) -> Result<Self, EmbedderError> {
         let device = candle_core::Device::Cpu; //change to cuda later
 
         let config_filename = path.join("config.json");
@@ -40,7 +42,7 @@ impl SentenceEmbedder {
         })
     }
 
-    pub fn run(&mut self, sentences: Vec<String>) -> Result<(), candle_core::Error> {
+    pub fn run(&mut self, sentences: Vec<String>) -> Result<Vec<Vec<f32>>, EmbedderError> {
         let n_sentences = sentences.len();
         if let Some(pp) = self.tokenizer.get_padding_mut() {
             pp.strategy = tokenizers::PaddingStrategy::BatchLongest
@@ -61,7 +63,7 @@ impl SentenceEmbedder {
                 let tokens = tokens.get_ids().to_vec();
                 Tensor::new(tokens.as_slice(), &self.device)
             })
-            .collect::<Result<Vec<_>, candle_core::Error>>()?;
+            .collect::<Result<Vec<_>, EmbedderError>>()?;
 
         let token_ids = Tensor::stack(&token_ids, 0)?;
         let token_type_ids = token_ids.zeros_like()?;
@@ -94,10 +96,11 @@ impl SentenceEmbedder {
         for &(score, i, j) in similarities[..5].iter() {
             println!("score: {score:.2} '{}' '{}'", sentences[i], sentences[j])
         }
-        Ok(())
+
+        todo!()
     }
 }
 
-fn normalize_l2(v: &Tensor) -> Result<Tensor, candle_core::Error> {
+fn normalize_l2(v: &Tensor) -> Result<Tensor, EmbedderError> {
     v.broadcast_div(&v.sqr()?.sum_keepdim(1)?.sqrt()?)
 }

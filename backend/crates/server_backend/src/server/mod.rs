@@ -1,7 +1,7 @@
 pub mod database;
 pub mod llm;
+pub mod search_engine;
 pub mod utils;
-pub mod vector_db;
 
 use crate::api_structs;
 use crate::AndyError;
@@ -15,6 +15,7 @@ use hyper::{Request, Response};
 pub struct SharedState {
     pub database: database::Database,
     pub llm_runner: llm::LlmRunner,
+    pub search_engine: tokio::sync::Mutex<search_engine::SearchEngine>,
 }
 
 pub async fn main_service(
@@ -135,6 +136,11 @@ async fn handle_request(
             hyper::Method::POST,
             api_structs::ENDPOINT_GET_DECK_NAME,
             get_deck_name
+        ),
+        (
+            hyper::Method::POST,
+            api_structs::ENDPOINT_SEARCH_DECKS,
+            search
         ),
         (
             hyper::Method::POST,
@@ -259,6 +265,20 @@ async fn list_cards(
 ) -> Result<api_structs::ListCardsResponse, AndyError> {
     let user_id = state.database.validate_token(info.access_token)?;
     state.database.list_cards(user_id, info.deck_id)
+}
+
+async fn search(
+    info: api_structs::SearchDecksRequest,
+    state: std::sync::Arc<SharedState>,
+) -> Result<api_structs::SearchDecksResponse, AndyError> {
+    let thing = state
+        .search_engine
+        .lock()
+        .await
+        .search_prompt(&info.prompt, 5)
+        .await?;
+
+    Ok(api_structs::SearchDecksResponse { decks: thing })
 }
 
 async fn create_deck_pdf(
