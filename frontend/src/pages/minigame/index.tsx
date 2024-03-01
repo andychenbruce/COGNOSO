@@ -95,8 +95,17 @@ const App: React.FC = () => {
         setRightCard(droppedCard);
       };
 
+      function getRandomInt(min, max) {
+        min = Math.ceil(min);
+        max = Math.floor(max);
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+      }
+      
+  
+      
       const shuffleHandler = () => {
-        const newFlashcards = flashcards.slice(4, 8);
+        const rand = getRandomInt(4,flashcards.length)
+        const newFlashcards = flashcards.slice(rand-4, rand);
         const shuffledNewFlashcards = [...newFlashcards].sort(() => Math.random() - 0.5);
         setShuffledFlashcards(shuffledNewFlashcards);
         setVisibleFlashcards(4);
