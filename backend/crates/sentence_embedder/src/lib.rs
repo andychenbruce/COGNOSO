@@ -30,8 +30,7 @@ impl SentenceEmbedder {
         // let vb =
         //     unsafe { VarBuilder::from_mmaped_safetensors(&[weights_filename], DTYPE, &device)? };
 
-        let vb =
-            VarBuilder::from_pth(&weights_filename, DTYPE, &device)?;
+        let vb = VarBuilder::from_pth(&weights_filename, DTYPE, &device)?;
 
         if APPROXIMAGE_GELU {
             config.hidden_act = HiddenAct::GeluApproximate;

@@ -22,10 +22,10 @@ struct UserEntry {
 }
 
 #[derive(serde::Serialize, serde::Deserialize, Debug)]
-struct CardDeck {
-    creation_time: u64,
-    cards: Vec<Card>,
-    name: String,
+pub struct CardDeck {
+    pub creation_time: u64,
+    pub cards: Vec<Card>,
+    pub name: String,
 }
 
 #[derive(serde::Serialize, serde::Deserialize, Debug)]
@@ -344,6 +344,10 @@ impl Database {
         write_txn.commit()?;
 
         Ok(())
+    }
+
+    pub fn get_all_decks(&self) -> Result<Vec<(DeckId, CardDeck)>, AndyError> {
+        todo!()
     }
 }
 
