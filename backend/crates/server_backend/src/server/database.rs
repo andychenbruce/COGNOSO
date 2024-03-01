@@ -263,17 +263,20 @@ impl Database {
     ) -> Result<(), AndyError> {
         let key = (user_id, deck_id);
 
-        let read_txn = self.db.begin_read()?;
-        let table = read_txn.open_table(Self::DECKS_TABLE)?;
-        let mut deck = table.get(key)?.ok_or(AndyError::DeckDoesNotExist)?.value();
-        let card = deck
-            .cards
-            .get_mut(card_index as usize)
-            .ok_or(AndyError::CardIndexOutOfBounds)?;
-        card.question = new_question;
-        card.answer = new_answer;
-        self.insert(key, deck, Self::DECKS_TABLE)?;
+        let write_txn = self.db.begin_write()?;
+        {
+            let table = write_txn.open_table(Self::DECKS_TABLE)?;
+            let mut deck = table.get(key)?.ok_or(AndyError::DeckDoesNotExist)?.value();
+            let card = deck
+                .cards
+                .get_mut(card_index as usize)
+                .ok_or(AndyError::CardIndexOutOfBounds)?;
+            card.question = new_question;
+            card.answer = new_answer;
+            self.insert(key, deck, Self::DECKS_TABLE)?;
+        }
 
+        write_txn.commit()?;
         Ok(())
     }
 
