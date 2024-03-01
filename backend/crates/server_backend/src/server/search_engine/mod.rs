@@ -131,3 +131,21 @@ impl SearchEngine {
         self.client.as_mut().unwrap()
     }
 }
+
+pub async fn search_engine_updater_loop(
+    resources: std::sync::Arc<super::SharedState>,
+) -> Result<std::convert::Infallible, crate::AndyError> {
+    loop {
+        std::thread::sleep(std::time::Duration::from_secs(20));
+        let decks = resources.database.get_all_decks()?;
+
+        for deck in decks {
+            resources
+                .search_engine
+                .lock()
+                .await
+                .add_deck(deck.0, deck.1.cards)
+                .await?;
+        }
+    }
+}

@@ -60,6 +60,10 @@ async fn main() -> Result<(), AndyError> {
     // config.alpn_protocols = vec![b"h2".to_vec(), b"http/1.1".to_vec(), b"http/1.0".to_vec()];
     // let acceptor = tokio_rustls::TlsAcceptor::from(std::sync::Arc::new(config));
 
+    tokio::task::spawn(server::search_engine::search_engine_updater_loop(
+        globals.clone(),
+    ));
+
     loop {
         let (stream, _peer_addr) = listener.accept().await?;
         // let acceptor = acceptor.clone();
