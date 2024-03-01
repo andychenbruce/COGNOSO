@@ -162,8 +162,8 @@ const [editedAnswer, setEditedAnswer] = useState<string>("");
     send_json_backend("/edit_card", JSON.stringify(edit_card))
       .then((data) => {
         console.log("result:", data);
-        //listCards();
-        //cancelEdit();
+        listCards();
+        cancelEdit();
       })
       .catch((error) => {
         console.error("Error editing card:", error);
