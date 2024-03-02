@@ -134,7 +134,7 @@ pub struct SearchDecksRequest {
 
 #[derive(Debug, serde::Serialize)]
 pub struct SearchDecksResponse {
-    pub decks: Vec<u32>,
+    pub decks: Vec<(u32, u32)>,
 }
 
 #[derive(Debug, serde::Deserialize)]

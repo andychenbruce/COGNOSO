@@ -57,11 +57,12 @@ impl SearchEngine {
 
     pub async fn add_deck(
         &mut self,
-        deck_id: super::database::DeckId,
+        id: (super::database::UserId, super::database::DeckId),
         cards: Vec<super::database::Card>,
     ) -> Result<(), SearchEngineError> {
         let payload: Payload = json!({
-            "deck_id": deck_id
+            "user_id": id.0,
+            "deck_id": id.1
         })
         .try_into()
         .unwrap();
@@ -89,7 +90,7 @@ impl SearchEngine {
         &mut self,
         prompt: &str,
         num_results: u64,
-    ) -> Result<Vec<super::database::DeckId>, SearchEngineError> {
+    ) -> Result<Vec<(super::database::UserId, super::database::DeckId)>, SearchEngineError> {
         let vector = self
             .get_embedder()
             .run(vec![prompt.to_owned()])?
@@ -108,17 +109,25 @@ impl SearchEngine {
             })
             .await?;
 
-        let results: Vec<super::database::DeckId> = search_result
+        let results = search_result
             .result
             .into_iter()
-            .map(
-                |point| match point.payload.get("deck_id").unwrap().kind.as_ref().unwrap() {
+            .map(|point| {
+                let deck_id = match point.payload.get("deck_id").unwrap().kind.as_ref().unwrap() {
                     qdrant_client::qdrant::value::Kind::IntegerValue(n) => {
                         TryInto::<u32>::try_into(*n).unwrap()
                     }
                     _ => panic!("bruh"),
-                },
-            )
+                };
+                let user_id = match point.payload.get("user_id").unwrap().kind.as_ref().unwrap() {
+                    qdrant_client::qdrant::value::Kind::IntegerValue(n) => {
+                        TryInto::<u32>::try_into(*n).unwrap()
+                    }
+                    _ => panic!("bruh"),
+                };
+
+                (user_id, deck_id)
+            })
             .collect();
 
         Ok(results)
