@@ -13,6 +13,8 @@ export const ENDPOINT_NEW_USER: string = "/new_user";
 export const ENDPOINT_DELETE_USER: string = "/delete_user";
 export const ENDPOINT_CHANGE_PASSWORD: string = "/change_password";
 
+export const ENDPOINT_SEARCH_DECKS: string = "/search_decks";
+
 export const ENDPOINT_AI_TEST: string = "/ai_test";
 export const ENDPOINT_CREATE_DECK_PDF: string = "/create_card_deck_pdf";
 
@@ -122,6 +124,18 @@ export interface LoginRequest {
 export interface LoginResponse {
   access_token: [number, number];
 }
+
+//requets <- /search_decks
+export interface SearchDecksRequest {
+  prompt: string;
+}
+
+
+//response <- /search_decks//request 
+export interface SearchDecksResponse {
+   decks: [[number, number]]; // list of (userid, deck_id) pairs
+}
+
 
 // request -> /create_deck_pdf
 export interface UploadPdf {
