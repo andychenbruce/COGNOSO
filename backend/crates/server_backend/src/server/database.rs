@@ -12,6 +12,8 @@ type AccessToken = (u32, u32);
 pub type UserId = u32;
 pub type DeckId = u32;
 
+type UserDeckIdPair = (UserId, DeckId);
+
 #[derive(serde::Serialize, serde::Deserialize, Debug)]
 struct UserEntry {
     username: String,
@@ -346,8 +348,23 @@ impl Database {
         Ok(())
     }
 
-    pub fn get_all_decks(&self) -> Result<Vec<(DeckId, CardDeck)>, AndyError> {
-        todo!()
+    pub fn get_all_decks(&self) -> Result<Vec<(UserDeckIdPair, CardDeck)>, AndyError> {
+        let read_txn = self.db.begin_read()?;
+        let table = read_txn.open_table(Self::DECKS_TABLE)?;
+
+        let stuff: Vec<((UserId, DeckId), CardDeck)> = table
+            .iter()?
+            .map(|result| {
+                let deck = result?;
+
+                let ids = deck.0.value();
+                let cards = deck.1.value();
+
+                Ok((ids, cards))
+            })
+            .collect::<Result<Vec<_>, AndyError>>()?;
+
+        Ok(stuff)
     }
 }
 
