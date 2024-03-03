@@ -19,8 +19,7 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "forceConsistentCasingInFileNames": true,
-    "skipLibCheck": true,
-    
+    "skipLibCheck": true
   },
   "include": [
     "./src/**/*",

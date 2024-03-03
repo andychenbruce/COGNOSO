@@ -1,5 +1,4 @@
-home.css
-.App { 
+home.css .App {
   text-align: center;
 }
 
@@ -53,19 +52,19 @@ body {
   padding: 10px;
   margin: 20px;
   color: white;
-  text-align: left; 
+  text-align: left;
 }
 
 .Content-box {
-  border: 5px solid #ffffff; 
-  min-height: 200px; 
+  border: 5px solid #ffffff;
+  min-height: 200px;
   margin-top: 20px;
 }
 
 .Favorites-box {
-  border-color: yellow; 
+  border-color: yellow;
 }
 
 .Decks-box {
-  border-color: rgb(255, 255, 255); 
+  border-color: rgb(255, 255, 255);
 }

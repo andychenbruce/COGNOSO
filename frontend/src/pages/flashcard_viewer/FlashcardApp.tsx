@@ -13,22 +13,21 @@ const FlashcardApp = () => {
       setFrontText("");
       setBackText("");
     }
-    
-  //   let new_user_request: ListCards = {
-  //     user_name: user.username,
-  //     email: user.email,
-  //     password: user.password1,
-  //   };
-  //   send_json_backend("/new_user", JSON.stringify(new_user_request))
-  //     .then((data) => {
-  //       console.log("New user made:", data);
-  //       redirectToLogin();
-  //     })
-  //     .catch((error) => {
-  //       console.error("Error creating new user:", error);
-  //     });
-  // };
 
+    //   let new_user_request: ListCards = {
+    //     user_name: user.username,
+    //     email: user.email,
+    //     password: user.password1,
+    //   };
+    //   send_json_backend("/new_user", JSON.stringify(new_user_request))
+    //     .then((data) => {
+    //       console.log("New user made:", data);
+    //       redirectToLogin();
+    //     })
+    //     .catch((error) => {
+    //       console.error("Error creating new user:", error);
+    //     });
+    // };
   };
 
   return (

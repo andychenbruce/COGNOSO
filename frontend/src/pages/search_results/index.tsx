@@ -1,7 +1,6 @@
 import React from "react";
 import { Navbar } from "../../navbar";
 
-
 const App: React.FC = () => {
   return (
     <div>

@@ -36,10 +36,10 @@ export interface DeleteCard {
 // request -> /edit_card
 export interface EditCard {
   access_token: [number, number];
-  deck_id: number,
-  card_index: number,
-  new_question: String,
-  new_answer: string,
+  deck_id: number;
+  card_index: number;
+  new_question: String;
+  new_answer: string;
 }
 
 // request -> /create_card_decki
@@ -54,13 +54,11 @@ export interface GetDeckName {
   deck_id: number;
 }
 
-
 // request -> /delete_card_deck
 export interface DeleteCardDeck {
   access_token: [number, number];
   deck_id: number;
 }
-
 
 // request -> /new_user
 export interface NewUser {
@@ -130,12 +128,10 @@ export interface SearchDecksRequest {
   prompt: string;
 }
 
-
-//response <- /search_decks//request 
+//response <- /search_decks//request
 export interface SearchDecksResponse {
-   decks: [[number, number]]; // list of (userid, deck_id) pairs
+  decks: [[number, number]]; // list of (userid, deck_id) pairs
 }
-
 
 // request -> /create_deck_pdf
 export interface UploadPdf {
