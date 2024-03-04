@@ -166,8 +166,12 @@ export const Navbar = () => {
           onChange={(e) => setSearchQuery(e.target.value)}
           style={{ flex: 1, fontSize: "20px", paddingLeft: "10px"}}
           onKeyDown={(e) => {
-            if(e.key === 'Enter') {
-              handleSearch();
+            if (e.key === "Enter") {
+	      const url = new URL(
+                window.location.origin + "/search_results/",
+              );
+              url.searchParams.append("query", JSON.stringify(searchQuery));
+              window.location.href = url.toString();
             }
           }}
         />
