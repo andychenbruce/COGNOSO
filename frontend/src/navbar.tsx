@@ -93,21 +93,6 @@ export const Navbar = () => {
   };
 
 
-  const handleSearch = () => {
-    const searchitem: SearchDecksRequest = {
-      prompt: searchQuery
-  };
-  send_json_backend('/search_decks', JSON.stringify(searchitem))
-    .then(() => {
-      console.log('success!');
-      window.location.pathname = "/search_results/";
-    })
-    .catch(error => {
-      console.log("failed to search! Error: ", error)
-    });
-  };
-
-
   const handleLogOut = () => {
     sessionStorage.clear();
     window.location.pathname = "/login/";
@@ -167,7 +152,7 @@ export const Navbar = () => {
           style={{ flex: 1, fontSize: "20px", paddingLeft: "10px"}}
           onKeyDown={(e) => {
             if (e.key === "Enter") {
-	      const url = new URL(
+	              const url = new URL(
                 window.location.origin + "/search_results/",
               );
               url.searchParams.append("query", JSON.stringify(searchQuery));
