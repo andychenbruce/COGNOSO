@@ -31,6 +31,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { DeleteCardDeck } from "../../backend_interface";
 import StarIcon from '@mui/icons-material/Star';
 import SportsSoccerIcon from '@mui/icons-material/SportsSoccer';
+import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 
 const App: React.FC = () => {
   const [file, setFile] = useState<File | null>(null);
@@ -296,6 +297,18 @@ const App: React.FC = () => {
               >
                 {favorites[index] ? <StarIcon style={{ color: "yellow" }} /> : <StarIcon />}
               </IconButton>
+              <IconButton
+                onClick={() => handleEditDeckIcon(deck.deck_id)}
+                style={{
+                  position: "absolute",
+                  top: 0,
+                  right: '20%',
+                }}
+              >
+                <EditTwoToneIcon />
+              </IconButton>
+
+              
             </div>
           </Grid>
         ))}
