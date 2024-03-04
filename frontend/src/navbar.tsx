@@ -154,7 +154,11 @@ export const Navbar = () => {
           style={{ flex: 1, fontSize: "20px", paddingLeft: "10px" }}
           onKeyDown={(e) => {
             if (e.key === "Enter") {
-              redirect("/search_results");
+	      const url = new URL(
+                window.location.origin + "/search_results/",
+              );
+              url.searchParams.append("query", JSON.stringify(searchQuery));
+              window.location.href = url.toString();
             }
           }}
         />
