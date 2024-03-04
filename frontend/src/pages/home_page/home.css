@@ -55,6 +55,13 @@ body {
   text-align: left;
 }
 
+.OtherDecks {
+  padding: 10px;
+  margin: 20px;
+  color: white;
+  text-align: left;
+}
+
 .Content-box {
   border: 5px solid #ffffff;
   min-height: 200px;
@@ -66,5 +73,9 @@ body {
 }
 
 .Decks-box {
-  border-color: rgb(255, 255, 255);
+  border-color: rgba(255, 255, 255, 0.356);
+}
+
+.OtherDecks-box {
+  border-color: rgba(255, 255, 255, 0.37);
 }
