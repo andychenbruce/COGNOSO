@@ -5,6 +5,9 @@ import { DeleteUser } from "./backend_interface";
 import { ChangePassword } from "./backend_interface";
 import { logout } from "./utils";
 import HomeIcon from '@mui/icons-material/Home';
+import BackupTableOutlinedIcon from '@mui/icons-material/BackupTableOutlined';
+import Person2OutlinedIcon from '@mui/icons-material/Person2Outlined';
+import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
 
 export const Navbar = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -132,6 +135,7 @@ export const Navbar = () => {
           redirect("/home_page");
         }}
       >
+        <HomeIcon />
         Home
       </Button>
       <div
@@ -145,7 +149,8 @@ export const Navbar = () => {
         }}
       >
         <InputBase
-          placeholder="Search…"
+          placeholder= "Search…"
+          startAdornment={<SearchOutlinedIcon />}
           inputProps={{ "aria-label": "search", style: { color: '#E6E6FA' } }}
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
@@ -173,6 +178,7 @@ export const Navbar = () => {
         }}
         onClick={() => { redirect("/deck_manage"); }}
       >
+        <BackupTableOutlinedIcon />
         Decks
       </Button>
       <Button
@@ -187,6 +193,7 @@ export const Navbar = () => {
         }}
         onClick={handleMenuOpen}
       >
+        <Person2OutlinedIcon />
         Account
       </Button>
       <Menu
