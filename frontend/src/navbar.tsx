@@ -4,7 +4,7 @@ import { redirect, send_json_backend } from "./utils";
 import { DeleteUser } from "./backend_interface";
 import { ChangePassword } from "./backend_interface";
 import { logout } from "./utils";
-import { SearchDecksRequest } from "./backend_interface";
+import HomeIcon from '@mui/icons-material/Home';
 
 export const Navbar = () => {
   const [searchQuery, setSearchQuery] = useState("");
