@@ -210,6 +210,23 @@ const App: React.FC = () => {
       });
   };
 
+  const handleEditDeckIcon = (deckId: number) => {
+    let access_token = get_session_token();
+    if (access_token == null) {
+      return;
+    }
+    // let theIcon: _____ = {
+    //   access_token: access_token,
+    //   deck_id: deckId,
+    // };send_json_backend("/delete_card_deck", JSON.stringify(deleteRequest))
+    // .then(() => {
+    //   updateDecks();
+    // })
+    // .catch((error) => {
+    //   console.error("Error deleting deck:", error);
+    // });
+  };
+
   return (
     <div>
       <Navbar />
@@ -223,59 +240,32 @@ const App: React.FC = () => {
         {decks.map((deck, index) => (
           <Grid item xs={3} key={deck.deck_id}>
             <div style={{ position: "relative" }}>
-            {/* <Button
-            variant="contained"
-            color="primary"
-            fullWidth
-            onClick={() => {
-              const url = new URL(
-                window.location.origin + "/flashcard_viewer/",
-              );
-              url.searchParams.append("deck", JSON.stringify(deck.deck_id));
-              window.location.href = url.toString();
-            }}
-            style={{
-              width: "100%",
-              height: "70px",
-              fontSize: "1.5rem",
-              marginBottom: "10px",
-              backgroundColor: "#af52bf",
-              position: "relative", // Added position relative to allow absolute positioning of the icon
-            }}
-          >
-
-            <StarIcon style={{ position: "absolute", left: "5px", top: "50%", transform: "translateY(-50%)", fontSize: 30, color: "gold" }} />
-            
-
-            {decks[index].name}
-          </Button> */}
-
-          <Button
-            variant="contained"
-            color="primary"
-            fullWidth
-            onClick={() => {
-              const url = new URL(
-                window.location.origin + "/flashcard_viewer/",
-              );
-              url.searchParams.append("deck", JSON.stringify(deck.deck_id));
-              window.location.href = url.toString();
-            }}
-            style={{
-              width: "100%",
-              height: "200px",
-              marginBottom: "10px",
-              backgroundColor: "#af52bf",
-              position: "relative",
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center", 
-              alignItems: "center",
-            }}
-          >
-            <SportsSoccerIcon style={{ fontSize: 30, color: "gold", position: "absolute", top: "30%", transform: "translateY(-50%)" }} />
-            <span style={{ marginLeft: "5px", textAlign: "center", top: "60%" }}>{decks[index].name}</span>
-          </Button>
+            <Button
+              variant="contained"
+              color="primary"
+              fullWidth
+              onClick={() => {
+                const url = new URL(
+                  window.location.origin + "/flashcard_viewer/",
+                );
+                url.searchParams.append("deck", JSON.stringify(deck.deck_id));
+                window.location.href = url.toString();
+              }}
+              style={{
+                width: "100%",
+                height: "200px",
+                marginBottom: "10px",
+                backgroundColor: "#af52bf",
+                position: "relative",
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center", 
+                alignItems: "center",
+              }}
+            >
+              <SportsSoccerIcon style={{ fontSize: 30, color: "gold", position: "absolute", top: "30%", transform: "translateY(-50%)" }} />
+              <span style={{ marginLeft: "5px", textAlign: "center", top: "60%" }}>{decks[index].name}</span>
+            </Button>
           
               <IconButton
                 onClick={() => handleDeleteDeck(deck.deck_id)}
