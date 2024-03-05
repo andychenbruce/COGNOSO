@@ -143,9 +143,9 @@ impl SearchEngine {
 
 pub async fn search_engine_updater_loop(resources: std::sync::Arc<super::SharedState>) -> ! {
     loop {
-        std::thread::sleep(std::time::Duration::from_secs(20));
+        tokio::time::sleep(std::time::Duration::from_secs(20)).await;
         if let Err(e) = loop_inside(&resources).await {
-            println!("UPDATING ERROR: {}", e);
+            println!("UPDATING ERROR: {:?}", e);
         }
     }
 }
