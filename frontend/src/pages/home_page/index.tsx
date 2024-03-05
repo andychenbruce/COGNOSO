@@ -22,7 +22,6 @@ import SportsSoccerIcon from '@mui/icons-material/SportsSoccer';
 
 
 const App: React.FC = () => {
-
   const [decks, setDecks]: [CardDeck[], Dispatch<CardDeck[]>] = useState(
     [] as CardDeck[],
   );
@@ -55,7 +54,7 @@ const App: React.FC = () => {
         <h2> {<ViewCarouselTwoToneIcon />}My Decks</h2>
         <div className="Content-box Decks-box">
           <div style={{ display: "flex", overflowX: "auto" }}>
-            {decks.map((deck, index) => (
+            {decks.map((deck, _index) => (
               <div key={deck.deck_id} style={{ marginRight: "10px" }}>
                 <Button
                   variant="contained"
