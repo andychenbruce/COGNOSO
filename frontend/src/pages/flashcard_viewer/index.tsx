@@ -5,14 +5,14 @@ import Flashcard from "./Flashcard";
 import { Navbar } from "../../navbar";
 import {
   ENDPOINT_LIST_CARDS,
+  ENDPOINT_GET_DECK,
+  GetDeckRequest,
   ListCards,
   ListCardsResponse,
 } from "../../backend_interface";
 import { send_json_backend, get_session_token, get_user_id } from "../../utils";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-
-const ENDPOINT_GET_DECK_NAME = "/get_deck_name";
 
 interface Card {
   question: string;
@@ -33,19 +33,20 @@ const FlashcardViewerFunc = () => {
 
     const fetchDeckName = async () => {
       let access_token = get_session_token();
-      if (access_token == null) {
+      let user_id = get_user_id();
+      if ((access_token == null) || (user_id == null)) {
         return;
       }
-      let payload = {
-        access_token: access_token,
+      let payload: GetDeckRequest = {
+        user_id: user_id,
         deck_id: deckId,
       };
       try {
-        const nameResponse = await send_json_backend(
-          ENDPOINT_GET_DECK_NAME,
+        const deck_info = await send_json_backend(
+          ENDPOINT_GET_DECK,
           JSON.stringify(payload),
         );
-        setDeckName(nameResponse);
+        setDeckName(deck_info.name);
       } catch (error) {
         console.error("Error fetching deck name:", error);
       }
