@@ -135,20 +135,8 @@ export interface SearchDecksRequest {
 
 //response <- /search_decks//request
 export interface SearchDecksResponse {
-  decks: CardDeck[]; // list of (userid, deck_id) pairs
+  decks: CardDeck[];
 }
-
-//requets <- /search_decks
-export interface SearchDecksRequest {
-  prompt: string;
-}
-
-
-//response <- /search_decks//request 
-export interface SearchDecksResponse {
-   decks: [[number, number]]; // list of (userid, deck_id) pairs
-}
-
 
 // request -> /create_deck_pdf
 export interface UploadPdf {
