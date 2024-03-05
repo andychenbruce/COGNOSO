@@ -3,7 +3,11 @@ import React, { useState, useEffect } from "react";
 import { Button, Paper, Typography, IconButton } from "@mui/material";
 import Flashcard from "./Flashcard";
 import { Navbar } from "../../navbar";
-import { ListCards, ListCardsResponse } from "../../backend_interface";
+import {
+  ENDPOINT_LIST_CARDS,
+  ListCards,
+  ListCardsResponse,
+} from "../../backend_interface";
 import { send_json_backend, get_session_token, get_user_id } from "../../utils";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
@@ -50,14 +54,14 @@ const FlashcardViewerFunc = () => {
     const listCards = () => {
       let access_token = get_session_token();
       let user_id = get_user_id();
-      if ((access_token == null) || (user_id == null)) {
+      if (access_token == null || user_id == null) {
         return;
       }
       let prev_cards: ListCards = {
         user_id: user_id,
         deck_id: deckId,
       };
-      send_json_backend("/list_cards", JSON.stringify(prev_cards))
+      send_json_backend(ENDPOINT_LIST_CARDS, JSON.stringify(prev_cards))
         .then((data: ListCardsResponse) => {
           setFlashcards(data.cards);
         })

@@ -113,7 +113,7 @@ export interface ListCards {
 }
 
 export interface ListCardsResponse {
-  cards: Card[],
+  cards: Card[];
 }
 
 // request -> /login

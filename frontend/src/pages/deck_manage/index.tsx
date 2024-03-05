@@ -20,18 +20,22 @@ import {
   IconButton,
 } from "@mui/material";
 import {
+  ENDPOINT_LIST_CARD_DECKS,
+  ENDPOINT_CREATE_CARD_DECK,
+  ENDPOINT_CREATE_DECK_PDF,
+  ENDPOINT_DELETE_CARD,
   UploadPdf,
   CreateCardDeck,
+  DeleteCardDeck,
   ListCardDecks,
   ListCardDecksResponse,
   CardDeck,
 } from "../../backend_interface";
 import { send_json_backend, get_session_token } from "../../utils";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { DeleteCardDeck } from "../../backend_interface";
-import StarIcon from '@mui/icons-material/Star';
-import SportsSoccerIcon from '@mui/icons-material/SportsSoccer';
-import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
+import StarIcon from "@mui/icons-material/Star";
+import SportsSoccerIcon from "@mui/icons-material/SportsSoccer";
+import EditTwoToneIcon from "@mui/icons-material/EditTwoTone";
 
 const App: React.FC = () => {
   const [file, setFile] = useState<File | null>(null);
@@ -43,7 +47,9 @@ const App: React.FC = () => {
   );
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [errorField, setTextFieldError] = useState(false);
-  const [favorites, setFavorites] = useState<boolean[]>(new Array(decks.length).fill(false));
+  const [favorites, setFavorites] = useState<boolean[]>(
+    new Array(decks.length).fill(false),
+  );
 
   const updateDecks = () => {
     let token = get_session_token();
@@ -51,7 +57,7 @@ const App: React.FC = () => {
       return;
     }
     let request: ListCardDecks = { access_token: token };
-    send_json_backend("/list_card_decks", JSON.stringify(request))
+    send_json_backend(ENDPOINT_LIST_CARD_DECKS, JSON.stringify(request))
       .then((data: ListCardDecksResponse) => {
         setDecks(data.decks);
         console.log(data.decks);
@@ -91,7 +97,7 @@ const App: React.FC = () => {
       access_token: access_token,
       deck_name: deckName,
     };
-    send_json_backend("/create_card_deck", JSON.stringify(request))
+    send_json_backend(ENDPOINT_CREATE_CARD_DECK, JSON.stringify(request))
       .then((data: null) => {
         console.log("ok: ", data);
         updateDecks();
@@ -156,7 +162,7 @@ const App: React.FC = () => {
         file_bytes_base64: base64_encode,
       };
       return send_json_backend(
-        "/create_card_deck_pdf",
+        ENDPOINT_CREATE_DECK_PDF,
         JSON.stringify(request_json),
       )
         .then(() => {
@@ -177,7 +183,7 @@ const App: React.FC = () => {
   //   let favoriteRequest: ______ = {
   //     ++++++
   //   };
-  //   send_json_backend("/", JSON.stringify(favoriteRequest))
+  //   send_json_backend("/todo", JSON.stringify(favoriteRequest))
   //     .then(() => {
   //       updateDecks();
   //     })
@@ -185,7 +191,7 @@ const App: React.FC = () => {
   //       console.error("Error favoriting deck:", error);
   //     });
   // }
-  
+
   const handleFavoriteDeck = (index: number) => {
     const newFavorites = [...favorites];
     newFavorites[index] = !newFavorites[index];
@@ -201,7 +207,7 @@ const App: React.FC = () => {
       access_token: access_token,
       deck_id: deckId,
     };
-    send_json_backend("/delete_card_deck", JSON.stringify(deleteRequest))
+    send_json_backend(ENDPOINT_DELETE_CARD, JSON.stringify(deleteRequest))
       .then(() => {
         updateDecks();
       })
@@ -218,7 +224,7 @@ const App: React.FC = () => {
     // let theIcon: _____ = {
     //   access_token: access_token,
     //   deck_id: deckId,
-    // };send_json_backend("/delete_card_deck", JSON.stringify(deleteRequest))
+    // };send_json_backend("/todo", JSON.stringify(deleteRequest))
     // .then(() => {
     //   updateDecks();
     // })
@@ -240,33 +246,50 @@ const App: React.FC = () => {
         {decks.map((deck, index) => (
           <Grid item xs={3} key={deck.deck_id}>
             <div style={{ position: "relative" }}>
-            <Button
-              variant="contained"
-              color="primary"
-              fullWidth
-              onClick={() => {
-                const url = new URL(
-                  window.location.origin + "/flashcard_viewer/",
-                );
-                url.searchParams.append("deck", JSON.stringify(deck.deck_id));
-                window.location.href = url.toString();
-              }}
-              style={{
-                width: "100%",
-                height: "200px",
-                marginBottom: "10px",
-                backgroundColor: "#af52bf",
-                position: "relative",
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center", 
-                alignItems: "center",
-              }}
-            >
-              <SportsSoccerIcon style={{ fontSize: 30, color: "gold", position: "absolute", top: "30%", transform: "translateY(-50%)" }} />
-              <span style={{ marginLeft: "5px", textAlign: "center", padding: "5px", top: "60%" }}>{decks[index].name}</span>
-            </Button>
-          
+              <Button
+                variant="contained"
+                color="primary"
+                fullWidth
+                onClick={() => {
+                  const url = new URL(
+                    window.location.origin + "/flashcard_viewer/",
+                  );
+                  url.searchParams.append("deck", JSON.stringify(deck.deck_id));
+                  window.location.href = url.toString();
+                }}
+                style={{
+                  width: "100%",
+                  height: "200px",
+                  marginBottom: "10px",
+                  backgroundColor: "#af52bf",
+                  position: "relative",
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <SportsSoccerIcon
+                  style={{
+                    fontSize: 30,
+                    color: "gold",
+                    position: "absolute",
+                    top: "30%",
+                    transform: "translateY(-50%)",
+                  }}
+                />
+                <span
+                  style={{
+                    marginLeft: "5px",
+                    textAlign: "center",
+                    padding: "5px",
+                    top: "60%",
+                  }}
+                >
+                  {decks[index].name}
+                </span>
+              </Button>
+
               <IconButton
                 onClick={() => handleDeleteDeck(deck.deck_id)}
                 style={{
@@ -285,20 +308,22 @@ const App: React.FC = () => {
                   left: 0,
                 }}
               >
-                {favorites[index] ? <StarIcon style={{ color: "yellow" }} /> : <StarIcon />}
+                {favorites[index] ? (
+                  <StarIcon style={{ color: "yellow" }} />
+                ) : (
+                  <StarIcon />
+                )}
               </IconButton>
               <IconButton
                 onClick={() => handleEditDeckIcon(deck.deck_id)}
                 style={{
                   position: "absolute",
                   top: 0,
-                  right: '20%',
+                  right: "20%",
                 }}
               >
                 <EditTwoToneIcon />
               </IconButton>
-
-              
             </div>
           </Grid>
         ))}

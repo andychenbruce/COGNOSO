@@ -1,15 +1,14 @@
 import React from "react";
 import { Navbar } from "../../navbar";
 import "./home.css";
-import StarIcon from '@mui/icons-material/Star';
-import ViewCarouselIcon from '@mui/icons-material/ViewCarousel';
-import ViewCarouselTwoToneIcon from '@mui/icons-material/ViewCarouselTwoTone';
+import StarIcon from "@mui/icons-material/Star";
+import ViewCarouselIcon from "@mui/icons-material/ViewCarousel";
+import ViewCarouselTwoToneIcon from "@mui/icons-material/ViewCarouselTwoTone";
 const App: React.FC = () => {
   return (
     <div className="App">
       <Navbar />
       <div className="Favorites">
-        
         <h2>{<StarIcon />} Favorites</h2>
         <div className="Content-box Favorites-box">{}</div>
       </div>

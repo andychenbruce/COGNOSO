@@ -19,7 +19,7 @@ const FlashcardApp = () => {
     //     email: user.email,
     //     password: user.password1,
     //   };
-    //   send_json_backend("/new_user", JSON.stringify(new_user_request))
+    //   send_json_backend(ENDPOINT_NEW_USER, JSON.stringify(new_user_request))
     //     .then((data) => {
     //       console.log("New user made:", data);
     //       redirectToLogin();
