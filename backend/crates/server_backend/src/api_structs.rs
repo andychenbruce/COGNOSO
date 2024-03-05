@@ -1,5 +1,6 @@
 pub const ENDPOINT_CREATE_CARD_DECK: &str = "/create_card_deck";
 pub const ENDPOINT_DELETE_CARD_DECK: &str = "/delete_card_deck";
+pub const ENDPOINT_SET_DECK_ICON: &str = "/set_deck_icon";
 
 pub const ENDPOINT_CREATE_CARD: &str = "/create_card";
 pub const ENDPOINT_DELETE_CARD: &str = "/delete_card";
@@ -33,6 +34,7 @@ pub struct CardDeck {
     pub deck_id: u32,
     pub user_id: u32,
     pub num_cards: u32,
+    pub icon_num: u32,
 }
 
 #[derive(Debug, serde::Deserialize)]
@@ -69,6 +71,13 @@ pub struct CreateCardDeck {
 pub struct DeleteCardDeck {
     pub access_token: AccessToken,
     pub deck_id: u32,
+}
+
+#[derive(Debug, serde::Deserialize)]
+pub struct SetDeckIcon {
+    pub access_token: AccessToken,
+    pub deck_id: u32,
+    pub icon: u32,
 }
 
 #[derive(Debug, serde::Deserialize)]

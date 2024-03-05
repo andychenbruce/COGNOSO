@@ -146,6 +146,11 @@ async fn handle_request(
             hyper::Method::POST,
             api_structs::ENDPOINT_EDIT_CARD,
             edit_card
+        ),
+        (
+            hyper::Method::POST,
+            api_structs::ENDPOINT_SET_DECK_ICON,
+            set_deck_icon
         )
     )
 }
@@ -303,4 +308,17 @@ async fn ai_test(
     let ai_response = state.llm_runner.submit_prompt(info.prompt).await?;
 
     Ok(ai_response)
+}
+
+async fn set_deck_icon(
+    info: api_structs::SetDeckIcon,
+    state: std::sync::Arc<SharedState>,
+) -> Result<(), AndyError> {
+    let user_id = state.database.validate_token(info.access_token)?;
+
+    state
+        .database
+        .set_deck_icon(user_id, info.deck_id, info.icon)?;
+
+    Ok(())
 }

@@ -6,6 +6,7 @@ use std::hash::Hasher;
 
 use crate::api_structs;
 
+const DEFAULT_ICON: u32 = 0;
 const SHA265_NUM_BYTES: usize = 32;
 
 type AccessToken = (u32, u32);
@@ -28,6 +29,7 @@ pub struct CardDeck {
     pub creation_time: u64,
     pub cards: Vec<Card>,
     pub name: String,
+    pub icon_num: u32,
 }
 
 #[derive(serde::Serialize, serde::Deserialize, Debug)]
@@ -185,6 +187,7 @@ impl Database {
                     creation_time: get_current_unix_time_seconds(),
                     cards: vec![],
                     name: deck_name,
+                    icon_num: DEFAULT_ICON,
                 },
             )?;
         }
@@ -210,6 +213,7 @@ impl Database {
             num_cards: deck.cards.len() as u32,
             deck_id,
             user_id,
+            icon_num: deck.icon_num,
         })
     }
 
@@ -281,7 +285,7 @@ impl Database {
         card.question = new_question;
         card.answer = new_answer;
         self.insert(key, deck, Self::DECKS_TABLE)?;
-        
+
         Ok(())
     }
 
@@ -304,6 +308,7 @@ impl Database {
                     deck_id: id_pair.1,
                     name: deck.name,
                     num_cards: deck.cards.len().try_into()?,
+                    icon_num: deck.icon_num,
                 });
             }
         }
@@ -371,6 +376,23 @@ impl Database {
             .collect::<Result<Vec<_>, AndyError>>()?;
 
         Ok(stuff)
+    }
+
+    pub fn set_deck_icon(
+        &self,
+        user_id: UserId,
+        deck_id: DeckId,
+        icon_num: u32,
+    ) -> Result<(), AndyError> {
+        let key = (user_id, deck_id);
+
+        let read_txn = self.db.begin_read()?;
+        let table = read_txn.open_table(Self::DECKS_TABLE)?;
+        let mut deck = table.get(key)?.ok_or(AndyError::DeckDoesNotExist)?.value();
+        deck.icon_num = icon_num;
+        self.insert(key, deck, Self::DECKS_TABLE)?;
+
+        Ok(())
     }
 }
 
