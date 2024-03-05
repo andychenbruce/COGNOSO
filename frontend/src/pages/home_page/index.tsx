@@ -46,14 +46,16 @@ const App: React.FC = () => {
   return (
     <div className="App">
       <Navbar />
+      {/* ---------------- Favorite Decks AREA ---------------*/}
       <div className="Favorites">
         <h2>{<StarIcon />} Favorites</h2>
         <div className="Content-box Favorites-box">{}</div>
       </div>
+      {/* ---------------- My Decks AREA ---------------*/}
       <div className="Decks">
-        <h2> {<ViewCarouselTwoToneIcon />}My Decks</h2>
-        <div className="Content-box Decks-box">
-          <div style={{ display: "flex", overflowX: "auto" }}>
+        <h2> {<ViewCarouselTwoToneIcon />}My Decks</h2> 
+        <div className="Content-box Decks-box"> 
+          <div style={{ display: "flex", overflowX: "scroll" }}>
             {decks.map((deck, _index) => (
               <div key={deck.deck_id} style={{ marginRight: "10px" }}>
                 <Button
@@ -79,15 +81,25 @@ const App: React.FC = () => {
                   <SportsSoccerIcon
                     style={{ fontSize: 30, color: "gold", position: "absolute", top: "30%", transform: "translateY(-50%)" }}
                   />
-                  <span style={{ marginLeft: "5px", textAlign: "center", padding: "5px", top: "60%" }}>{deck.name}</span>
+                  <span style={{ 
+                    marginLeft: "5px", 
+                    textAlign: "center", 
+                    padding: "5px", 
+                    top: "60%",
+                    width: "100px",
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis"
+                  }}>
+                    {deck.name}
+                  </span>
                 </Button>
               </div>
             ))}
-            </div>
-
-        
+          </div>
         </div>
       </div>
+      {/* ---------------- Other Decks AREA ---------------*/}
       <div className="OtherDecks">
         <h2> {<ViewCarouselIcon />} Decks By Other Users</h2>
         <div className="Content-box OtherDecks-box">{}</div>
