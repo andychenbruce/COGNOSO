@@ -27,6 +27,14 @@ const App: React.FC = () => {
     return deckId;
   };
 
+	const search_query_to_show = () => {
+    const urlString = window.location.href;
+    const url = new URL(urlString);
+    const searchParams = new URLSearchParams(url.search);
+    const deckIdJSON = searchParams.get("query");
+    return deckIdJSON;
+  };
+
   useEffect(() => {
     let request: SearchDecksRequest = {
       prompt: get_search_query(),
@@ -44,7 +52,7 @@ const App: React.FC = () => {
     <div className="App">
       <div>
 	<Navbar />
-	<h1 className="HeaderOne"> Search Results</h1>
+	<h1 className="HeaderOne"> Search Results; {search_query_to_show()}</h1>
 	<div className="Favorites">
 	  <h2>{<StarIcon />} Favorites</h2>
 	  <div className="Content-box Favorites-box">{}</div>
