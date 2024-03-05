@@ -1,18 +1,5 @@
 import React, { useState } from "react";
-import {
-  Button,
-  InputBase,
-  Menu,
-  Snackbar,
-  MenuItem,
-  Dialog,
-  TextField,
-  DialogContent,
-  DialogTitle,
-  DialogActions,
-  ListItemText,
-  DialogContentText,
-} from "@mui/material";
+import {Button,  InputBase,  Menu,  Snackbar,  MenuItem,Dialog,  TextField,  DialogContent,  DialogTitle,  DialogActions,  ListItemText,  DialogContentText,} from "@mui/material";
 import { redirect, send_json_backend } from "./utils";
 import { ENDPOINT_DELETE_USER, DeleteUser } from "./backend_interface";
 import { ENDPOINT_CHANGE_PASSWORD, ChangePassword } from "./backend_interface";
@@ -29,7 +16,10 @@ export const Navbar = () => {
   const [openPassChangeDialog, setOpenPassChangeDialog] = useState(false);
   const [shouldShowPopup, setShouldShowPopup] = useState(false);
   const [errorFields, setErrorFields] = useState<string[]>([]);
-  const [showSuccessSnackbar, setShowSuccessSnackbar] = useState(false);
+  const [showPassChangeSuccessSnackbar, setshowPassChangeSuccessSnackbar] = useState(false);
+  const [showDeleteErrorSnackbar, setShowDeleteErrorSnackbar] = useState(false);
+  const [showDeleteSuccessSnackbar, setshowDeleteSuccessSnackbar] = useState(false);
+  
   const [user, setUser] = useState({
     email: "",
     password: "",
@@ -73,12 +63,19 @@ export const Navbar = () => {
     send_json_backend(
       ENDPOINT_DELETE_USER,
       JSON.stringify(deleteUserRequest),
-    ).catch((error) => {
+    )      
+    .then(() => {
+      console.log("User deleted successfully.");
+      console.log("Logging out...");
+      setshowDeleteSuccessSnackbar(true);
+      logout();
+      window.location.pathname = "/login/";
+    })
+    .catch((error) => {
       console.error("Error deleting user:", error);
+      setShowDeleteErrorSnackbar(true);
     });
-    console.log("logging out");
-    logout();
-    window.location.pathname = "/login/";
+
   };
 
   const handleChangePassDialog = () => {
@@ -102,7 +99,7 @@ export const Navbar = () => {
       .then(() => {
         console.log("success!");
         handleChanegPassDialogClose();
-        setShowSuccessSnackbar(true);
+        setshowPassChangeSuccessSnackbar(true);
       })
       .catch((error) => {
         console.error("Error changing password:", error);
@@ -444,10 +441,22 @@ export const Navbar = () => {
         message="Password Change Failed!"
       />
       <Snackbar
-        open={showSuccessSnackbar}
+        open={showPassChangeSuccessSnackbar}
         autoHideDuration={3000}
-        onClose={() => setShowSuccessSnackbar(false)}
+        onClose={() => setshowPassChangeSuccessSnackbar(false)}
         message="Password Successfully Changed!"
+      />
+      <Snackbar
+        open={showDeleteErrorSnackbar}
+        autoHideDuration={3000}
+        onClose={() => setShowDeleteErrorSnackbar(false)}
+        message="Delete Account Failed!"
+      />
+      <Snackbar
+        open={showDeleteSuccessSnackbar}
+        autoHideDuration={3000}
+        onClose={() => setshowDeleteSuccessSnackbar(false)}
+        message="Delete Account Successfull!"
       />
     </div>
   );
