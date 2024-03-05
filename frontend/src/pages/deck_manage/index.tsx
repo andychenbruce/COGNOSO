@@ -23,7 +23,6 @@ import {
   ENDPOINT_LIST_CARD_DECKS,
   ENDPOINT_CREATE_CARD_DECK,
   ENDPOINT_CREATE_DECK_PDF,
-  ENDPOINT_DELETE_CARD,
   UploadPdf,
   CreateCardDeck,
   DeleteCardDeck,
@@ -38,9 +37,25 @@ import StarIcon from "@mui/icons-material/Star";
 import SportsSoccerIcon from "@mui/icons-material/SportsSoccer";
 import EditTwoToneIcon from "@mui/icons-material/EditTwoTone";
 
+
+// testing icons
+import AccessAlarmTwoToneIcon from '@mui/icons-material/AccessAlarmTwoTone';
+import BeachAccessTwoToneIcon from '@mui/icons-material/BeachAccessTwoTone';
+import PetsTwoToneIcon from '@mui/icons-material/PetsTwoTone';
+import StarTwoToneIcon from '@mui/icons-material/StarTwoTone';
+import CakeTwoToneIcon from '@mui/icons-material/CakeTwoTone';
+import FavoriteTwoToneIcon from '@mui/icons-material/FavoriteTwoTone';
+import HomeTwoToneIcon from '@mui/icons-material/HomeTwoTone';
+import GradeTwoToneIcon from '@mui/icons-material/GradeTwoTone';
+import AccountCircleTwoToneIcon from '@mui/icons-material/AccountCircleTwoTone';
+
+
+
 const App: React.FC = () => {
   const [file, setFile] = useState<File | null>(null);
   const [openCreateDialog, setOpenCreateDialog] = useState(false);
+  const [openIconDialog, setOpenIconDialog] = useState(false);
+  const [selectedIconIndex, setSelectedIconIndex] = useState<number | null>(null);
   const [deckName, setDeckName] = useState("");
   const [usePDF, setUsePDF] = useState(false);
   const [decks, setDecks]: [CardDeck[], Dispatch<CardDeck[]>] = useState(
@@ -51,6 +66,23 @@ const App: React.FC = () => {
   const [favorites, setFavorites] = useState<boolean[]>(
     new Array(decks.length).fill(false),
   );
+
+  const handleIconClick = (index: number) => {
+    setSelectedIconIndex(index);
+  };
+  const icons = [
+    <EditTwoToneIcon />,
+    <AccessAlarmTwoToneIcon />,
+    <BeachAccessTwoToneIcon />,
+    <PetsTwoToneIcon />,
+    <StarTwoToneIcon />,
+    <CakeTwoToneIcon />,
+    <FavoriteTwoToneIcon />,
+    <HomeTwoToneIcon />,
+    <GradeTwoToneIcon />,
+    <AccountCircleTwoToneIcon />
+  ];
+
 
   const updateDecks = () => {
     let token = get_session_token();
@@ -135,6 +167,10 @@ const App: React.FC = () => {
 
   const handleCreateDialogClose = () => {
     setOpenCreateDialog(false);
+  };
+
+  const handleIconDialogClose = () => {
+    setOpenIconDialog(false);
   };
 
   const handleCreateConfirmPDF = () => {
@@ -222,6 +258,7 @@ const App: React.FC = () => {
     if (access_token == null) {
       return;
     }
+    setOpenIconDialog(true);
     // let theIcon: _____ = {
     //   access_token: access_token,
     //   deck_id: deckId,
@@ -433,6 +470,52 @@ const App: React.FC = () => {
           </Button>
         </DialogActions>
       </Dialog>
+
+      <Dialog
+        open={openIconDialog}
+        onClose={handleIconDialogClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle style={{ backgroundColor: '#9370db' }} id="alert-dialog-title">
+          Choose Deck Icon
+        </DialogTitle>
+
+        <Grid container spacing={1}>
+          {[...Array(5)].map((_, row) => (
+            <Grid container item key={row} spacing={1}>
+              {[...Array(2)].map((_, col) => (
+                <Grid item key={row * 2 + col}>
+                  <IconButton
+                    onClick={() => handleIconClick(row * 2 + col)}
+                    style={{
+                      border: selectedIconIndex === row * 2 + col ? '2px solid purple' : 'none'
+                    }}
+                  >
+                    {icons[row * 2 + col]}
+                  </IconButton>
+                </Grid>
+              ))}
+            </Grid>
+          ))}
+        </Grid>
+
+        <DialogActions style={{ backgroundColor: '#9370db' }}>
+          <Button
+            onClick={handleIconDialogClose}
+            style={{ border: '1px solid white', color: 'white' }}
+          >
+            Confirm
+          </Button>
+          <Button
+            onClick={handleIconDialogClose}
+            style={{ border: '1px solid white', color: 'white' }}
+          >
+            Cancel
+          </Button>
+        </DialogActions>
+      </Dialog>
+
       <Snackbar
         open={snackbarOpen}
         autoHideDuration={null}
