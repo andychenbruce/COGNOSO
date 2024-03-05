@@ -210,7 +210,7 @@ const App: React.FC = () => {
       });
   };
 
-  const handleEditDeckIcon = (deckId: number) => {
+  const handleEditDeckIcon = (_deckId: number) => {
     let access_token = get_session_token();
     if (access_token == null) {
       return;
@@ -264,7 +264,7 @@ const App: React.FC = () => {
               }}
             >
               <SportsSoccerIcon style={{ fontSize: 30, color: "gold", position: "absolute", top: "30%", transform: "translateY(-50%)" }} />
-              <span style={{ marginLeft: "5px", textAlign: "center", top: "60%" }}>{decks[index].name}</span>
+              <span style={{ marginLeft: "5px", textAlign: "center", padding: "5px", top: "60%" }}>{decks[index].name}</span>
             </Button>
           
               <IconButton
