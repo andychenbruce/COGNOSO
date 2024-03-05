@@ -30,6 +30,7 @@ import {
   ListCardDecks,
   ListCardDecksResponse,
   CardDeck,
+  ENDPOINT_DELETE_CARD_DECK,
 } from "../../backend_interface";
 import { send_json_backend, get_session_token } from "../../utils";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -207,7 +208,7 @@ const App: React.FC = () => {
       access_token: access_token,
       deck_id: deckId,
     };
-    send_json_backend(ENDPOINT_DELETE_CARD, JSON.stringify(deleteRequest))
+    send_json_backend(ENDPOINT_DELETE_CARD_DECK, JSON.stringify(deleteRequest))
       .then(() => {
         updateDecks();
       })
