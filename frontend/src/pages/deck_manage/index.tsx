@@ -44,14 +44,106 @@ import BeachAccessTwoToneIcon from '@mui/icons-material/BeachAccessTwoTone';
 import PetsTwoToneIcon from '@mui/icons-material/PetsTwoTone';
 import StarTwoToneIcon from '@mui/icons-material/StarTwoTone';
 import CakeTwoToneIcon from '@mui/icons-material/CakeTwoTone';
-import FavoriteTwoToneIcon from '@mui/icons-material/FavoriteTwoTone';
 import HomeTwoToneIcon from '@mui/icons-material/HomeTwoTone';
 import GradeTwoToneIcon from '@mui/icons-material/GradeTwoTone';
 import AccountCircleTwoToneIcon from '@mui/icons-material/AccountCircleTwoTone';
-
-
+import AcUnitIcon from '@mui/icons-material/AcUnit';
+import AirIcon from '@mui/icons-material/Air';
+import AirlineSeatFlatIcon from '@mui/icons-material/AirlineSeatFlat';
+import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
+import BackHandIcon from '@mui/icons-material/BackHand';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import AirplanemodeActiveIcon from '@mui/icons-material/AirplanemodeActive';
+import AdsClickIcon from '@mui/icons-material/AdsClick';
+import AirportShuttleIcon from '@mui/icons-material/AirportShuttle';
+import AnnouncementIcon from '@mui/icons-material/Announcement';
+import AllOutIcon from '@mui/icons-material/AllOut';
+import AllInclusiveIcon from '@mui/icons-material/AllInclusive';
+import AlignHorizontalRightIcon from '@mui/icons-material/AlignHorizontalRight';
+import AlignVerticalBottomIcon from '@mui/icons-material/AlignVerticalBottom';
+import AlignVerticalCenterIcon from '@mui/icons-material/AlignVerticalCenter';
+import AlignVerticalTopIcon from '@mui/icons-material/AlignVerticalTop';
+import AllInboxIcon from '@mui/icons-material/AllInbox';
+import ApiIcon from '@mui/icons-material/Api';
+import AdbIcon from '@mui/icons-material/Adb';
+import AccessibleIcon from '@mui/icons-material/Accessible';
+import AccessibleForwardIcon from '@mui/icons-material/AccessibleForward';
+import AccessibilityIcon from '@mui/icons-material/Accessibility';
+import AccessibilityNewIcon from '@mui/icons-material/AccessibilityNew';
+import AccessTimeFilledIcon from '@mui/icons-material/AccessTimeFilled';
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import AccessAlarmsIcon from '@mui/icons-material/AccessAlarms';
+import AccessAlarmIcon from '@mui/icons-material/AccessAlarm';
+import AbcIcon from '@mui/icons-material/Abc';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import AirlineSeatIndividualSuiteIcon from '@mui/icons-material/AirlineSeatIndividualSuite';
+import AirlinesIcon from '@mui/icons-material/Airlines';
+import AssignmentReturnedIcon from '@mui/icons-material/AssignmentReturned';
+import AutoStoriesIcon from '@mui/icons-material/AutoStories';
+import BakeryDiningIcon from '@mui/icons-material/BakeryDining';
+import BeenhereIcon from '@mui/icons-material/Beenhere';
+import BoltIcon from '@mui/icons-material/Bolt';
+import AttachmentIcon from '@mui/icons-material/Attachment';
+import BalanceIcon from '@mui/icons-material/Balance';
+import BedIcon from '@mui/icons-material/Bed';
+import BuildIcon from '@mui/icons-material/Build';
+import Brightness2Icon from '@mui/icons-material/Brightness2';
+import BungalowIcon from '@mui/icons-material/Bungalow';
 
 const App: React.FC = () => {
+  const icons = [
+    <BungalowIcon/>,
+    <Brightness2Icon/>,
+    <BuildIcon />,
+    <AccessAlarmTwoToneIcon />,
+    <BeachAccessTwoToneIcon />,
+    <PetsTwoToneIcon />,
+    <StarTwoToneIcon />,
+    <CakeTwoToneIcon />,
+    <HomeTwoToneIcon />,
+    <GradeTwoToneIcon />,
+    <AccountCircleTwoToneIcon />,
+    <AcUnitIcon />,
+    <AirIcon />,
+    <AirlineSeatFlatIcon />,
+    <AccountBalanceIcon />,
+    <BackHandIcon />,
+    <AddCircleOutlineIcon />,
+    <AirplanemodeActiveIcon />,
+    <AdsClickIcon />,
+    <AirportShuttleIcon />,
+    <AnnouncementIcon />,
+    <AllOutIcon />,
+    <AllInclusiveIcon />,
+    <AlignHorizontalRightIcon />,
+    <AlignVerticalBottomIcon />,
+    <AlignVerticalCenterIcon />,
+    <AlignVerticalTopIcon />,
+    <AllInboxIcon />,
+    <ApiIcon />,
+    <AdbIcon />,
+    <AccessibleIcon />,
+    <AccessibleForwardIcon />,
+    <AccessibilityIcon />,
+    <AccessibilityNewIcon />,
+    <AccessTimeFilledIcon />,
+    <AccessTimeIcon />,
+    <AccessAlarmsIcon />,
+    <AccessAlarmIcon />,
+    <AbcIcon />,
+    <AccountCircleIcon />,
+    <AirlineSeatIndividualSuiteIcon />,
+    <AirlinesIcon />,
+    <AssignmentReturnedIcon />,
+    <AutoStoriesIcon />,
+    <BakeryDiningIcon />,
+    <BeenhereIcon />,
+    <BoltIcon />,
+    <AttachmentIcon />,
+    <BalanceIcon />,
+    <BedIcon />
+  ];
+  // const [selectedIcon, setSelectedIcon] = useState('')
   const [file, setFile] = useState<File | null>(null);
   const [openCreateDialog, setOpenCreateDialog] = useState(false);
   const [openIconDialog, setOpenIconDialog] = useState(false);
@@ -70,18 +162,7 @@ const App: React.FC = () => {
   const handleIconClick = (index: number) => {
     setSelectedIconIndex(index);
   };
-  const icons = [
-    <EditTwoToneIcon />,
-    <AccessAlarmTwoToneIcon />,
-    <BeachAccessTwoToneIcon />,
-    <PetsTwoToneIcon />,
-    <StarTwoToneIcon />,
-    <CakeTwoToneIcon />,
-    <FavoriteTwoToneIcon />,
-    <HomeTwoToneIcon />,
-    <GradeTwoToneIcon />,
-    <AccountCircleTwoToneIcon />
-  ];
+
 
 
   const updateDecks = () => {
@@ -477,22 +558,22 @@ const App: React.FC = () => {
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle style={{ backgroundColor: '#9370db' }} id="alert-dialog-title">
+        <DialogTitle style={{ backgroundColor: '#8916c7' }} id="alert-dialog-title">
           Choose Deck Icon
         </DialogTitle>
 
-        <Grid container spacing={1}>
+        <Grid container spacing={1} style={{backgroundColor: '#9370db'}}>
           {[...Array(5)].map((_, row) => (
             <Grid container item key={row} spacing={1}>
-              {[...Array(2)].map((_, col) => (
-                <Grid item key={row * 2 + col}>
+              {[...Array(12)].map((_, col) => (
+                <Grid item key={row * 12 + col}>
                   <IconButton
-                    onClick={() => handleIconClick(row * 2 + col)}
+                    onClick={() => handleIconClick(row * 12 + col)}
                     style={{
-                      border: selectedIconIndex === row * 2 + col ? '2px solid purple' : 'none'
+                      border: selectedIconIndex === row * 12 + col ? '2px solid purple' : 'none'
                     }}
                   >
-                    {icons[row * 2 + col]}
+                    {icons[row * 12 + col]}
                   </IconButton>
                 </Grid>
               ))}
@@ -503,13 +584,14 @@ const App: React.FC = () => {
         <DialogActions style={{ backgroundColor: '#9370db' }}>
           <Button
             onClick={handleIconDialogClose}
-            style={{ border: '1px solid white', color: 'white' }}
+            // onClick={handleIconSelection(selectedIcon)}
+            style={{ backgroundColor: 'green', border: '1px solid green', color: 'white' }}
           >
             Confirm
           </Button>
           <Button
             onClick={handleIconDialogClose}
-            style={{ border: '1px solid white', color: 'white' }}
+            style={{ backgroundColor: 'red', border: '1px solid white', color: 'white' }}
           >
             Cancel
           </Button>
