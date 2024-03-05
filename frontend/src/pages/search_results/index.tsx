@@ -32,11 +32,9 @@ const App: React.FC = () => {
     prompt: get_search_query()
   };
   send_json_backend(ENDPOINT_SEARCH_DECKS, JSON.stringify(request)).then(
-    (_data) => {
-      //let response: SearchDecksResponse = data.json();
-
-
-      //setDecks(response.decks);
+    (data) => {
+      let response: SearchDecksResponse = data.json();
+      setDecks(response.decks);
     }
 
   );

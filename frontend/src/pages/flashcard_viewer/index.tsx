@@ -4,7 +4,7 @@ import { Button, Paper, Typography, IconButton } from "@mui/material";
 import Flashcard from "./Flashcard";
 import { Navbar } from "../../navbar";
 import { ListCards, ListCardsResponse } from "../../backend_interface";
-import { send_json_backend, get_session_token } from "../../utils";
+import { send_json_backend, get_session_token, get_user_id } from "../../utils";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
@@ -49,11 +49,12 @@ const FlashcardViewerFunc = () => {
 
     const listCards = () => {
       let access_token = get_session_token();
-      if (access_token == null) {
+      let user_id = get_user_id();
+      if ((access_token == null) || (user_id == null)) {
         return;
       }
       let prev_cards: ListCards = {
-        access_token: access_token,
+        user_id: user_id,
         deck_id: deckId,
       };
       send_json_backend("/list_cards", JSON.stringify(prev_cards))
