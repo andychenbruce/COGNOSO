@@ -349,11 +349,11 @@ export const Navbar = () => {
       >
         <DialogTitle
           id="alert-dialog-title"
-          style={{ background: "#140952a6", color: "white" }}
+          style={{ background: "#9370db", color: "white" }}
         >
           Change Password
         </DialogTitle>
-        <DialogContent style={{ background: "#140952a6" }}>
+        <DialogContent style={{ background: "#9370db" }}>
           <DialogContentText
             id="alert-dialog-description"
             style={{ color: "white" }}
@@ -361,7 +361,7 @@ export const Navbar = () => {
             Please enter your Email, Old Password and New Password
           </DialogContentText>
         </DialogContent>
-        <DialogActions style={{ background: "#140952a6" }}>
+        <DialogActions style={{ background: "#9370db" }}>
           <TextField
             style={{
               marginBottom: 20,
