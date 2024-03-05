@@ -135,7 +135,7 @@ export interface SearchDecksRequest {
 
 //response <- /search_decks//request
 export interface SearchDecksResponse {
-  decks: CardDeck[];
+  decks: [[number, number]]; // user_id deck_id pairs
 }
 
 // request -> /create_deck_pdf
