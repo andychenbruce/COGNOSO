@@ -134,8 +134,13 @@ async fn handle_request(
         (hyper::Method::POST, api_structs::ENDPOINT_AI_TEST, ai_test),
         (
             hyper::Method::POST,
-            api_structs::ENDPOINT_GET_DECK_NAME,
-            get_deck_name
+            api_structs::ENDPOINT_GET_DECK,
+            get_deck
+        ),
+        (
+            hyper::Method::POST,
+            api_structs::ENDPOINT_SEARCH_DECKS,
+            search
         ),
         (
             hyper::Method::POST,
@@ -156,7 +161,7 @@ async fn login(
 ) -> Result<api_structs::LoginResponse, AndyError> {
     let user_id = state.database.get_user_id(&info.email);
     let access_token = state.database.new_session(user_id, info.password)?;
-    Ok(api_structs::LoginResponse { access_token })
+    Ok(api_structs::LoginResponse { access_token, user_id })
 }
 
 async fn create_card_deck(
@@ -168,12 +173,11 @@ async fn create_card_deck(
     Ok(())
 }
 
-async fn get_deck_name(
-    info: api_structs::GetDeckName,
+async fn get_deck(
+    info: api_structs::GetDeckRequest,
     state: std::sync::Arc<SharedState>,
-) -> Result<String, AndyError> {
-    let user_id = state.database.validate_token(info.access_token)?;
-    let name = state.database.get_deck_name(user_id, info.deck_id)?;
+) -> Result<api_structs::GetDeckResponse, AndyError> {
+    let name = state.database.get_deck_info(info.user_id, info.deck_id)?;
     Ok(name)
 }
 
@@ -263,8 +267,21 @@ async fn list_cards(
     info: api_structs::ListCards,
     state: std::sync::Arc<SharedState>,
 ) -> Result<api_structs::ListCardsResponse, AndyError> {
-    let user_id = state.database.validate_token(info.access_token)?;
-    state.database.list_cards(user_id, info.deck_id)
+    state.database.list_cards(info.user_id, info.deck_id)
+}
+
+async fn search(
+    info: api_structs::SearchDecksRequest,
+    state: std::sync::Arc<SharedState>,
+) -> Result<api_structs::SearchDecksResponse, AndyError> {
+    let thing = state
+        .search_engine
+        .lock()
+        .await
+        .search_prompt(&info.prompt, 5)
+        .await?;
+
+    Ok(api_structs::SearchDecksResponse { decks: thing })
 }
 
 async fn search(

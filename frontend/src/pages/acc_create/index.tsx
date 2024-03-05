@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import "./acc_create.css";
 import type { PageProps } from "gatsby";
-import { NewUser } from "../../backend_interface";
+import { ENDPOINT_NEW_USER, NewUser } from "../../backend_interface";
 import { send_json_backend } from "../../utils";
 
 const Main: React.FC<PageProps> = () => {
@@ -43,7 +43,7 @@ const Main: React.FC<PageProps> = () => {
       email: user.email,
       password: user.password1,
     };
-    send_json_backend("/new_user", JSON.stringify(new_user_request))
+    send_json_backend(ENDPOINT_NEW_USER, JSON.stringify(new_user_request))
       .then((data) => {
         console.log("New user made:", data);
         redirectToLogin();

@@ -1,16 +1,14 @@
 import React from "react";
 import { useState } from "react";
-import {
-  Paper,
-  TextField,
-  Button,
-  Typography,
-  Snackbar,
-} from "@mui/material";
+import { Paper, TextField, Button, Typography, Snackbar } from "@mui/material";
 import "./login.css";
 import type { PageProps } from "gatsby";
-import { LoginRequest, LoginResponse } from "../../backend_interface";
-import { send_json_backend, set_session_token } from "../../utils";
+import {
+  ENDPOINT_LOGIN,
+  LoginRequest,
+  LoginResponse,
+} from "../../backend_interface";
+import { send_json_backend, set_session_info } from "../../utils";
 
 const Main: React.FC<PageProps> = () => {
   const [user, setUser]: [LoginRequest, any] = useState({
@@ -31,9 +29,9 @@ const Main: React.FC<PageProps> = () => {
 
   const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    send_json_backend("/login", JSON.stringify(user))
+    send_json_backend(ENDPOINT_LOGIN, JSON.stringify(user))
       .then((data: LoginResponse) => {
-        set_session_token(data.access_token);
+        set_session_info(data.access_token, data.user_id);
         console.log("got back json: ", data);
         redirectTohome_page();
       })

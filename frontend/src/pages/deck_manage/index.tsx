@@ -1,4 +1,9 @@
-import React, { Dispatch, useState, ChangeEventHandler, useEffect } from "react";
+import React, {
+  Dispatch,
+  useState,
+  ChangeEventHandler,
+  useEffect,
+} from "react";
 import { Navbar } from "../../navbar";
 import {
   Dialog,
@@ -15,25 +20,36 @@ import {
   IconButton,
 } from "@mui/material";
 import {
+  ENDPOINT_LIST_CARD_DECKS,
+  ENDPOINT_CREATE_CARD_DECK,
+  ENDPOINT_CREATE_DECK_PDF,
+  ENDPOINT_DELETE_CARD,
   UploadPdf,
   CreateCardDeck,
+  DeleteCardDeck,
   ListCardDecks,
   ListCardDecksResponse,
   CardDeck,
 } from "../../backend_interface";
 import { send_json_backend, get_session_token } from "../../utils";
-import DeleteIcon from '@mui/icons-material/Delete';
-import { DeleteCardDeck } from "../../backend_interface";
-
+import DeleteIcon from "@mui/icons-material/Delete";
+import StarIcon from "@mui/icons-material/Star";
+import SportsSoccerIcon from "@mui/icons-material/SportsSoccer";
+import EditTwoToneIcon from "@mui/icons-material/EditTwoTone";
 
 const App: React.FC = () => {
   const [file, setFile] = useState<File | null>(null);
   const [openCreateDialog, setOpenCreateDialog] = useState(false);
   const [deckName, setDeckName] = useState("");
   const [usePDF, setUsePDF] = useState(false);
-  const [decks, setDecks]: [CardDeck[], Dispatch<CardDeck[]>] = useState([] as CardDeck[]);
+  const [decks, setDecks]: [CardDeck[], Dispatch<CardDeck[]>] = useState(
+    [] as CardDeck[],
+  );
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [errorField, setTextFieldError] = useState(false);
+  const [favorites, setFavorites] = useState<boolean[]>(
+    new Array(decks.length).fill(false),
+  );
 
   const updateDecks = () => {
     let token = get_session_token();
@@ -41,7 +57,7 @@ const App: React.FC = () => {
       return;
     }
     let request: ListCardDecks = { access_token: token };
-    send_json_backend("/list_card_decks", JSON.stringify(request))
+    send_json_backend(ENDPOINT_LIST_CARD_DECKS, JSON.stringify(request))
       .then((data: ListCardDecksResponse) => {
         setDecks(data.decks);
         console.log(data.decks);
@@ -53,9 +69,7 @@ const App: React.FC = () => {
 
   useEffect(updateDecks, []);
 
-  const handleInputChange = (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
     setDeckName(value);
     setTextFieldError(false);
@@ -83,7 +97,7 @@ const App: React.FC = () => {
       access_token: access_token,
       deck_name: deckName,
     };
-    send_json_backend("/create_card_deck", JSON.stringify(request))
+    send_json_backend(ENDPOINT_CREATE_CARD_DECK, JSON.stringify(request))
       .then((data: null) => {
         console.log("ok: ", data);
         updateDecks();
@@ -148,7 +162,7 @@ const App: React.FC = () => {
         file_bytes_base64: base64_encode,
       };
       return send_json_backend(
-        "/create_card_deck_pdf",
+        ENDPOINT_CREATE_DECK_PDF,
         JSON.stringify(request_json),
       )
         .then(() => {
@@ -161,6 +175,29 @@ const App: React.FC = () => {
     });
   };
 
+  // const handleFavoriteDeck = (deckId: number) => {
+  //   let access_token = get_session_token();
+  //   if (access_token == null) {
+  //     return;
+  //   }
+  //   let favoriteRequest: ______ = {
+  //     ++++++
+  //   };
+  //   send_json_backend("/todo", JSON.stringify(favoriteRequest))
+  //     .then(() => {
+  //       updateDecks();
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error favoriting deck:", error);
+  //     });
+  // }
+
+  const handleFavoriteDeck = (index: number) => {
+    const newFavorites = [...favorites];
+    newFavorites[index] = !newFavorites[index];
+    setFavorites(newFavorites);
+  };
+
   const handleDeleteDeck = (deckId: number) => {
     let access_token = get_session_token();
     if (access_token == null) {
@@ -170,13 +207,30 @@ const App: React.FC = () => {
       access_token: access_token,
       deck_id: deckId,
     };
-    send_json_backend("/delete_card_deck", JSON.stringify(deleteRequest))
+    send_json_backend(ENDPOINT_DELETE_CARD, JSON.stringify(deleteRequest))
       .then(() => {
         updateDecks();
       })
       .catch((error) => {
         console.error("Error deleting deck:", error);
       });
+  };
+
+  const handleEditDeckIcon = (_deckId: number) => {
+    let access_token = get_session_token();
+    if (access_token == null) {
+      return;
+    }
+    // let theIcon: _____ = {
+    //   access_token: access_token,
+    //   deck_id: deckId,
+    // };send_json_backend("/todo", JSON.stringify(deleteRequest))
+    // .then(() => {
+    //   updateDecks();
+    // })
+    // .catch((error) => {
+    //   console.error("Error deleting deck:", error);
+    // });
   };
 
   return (
@@ -187,11 +241,11 @@ const App: React.FC = () => {
         rowSpacing={1}
         columnSpacing={1}
         justifyContent="flex-start"
-        style={{ width: "100%", paddingLeft: "10px", paddingRight: "10px"}}
+        style={{ width: "100%", paddingLeft: "10px", paddingRight: "10px" }}
       >
         {decks.map((deck, index) => (
-          <Grid item xs={3} key={deck.deck_id} >
-            <div style={{ position: 'relative' }}>
+          <Grid item xs={3} key={deck.deck_id}>
+            <div style={{ position: "relative" }}>
               <Button
                 variant="contained"
                 color="primary"
@@ -200,38 +254,80 @@ const App: React.FC = () => {
                   const url = new URL(
                     window.location.origin + "/flashcard_viewer/",
                   );
-                  url.searchParams.append(
-                    "deck",
-                    JSON.stringify(deck.deck_id),
-                  );
+                  url.searchParams.append("deck", JSON.stringify(deck.deck_id));
                   window.location.href = url.toString();
                 }}
                 style={{
                   width: "100%",
-                  height: "70px",
-                  fontSize: "1.5rem",
+                  height: "200px",
                   marginBottom: "10px",
-                  backgroundColor: '#af52bf'
+                  backgroundColor: "#af52bf",
+                  position: "relative",
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  alignItems: "center",
                 }}
               >
-                {decks[index].name}
+                <SportsSoccerIcon
+                  style={{
+                    fontSize: 30,
+                    color: "gold",
+                    position: "absolute",
+                    top: "30%",
+                    transform: "translateY(-50%)",
+                  }}
+                />
+                <span
+                  style={{
+                    marginLeft: "5px",
+                    textAlign: "center",
+                    padding: "5px",
+                    top: "60%",
+                  }}
+                >
+                  {decks[index].name}
+                </span>
               </Button>
+
               <IconButton
                 onClick={() => handleDeleteDeck(deck.deck_id)}
                 style={{
-                  position: 'absolute',
+                  position: "absolute",
                   top: 0,
                   right: 0,
                 }}
               >
                 <DeleteIcon />
               </IconButton>
+              <IconButton
+                onClick={() => handleFavoriteDeck(index)}
+                style={{
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                }}
+              >
+                {favorites[index] ? (
+                  <StarIcon style={{ color: "yellow" }} />
+                ) : (
+                  <StarIcon />
+                )}
+              </IconButton>
+              <IconButton
+                onClick={() => handleEditDeckIcon(deck.deck_id)}
+                style={{
+                  position: "absolute",
+                  top: 0,
+                  right: "20%",
+                }}
+              >
+                <EditTwoToneIcon />
+              </IconButton>
             </div>
           </Grid>
         ))}
       </Grid>
-   
-    
 
       <Button
         type="submit"
@@ -250,7 +346,7 @@ const App: React.FC = () => {
           position: "fixed",
           bottom: "20px",
           right: "20px",
-          backgroundColor: '#af52bf'
+          backgroundColor: "#af52bf",
         }}
       >
         +
@@ -262,14 +358,22 @@ const App: React.FC = () => {
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle style={{ backgroundColor: "#9370db" }} id="alert-dialog-title">
+        <DialogTitle
+          style={{ backgroundColor: "#9370db" }}
+          id="alert-dialog-title"
+        >
           Create New Deck
         </DialogTitle>
         <Divider style={{ backgroundColor: "#9370db" }} />
         <DialogContent style={{ backgroundColor: "#9370db" }}>
-          <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+          <div
+            style={{ display: "flex", flexDirection: "column", gap: "20px" }}
+          >
             <TextField
-              style={{ marginBottom: 20, borderColor: errorField ? "red" : undefined }}
+              style={{
+                marginBottom: 20,
+                borderColor: errorField ? "red" : undefined,
+              }}
               label="Deck Name"
               variant="outlined"
               fullWidth
@@ -279,12 +383,19 @@ const App: React.FC = () => {
               required
             />
             <FormControlLabel
-              control={<Checkbox checked={usePDF} onChange={handleCheckboxChange} />}
+              control={
+                <Checkbox checked={usePDF} onChange={handleCheckboxChange} />
+              }
               label="Create from PDF"
             />
             {usePDF && (
               <>
-                <Button variant="contained" component="label" fullWidth style={{ border: '1px solid white', color: 'white' }}>
+                <Button
+                  variant="contained"
+                  component="label"
+                  fullWidth
+                  style={{ border: "1px solid white", color: "white" }}
+                >
                   Upload a file
                   <input type="file" hidden onChange={handleChangeFile} />
                 </Button>
@@ -313,7 +424,10 @@ const App: React.FC = () => {
           </div>
         </DialogContent>
         <DialogActions style={{ backgroundColor: "#9370db" }}>
-          <Button onClick={handleCreateDialogClose} style={{ border: '1px solid white', color: 'white' }}>
+          <Button
+            onClick={handleCreateDialogClose}
+            style={{ border: "1px solid white", color: "white" }}
+          >
             Cancel
           </Button>
         </DialogActions>
@@ -323,8 +437,7 @@ const App: React.FC = () => {
         autoHideDuration={null}
         onClose={() => setSnackbarOpen(false)}
         message="Title cannot be empty!"
-      >
-      </Snackbar>
+      ></Snackbar>
     </div>
   );
 };
