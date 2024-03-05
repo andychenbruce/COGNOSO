@@ -144,11 +144,6 @@ async fn handle_request(
         ),
         (
             hyper::Method::POST,
-            api_structs::ENDPOINT_SEARCH_DECKS,
-            search
-        ),
-        (
-            hyper::Method::POST,
             api_structs::ENDPOINT_EDIT_CARD,
             edit_card
         )
@@ -161,7 +156,10 @@ async fn login(
 ) -> Result<api_structs::LoginResponse, AndyError> {
     let user_id = state.database.get_user_id(&info.email);
     let access_token = state.database.new_session(user_id, info.password)?;
-    Ok(api_structs::LoginResponse { access_token, user_id })
+    Ok(api_structs::LoginResponse {
+        access_token,
+        user_id,
+    })
 }
 
 async fn create_card_deck(
@@ -268,20 +266,6 @@ async fn list_cards(
     state: std::sync::Arc<SharedState>,
 ) -> Result<api_structs::ListCardsResponse, AndyError> {
     state.database.list_cards(info.user_id, info.deck_id)
-}
-
-async fn search(
-    info: api_structs::SearchDecksRequest,
-    state: std::sync::Arc<SharedState>,
-) -> Result<api_structs::SearchDecksResponse, AndyError> {
-    let thing = state
-        .search_engine
-        .lock()
-        .await
-        .search_prompt(&info.prompt, 5)
-        .await?;
-
-    Ok(api_structs::SearchDecksResponse { decks: thing })
 }
 
 async fn search(

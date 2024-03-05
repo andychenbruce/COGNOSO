@@ -143,16 +143,6 @@ pub struct SearchDecksResponse {
 }
 
 #[derive(Debug, serde::Deserialize)]
-pub struct SearchDecksRequest {
-    pub prompt: String,
-}
-
-#[derive(Debug, serde::Serialize)]
-pub struct SearchDecksResponse {
-    pub decks: Vec<(u32, u32)>,
-}
-
-#[derive(Debug, serde::Deserialize)]
 pub struct UploadPdf {
     pub access_token: AccessToken,
     pub deck_id: u32,
