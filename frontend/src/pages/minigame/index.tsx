@@ -1,8 +1,12 @@
 import React, { useState, useEffect, DragEventHandler } from "react";
 import { Navbar } from "../../navbar";
 //import "./sty.css"
-import { ListCards, ListCardsResponse } from "../../backend_interface";
-import { send_json_backend, get_session_token } from "../../utils";
+import {
+  ENDPOINT_LIST_CARDS,
+  ListCards,
+  ListCardsResponse,
+} from "../../backend_interface";
+import { send_json_backend, get_session_token, get_user_id } from "../../utils";
 
 interface Card {
   question: string;
@@ -38,14 +42,15 @@ const App: React.FC = () => {
   const listCards = () => {
     let deckId = get_deckid();
     let access_token = get_session_token();
-    if (access_token == null) {
+    let user_id = get_user_id();
+    if (access_token == null || user_id == null) {
       return;
     }
     let prev_cards: ListCards = {
-      access_token: access_token,
+      user_id: user_id,
       deck_id: deckId,
     };
-    send_json_backend("/list_cards", JSON.stringify(prev_cards))
+    send_json_backend(ENDPOINT_LIST_CARDS, JSON.stringify(prev_cards))
       .then((data: ListCardsResponse) => {
         console.log("Prev_Cards:", data);
         setFlashcards(data.cards);

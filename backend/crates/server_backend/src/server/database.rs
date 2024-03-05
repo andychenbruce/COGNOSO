@@ -192,17 +192,25 @@ impl Database {
         Ok(())
     }
 
-    pub fn get_deck_name(&self, user_id: UserId, deck_id: DeckId) -> Result<String, AndyError> {
+    pub fn get_deck_info(
+        &self,
+        user_id: UserId,
+        deck_id: DeckId,
+    ) -> Result<api_structs::CardDeck, AndyError> {
         let read_txn = self.db.begin_read()?;
 
         let table = read_txn.open_table(Self::DECKS_TABLE)?;
-        let deck_name: String = table
+        let deck = table
             .get((user_id, deck_id))?
             .ok_or(AndyError::DeckDoesNotExist)?
-            .value()
-            .name;
+            .value();
 
-        Ok(deck_name)
+        Ok(api_structs::CardDeck {
+            name: deck.name,
+            num_cards: deck.cards.len() as u32,
+            deck_id,
+            user_id,
+        })
     }
 
     pub fn delete_card_deck(&self, user_id: UserId, deck_id: DeckId) -> Result<(), AndyError> {
@@ -263,20 +271,17 @@ impl Database {
     ) -> Result<(), AndyError> {
         let key = (user_id, deck_id);
 
-        let write_txn = self.db.begin_write()?;
-        {
-            let table = write_txn.open_table(Self::DECKS_TABLE)?;
-            let mut deck = table.get(key)?.ok_or(AndyError::DeckDoesNotExist)?.value();
-            let card = deck
-                .cards
-                .get_mut(card_index as usize)
-                .ok_or(AndyError::CardIndexOutOfBounds)?;
-            card.question = new_question;
-            card.answer = new_answer;
-            self.insert(key, deck, Self::DECKS_TABLE)?;
-        }
-
-        write_txn.commit()?;
+        let read_txn = self.db.begin_read()?;
+        let table = read_txn.open_table(Self::DECKS_TABLE)?;
+        let mut deck = table.get(key)?.ok_or(AndyError::DeckDoesNotExist)?.value();
+        let card = deck
+            .cards
+            .get_mut(card_index as usize)
+            .ok_or(AndyError::CardIndexOutOfBounds)?;
+        card.question = new_question;
+        card.answer = new_answer;
+        self.insert(key, deck, Self::DECKS_TABLE)?;
+        
         Ok(())
     }
 
@@ -295,6 +300,7 @@ impl Database {
             if id_pair.0 == user_id {
                 let deck = entry.1.value();
                 deck_ids.push(api_structs::CardDeck {
+                    user_id,
                     deck_id: id_pair.1,
                     name: deck.name,
                     num_cards: deck.cards.len().try_into()?,

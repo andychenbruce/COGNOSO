@@ -1,7 +1,6 @@
 import React, {
   Dispatch,
   useState,
-  ChangeEventHandler,
   useEffect,
 } from "react";
 import { Navbar } from "../../navbar";
@@ -49,7 +48,6 @@ const App: React.FC = () => {
     <div className="App">
       <Navbar />
       <div className="Favorites">
-        
         <h2>{<StarIcon />} Favorites</h2>
         <div className="Content-box Favorites-box">{}</div>
       </div>
