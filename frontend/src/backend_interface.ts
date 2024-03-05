@@ -1,10 +1,10 @@
 export const ENDPOINT_CREATE_CARD_DECK: string = "/create_card_deck";
 export const ENDPOINT_DELETE_CARD_DECK: string = "/delete_card_deck";
+export const ENDPOINT_SET_DECK_ICON: string = "/set_deck_icon";
 
 export const ENDPOINT_CREATE_CARD: string = "/create_card";
 export const ENDPOINT_DELETE_CARD: string = "/delete_card";
 export const ENDPOINT_EDIT_CARD: string = "/edit_card";
-
 export const ENDPOINT_LIST_CARD_DECKS: string = "/list_card_decks";
 export const ENDPOINT_GET_DECK: string = "/get_deck";
 export const ENDPOINT_LIST_CARDS: string = "/list_cards";
@@ -31,6 +31,7 @@ export interface CardDeck {
   user_id: number;
   deck_id: number;
   num_cards: number;
+  icon_num: number;
 }
 
 // request -> /create_card
@@ -67,6 +68,13 @@ export interface CreateCardDeck {
 export interface DeleteCardDeck {
   access_token: AccessToken;
   deck_id: number;
+}
+
+// request -> /set_deck_icon
+export interface SetDeckIcon {
+  access_token: AccessToken;
+  deck_id: number;
+  icon: number;
 }
 
 // request -> /new_user
