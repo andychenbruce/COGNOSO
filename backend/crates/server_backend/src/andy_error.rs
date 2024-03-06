@@ -38,4 +38,6 @@ pub enum AndyError {
     Pdf(#[from] pdf_parser::AndyPdfError),
     #[error("llm err")]
     Llm(#[from] crate::server::llm::LlmError),
+    #[error("search err")]
+    Search(#[from] crate::server::search_engine::SearchEngineError),
 }

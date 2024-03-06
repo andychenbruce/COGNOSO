@@ -9,6 +9,7 @@
  (list
   (packages->manifest
    (list
+    (list (@@ (gnu packages gcc) gcc-13) "lib")
     better-clang))
   (specifications->manifest
    (list

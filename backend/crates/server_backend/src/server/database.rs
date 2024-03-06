@@ -6,11 +6,14 @@ use std::hash::Hasher;
 
 use crate::api_structs;
 
+const DEFAULT_ICON: u32 = 0;
 const SHA265_NUM_BYTES: usize = 32;
 
 type AccessToken = (u32, u32);
-type UserId = u32;
-type DeckId = u32;
+pub type UserId = u32;
+pub type DeckId = u32;
+
+type UserDeckIdPair = (UserId, DeckId);
 
 #[derive(serde::Serialize, serde::Deserialize, Debug)]
 struct UserEntry {
@@ -19,21 +22,23 @@ struct UserEntry {
     //idk prolly serde will fix this const generics in the future
     password_hash: Vec<u8>,
     signup_time: u64,
+    favorites: Vec<UserDeckIdPair>,
 }
 
 #[derive(serde::Serialize, serde::Deserialize, Debug)]
-struct CardDeck {
-    creation_time: u64,
-    cards: Vec<Card>,
-    name: String,
+pub struct CardDeck {
+    pub creation_time: u64,
+    pub cards: Vec<Card>,
+    pub name: String,
     rating: u32,
     num_ratings: u32,
+    pub icon_num: u32,
 }
 
 #[derive(serde::Serialize, serde::Deserialize, Debug)]
-struct Card {
-    question: String,
-    answer: String,
+pub struct Card {
+    pub question: String,
+    pub answer: String,
 }
 
 pub struct Database {
@@ -124,6 +129,7 @@ impl Database {
                     email,
                     password_hash: sha256_hash(password.as_bytes()).to_vec(),
                     signup_time: get_current_unix_time_seconds(),
+                    favorites: vec![],
                 },
             )?;
         }
@@ -187,6 +193,7 @@ impl Database {
                     name: deck_name,
                     rating: 0,
                     num_ratings: 0,
+                    icon_num: DEFAULT_ICON,
                 },
             )?;
         }
@@ -194,17 +201,26 @@ impl Database {
         Ok(())
     }
 
-    pub fn get_deck_name(&self, user_id: UserId, deck_id: DeckId) -> Result<String, AndyError> {
+    pub fn get_deck_info(
+        &self,
+        user_id: UserId,
+        deck_id: DeckId,
+    ) -> Result<api_structs::CardDeck, AndyError> {
         let read_txn = self.db.begin_read()?;
 
         let table = read_txn.open_table(Self::DECKS_TABLE)?;
-        let deck_name: String = table
+        let deck = table
             .get((user_id, deck_id))?
             .ok_or(AndyError::DeckDoesNotExist)?
-            .value()
-            .name;
+            .value();
 
-        Ok(deck_name)
+        Ok(api_structs::CardDeck {
+            name: deck.name,
+            num_cards: deck.cards.len() as u32,
+            deck_id,
+            user_id,
+            icon_num: deck.icon_num,
+        })
     }
 
     pub fn delete_card_deck(&self, user_id: UserId, deck_id: DeckId) -> Result<(), AndyError> {
@@ -325,9 +341,11 @@ impl Database {
             if id_pair.0 == user_id {
                 let deck = entry.1.value();
                 deck_ids.push(api_structs::CardDeck {
+                    user_id,
                     deck_id: id_pair.1,
                     name: deck.name,
                     num_cards: deck.cards.len().try_into()?,
+                    icon_num: deck.icon_num,
                 });
             }
         }
@@ -376,6 +394,76 @@ impl Database {
         write_txn.commit()?;
 
         Ok(())
+    }
+
+    pub fn get_all_decks(&self) -> Result<Vec<(UserDeckIdPair, CardDeck)>, AndyError> {
+        let read_txn = self.db.begin_read()?;
+        let table = read_txn.open_table(Self::DECKS_TABLE)?;
+
+        let stuff: Vec<((UserId, DeckId), CardDeck)> = table
+            .iter()?
+            .map(|result| {
+                let deck = result?;
+
+                let ids = deck.0.value();
+                let cards = deck.1.value();
+
+                Ok((ids, cards))
+            })
+            .collect::<Result<Vec<_>, AndyError>>()?;
+
+        Ok(stuff)
+    }
+
+    pub fn set_deck_icon(
+        &self,
+        user_id: UserId,
+        deck_id: DeckId,
+        icon_num: u32,
+    ) -> Result<(), AndyError> {
+        let key = (user_id, deck_id);
+
+        let read_txn = self.db.begin_read()?;
+        let table = read_txn.open_table(Self::DECKS_TABLE)?;
+        let mut deck = table.get(key)?.ok_or(AndyError::DeckDoesNotExist)?.value();
+        deck.icon_num = icon_num;
+        self.insert(key, deck, Self::DECKS_TABLE)?;
+
+        Ok(())
+    }
+
+    pub fn list_favorites(
+        &self,
+        user_id: UserId,
+    ) -> Result<api_structs::ListFavoritesResponse, AndyError> {
+        let favorites = {
+            let read_txn = self.db.begin_read()?;
+            let table = read_txn.open_table(Self::USERS_TABLE)?;
+            let user_entry = table
+                .get(user_id)?
+                .ok_or(AndyError::UserDoesNotExist)?
+                .value();
+            user_entry.favorites
+        };
+
+        let decks: Vec<api_structs::CardDeck> = favorites
+            .into_iter()
+            .map(|id| {
+                let read_txn = self.db.begin_read()?;
+                let table = read_txn.open_table(Self::DECKS_TABLE)?;
+                let deck = table.get(id)?.unwrap().value();
+
+                Ok::<api_structs::CardDeck, AndyError>(api_structs::CardDeck {
+                    name: deck.name,
+                    user_id: id.0,
+                    deck_id: id.1,
+                    num_cards: deck.cards.len() as u32,
+                    icon_num: deck.icon_num,
+                })
+            })
+            .collect::<Result<_, _>>()?;
+
+        Ok(api_structs::ListFavoritesResponse { decks })
     }
 }
 

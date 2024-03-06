@@ -1,0 +1,42 @@
+.headerOne {
+  color: rgba(233, 56, 209, 0.527);
+}
+
+.Favorites {
+  padding: 10px;
+  margin: 20px;
+  color: yellow;
+  text-align: left;
+}
+
+.Decks {
+  padding: 10px;
+  margin: 20px;
+  color: white;
+  text-align: left;
+}
+
+.OtherDecks {
+  padding: 10px;
+  margin: 20px;
+  color: white;
+  text-align: left;
+}
+
+.Content-box {
+  border: 5px solid #ffffff;
+  min-height: 200px;
+  margin-top: 20px;
+}
+
+.Favorites-box {
+  border-color: yellow;
+}
+
+.Decks-box {
+  border-color: rgba(255, 255, 255, 0.356);
+}
+
+.OtherDecks-box {
+  border-color: rgba(255, 255, 255, 0.37);
+}

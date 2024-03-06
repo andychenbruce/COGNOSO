@@ -1,7 +1,6 @@
 pub const ENDPOINT_CREATE_CARD_DECK: &str = "/create_card_deck";
 pub const ENDPOINT_DELETE_CARD_DECK: &str = "/delete_card_deck";
-pub const ENDPOINT_GET_DECK_NAME: &str = "/get_deck_name";
-pub const ENDPOINT_LIST_CARD_DECKS: &str = "/list_card_decks";
+pub const ENDPOINT_SET_DECK_ICON: &str = "/set_deck_icon";
 
 pub const ENDPOINT_ADD_RATING: &str = "/add_rating";
 pub const ENDPOINT_GET_RATING: &str = "/get_rating";
@@ -9,6 +8,9 @@ pub const ENDPOINT_GET_RATING: &str = "/get_rating";
 pub const ENDPOINT_CREATE_CARD: &str = "/create_card";
 pub const ENDPOINT_DELETE_CARD: &str = "/delete_card";
 pub const ENDPOINT_EDIT_CARD: &str = "/edit_card";
+
+pub const ENDPOINT_LIST_CARD_DECKS: &str = "/list_card_decks";
+pub const ENDPOINT_GET_DECK: &str = "/get_deck";
 pub const ENDPOINT_LIST_CARDS: &str = "/list_cards";
 
 pub const ENDPOINT_LOGIN: &str = "/login";
@@ -16,10 +18,29 @@ pub const ENDPOINT_NEW_USER: &str = "/new_user";
 pub const ENDPOINT_DELETE_USER: &str = "/delete_user";
 pub const ENDPOINT_CHANGE_PASSWORD: &str = "/change_password";
 
+pub const ENDPOINT_SEARCH_DECKS: &str = "/search_decks";
+
+pub const ENDPOINT_LIST_FAVORITES: &str = "/list_favorites";
+
 pub const ENDPOINT_AI_TEST: &str = "/ai_test";
 pub const ENDPOINT_CREATE_DECK_PDF: &str = "/create_card_deck_pdf";
 
 pub type AccessToken = (u32, u32);
+
+#[derive(Debug, serde::Serialize)]
+pub struct Card {
+    pub question: String,
+    pub answer: String,
+}
+
+#[derive(Debug, serde::Serialize)]
+pub struct CardDeck {
+    pub name: String,
+    pub deck_id: u32,
+    pub user_id: u32,
+    pub num_cards: u32,
+    pub icon_num: u32,
+}
 
 #[derive(Debug, serde::Deserialize)]
 pub struct CreateCard {
@@ -52,7 +73,7 @@ pub struct CreateCardDeck {
 }
 
 #[derive(Debug, serde::Deserialize)]
-pub struct GetDeckName {
+pub struct DeleteCardDeck {
     pub access_token: AccessToken,
     pub deck_id: u32,
 }
@@ -71,9 +92,24 @@ pub struct AddRating {
 }
 
 #[derive(Debug, serde::Deserialize)]
-pub struct DeleteCardDeck {
+pub struct SetDeckIcon {
     pub access_token: AccessToken,
     pub deck_id: u32,
+    pub icon: u32,
+}
+
+#[derive(Debug, serde::Deserialize)]
+pub struct AddRating {
+    pub access_token: AccessToken,
+    pub deck_id: u32,
+    pub new_rating: u32,
+}
+
+#[derive(Debug, serde::Deserialize)]
+pub struct SetDeckIcon {
+    pub access_token: AccessToken,
+    pub deck_id: u32,
+    pub icon: u32,
 }
 
 #[derive(Debug, serde::Deserialize)]
@@ -106,28 +142,23 @@ pub struct ListCardDecksResponse {
     pub decks: Vec<CardDeck>,
 }
 
-#[derive(Debug, serde::Serialize)]
-pub struct CardDeck {
-    pub name: String,
+#[derive(Debug, serde::Deserialize)]
+pub struct GetDeckRequest {
+    pub user_id: u32,
     pub deck_id: u32,
-    pub num_cards: u32,
 }
+
+pub type GetDeckResponse = CardDeck;
 
 #[derive(Debug, serde::Deserialize)]
 pub struct ListCards {
-    pub access_token: AccessToken,
     pub deck_id: u32,
+    pub user_id: u32,
 }
 
 #[derive(Debug, serde::Serialize)]
 pub struct ListCardsResponse {
     pub cards: Vec<Card>,
-}
-
-#[derive(Debug, serde::Serialize)]
-pub struct Card {
-    pub question: String,
-    pub answer: String,
 }
 
 #[derive(Debug, serde::Deserialize)]
@@ -139,6 +170,17 @@ pub struct LoginRequest {
 #[derive(Debug, serde::Serialize)]
 pub struct LoginResponse {
     pub access_token: AccessToken,
+    pub user_id: u32,
+}
+
+#[derive(Debug, serde::Deserialize)]
+pub struct SearchDecksRequest {
+    pub prompt: String,
+}
+
+#[derive(Debug, serde::Serialize)]
+pub struct SearchDecksResponse {
+    pub decks: Vec<(u32, u32)>,
 }
 
 #[derive(Debug, serde::Deserialize)]
@@ -151,4 +193,14 @@ pub struct UploadPdf {
 #[derive(Debug, serde::Deserialize)]
 pub struct AiPromptTest {
     pub prompt: String,
+}
+
+#[derive(Debug, serde::Deserialize)]
+pub struct ListFavoritesRequest {
+    pub access_token: AccessToken,
+}
+
+#[derive(Debug, serde::Serialize)]
+pub struct ListFavoritesResponse {
+    pub decks: Vec<CardDeck>,
 }

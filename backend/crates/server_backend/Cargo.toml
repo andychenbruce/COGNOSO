@@ -12,6 +12,7 @@ hyper-util = { version = "0.1.2", features = ["full"] }
 http-body-util = "0.1.0"
 thiserror = "1.0.56"
 pdf_parser = { workspace = true }
+sentence_embedder = { workspace = true }
 clap = { version = "4.4.16", features = ["derive"] }
 redb = "1.5.0"
 sha2 = "0.10.8"
@@ -22,3 +23,5 @@ rustls-pemfile = "2.1.0"
 rustls = "0.22.2"
 tokio-rustls = "0.25.0"
 http = "1.0.0"
+qdrant-client = "1.7.0"
+anyhow = "1.0.80"
