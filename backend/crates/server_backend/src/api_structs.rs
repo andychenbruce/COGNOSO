@@ -99,20 +99,6 @@ pub struct SetDeckIcon {
 }
 
 #[derive(Debug, serde::Deserialize)]
-pub struct AddRating {
-    pub access_token: AccessToken,
-    pub deck_id: u32,
-    pub new_rating: u32,
-}
-
-#[derive(Debug, serde::Deserialize)]
-pub struct SetDeckIcon {
-    pub access_token: AccessToken,
-    pub deck_id: u32,
-    pub icon: u32,
-}
-
-#[derive(Debug, serde::Deserialize)]
 pub struct NewUser {
     pub user_name: String,
     pub email: String,
