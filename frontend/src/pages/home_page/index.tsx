@@ -170,7 +170,7 @@ const App: React.FC = () => {
         <h2>{<StarIcon />} Favorites</h2>
         <div className="Content-box Favorites-box">
 
-        <div style={{ display: "flex", overflowX: "scroll", overflowY: "hidden", scrollbarWidth: "thin", scrollbarColor: "rgba(255, 255, 255, 0.5) rgba(255, 255, 255, 0.5)" }}>
+        <div style={{padding:'10px', backgroundColor: "rgba(128, 128, 128, 0.5)", display: "flex", overflowX: "scroll", overflowY: "hidden", scrollbarWidth: "thin", scrollbarColor: "rgba(255, 255, 255, 0.5) rgba(255, 255, 255, 0.5)" }}>
             {favorites.map((deck, index) => (
             <Button
             variant="contained"
@@ -228,7 +228,7 @@ const App: React.FC = () => {
       <div className="Decks">
         <h2> {<ViewCarouselTwoToneIcon />}My Decks</h2> 
         <div className="Content-box Decks-box"> 
-        <div style={{ display: "flex", overflowX: "scroll", overflowY: "hidden", scrollbarWidth: "thin", scrollbarColor: "rgba(255, 255, 255, 0.5) rgba(255, 255, 255, 0.5)" }}>
+          <div style={{padding:'10px',  display: "flex", backgroundColor: "rgba(128, 128, 128, 0.5)", overflowX: "scroll", overflowY: "hidden", scrollbarWidth: "thin", scrollbarColor: "rgba(255, 255, 255, 0.5) rgba(255, 255, 255, 0.5)" }}>
             {decks.map((deck, index) => (
               <div key={deck.deck_id} style={{ marginRight: "10px" }}>
                 <Button
@@ -284,7 +284,11 @@ const App: React.FC = () => {
       {/* ---------------- Other Decks AREA ---------------*/}
       <div className="OtherDecks">
         <h2> {<ViewCarouselIcon />} Decks By Other Users</h2>
-        <div className="Content-box OtherDecks-box">{}</div>
+        <div className="Content-box OtherDecks-box">{
+          <div style={{padding:'10px',  display: "flex", backgroundColor: "rgba(128, 128, 128, 0.5)", overflowX: "scroll", overflowY: "hidden", scrollbarWidth: "thin", scrollbarColor: "rgba(255, 255, 255, 0.5) rgba(255, 255, 255, 0.5)" }}>
+          </div>
+        }
+        </div>
       </div>
     </div>
   );
