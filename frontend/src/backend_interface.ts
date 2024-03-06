@@ -21,7 +21,7 @@ export const ENDPOINT_CHANGE_PASSWORD: string = "/change_password";
 export const ENDPOINT_SEARCH_DECKS: string = "/search_decks";
 
 export const ENDPOINT_LIST_FAVORITES: string = "/list_favorites";
-export const ENDPOINT_ADD_FAVORITE: string = "/list_favorites";
+export const ENDPOINT_ADD_FAVORITE: string = "/add_favorite";
 
 export const ENDPOINT_AI_TEST: string = "/ai_test";
 export const ENDPOINT_CREATE_DECK_PDF: string = "/create_card_deck_pdf";

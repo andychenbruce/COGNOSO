@@ -24,21 +24,24 @@ import {
   ENDPOINT_LIST_CARD_DECKS,
   ENDPOINT_CREATE_CARD_DECK,
   ENDPOINT_CREATE_DECK_PDF,
-  UploadPdf,
+  UploadPdf,ListFavoritesRequest,
   CreateCardDeck,
   DeleteCardDeck,
   ListCardDecks,
   ListCardDecksResponse,
-  CardDeck,
+  CardDeck,AddFavorite,
   SetDeckIcon,
   ENDPOINT_DELETE_CARD_DECK,
   ENDPOINT_SET_DECK_ICON,
+  ENDPOINT_ADD_FAVORITE,
+  ENDPOINT_LIST_FAVORITES,
+  ListFavoritesResponse,
 } from "../../backend_interface";
 import { send_json_backend, get_session_token } from "../../utils";
 import DeleteIcon from "@mui/icons-material/Delete";
 import StarIcon from "@mui/icons-material/Star";
 import EditTwoToneIcon from "@mui/icons-material/EditTwoTone";
-
+import {get_user_id} from "../../utils"
 
 // testing icons
 import BeachAccessTwoToneIcon from '@mui/icons-material/BeachAccessTwoTone';
@@ -142,7 +145,6 @@ const App: React.FC = () => {
     <BedIcon />
   ];
   
-  // const [selectedIcon, setSelectedIcon] = useState('')
   
   const [file, setFile] = useState<File | null>(null);
   const [openCreateDialog, setOpenCreateDialog] = useState(false);
@@ -155,11 +157,11 @@ const App: React.FC = () => {
   const [decks, setDecks]: [CardDeck[], Dispatch<CardDeck[]>] = useState(
     [] as CardDeck[],
   );
+  const [favorites, setFavorites]: [CardDeck[], Dispatch<CardDeck[]>] = useState(
+    [] as CardDeck[]
+  )
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [errorField, setTextFieldError] = useState(false);
-  const [favorites, setFavorites] = useState<boolean[]>(
-    new Array(decks.length).fill(false),
-  );
   const [iconerrorsnackbar,changeIconErrorSnackbar] = useState(false);
 
 
@@ -216,11 +218,22 @@ const App: React.FC = () => {
     if (token == null) {
       return;
     }
-    let request: ListCardDecks = { access_token: token };
-    send_json_backend(ENDPOINT_LIST_CARD_DECKS, JSON.stringify(request))
+    let request1: ListCardDecks = { access_token: token };
+    send_json_backend(ENDPOINT_LIST_CARD_DECKS, JSON.stringify(request1))
       .then((data: ListCardDecksResponse) => {
         setDecks(data.decks);
-        console.log(data.decks);
+        // console.log(data.decks);
+      })
+      .catch((error) => {
+        console.error("Error in:", error);
+      });
+    let request2: ListFavoritesRequest = {
+      access_token: token
+    };
+    send_json_backend(ENDPOINT_LIST_FAVORITES, JSON.stringify(request2))
+      .then((data: ListFavoritesResponse) => {
+        console.log('favorited', data)
+        setFavorites(data.decks);
       })
       .catch((error) => {
         console.error("Error in:", error);
@@ -322,7 +335,7 @@ const App: React.FC = () => {
       console.log("base 64 = ", base64_encode);
       let request_json: UploadPdf = {
         access_token: access_token,
-        deck_id: 123, //todo
+        deck_id: 123, //todo generate new id
         file_bytes_base64: base64_encode,
       };
       return send_json_backend(
@@ -337,29 +350,6 @@ const App: React.FC = () => {
           console.error("Error in:", error);
         });
     });
-  };
-
-  // const handleFavoriteDeck = (deckId: number) => {
-  //   let access_token = get_session_token();
-  //   if (access_token == null) {
-  //     return;
-  //   }
-  //   let favoriteRequest: ______ = {
-  //     ++++++
-  //   };
-  //   send_json_backend("/todo", JSON.stringify(favoriteRequest))
-  //     .then(() => {
-  //       updateDecks();
-  //     })
-  //     .catch((error) => {
-  //       console.error("Error favoriting deck:", error);
-  //     });
-  // }
-
-  const handleFavoriteDeck = (index: number) => {
-    const newFavorites = [...favorites];
-    newFavorites[index] = !newFavorites[index];
-    setFavorites(newFavorites);
   };
 
   const handleDeleteDeck = (deckId: number) => {
@@ -380,6 +370,25 @@ const App: React.FC = () => {
       });
   };
 
+  const handleFavoriteDeck = (deckid: number) => {
+    let access_token = get_session_token();
+    let user_id = get_user_id();
+    if ((access_token == null) || (user_id == null)) {
+      return;
+    }
+    let request: AddFavorite = {
+      access_token: access_token,
+      user_id: user_id,
+      deck_id: deckid,
+    }
+    send_json_backend(ENDPOINT_ADD_FAVORITE, JSON.stringify(request))
+      .then(() => {
+        updateDecks();
+      })
+      .catch((error) => {
+        console.error("Error favoriting deck:", error);
+      });
+  }
 
 
   return (
@@ -444,20 +453,26 @@ const App: React.FC = () => {
               >
                 <DeleteIcon />
               </IconButton>
-              {/* <IconButton
-                onClick={() => handleFavoriteDeck(index)}
+
+              {/* fAV STAR */}
+              <IconButton
+                onClick={() => handleFavoriteDeck(deck.deck_id)}
                 style={{
                   position: "absolute",
                   top: 0,
                   left: 0,
                 }}
               >
-                {favorites[index] ? (
+                {favorites.map((x) => x.deck_id).includes(deck.deck_id) ? (
                   <StarIcon style={{ color: "yellow" }} />
                 ) : (
                   <StarIcon />
                 )}
-              </IconButton> */}
+              </IconButton>
+
+
+
+
               <IconButton
                 onClick={() => {
                   handleEditDeckIcon(deck.deck_id);
