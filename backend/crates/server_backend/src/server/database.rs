@@ -478,10 +478,10 @@ impl Database {
             .get(user_id)?
             .ok_or(AndyError::UserDoesNotExist)?
             .value();
-        if user.favorites.contains(&id_pair){
+        if user.favorites.contains(&id_pair) {
             return Err(AndyError::FavoriteAlreadyExists);
         }
-                   
+
         user.favorites.push(id_pair);
         self.insert_or_replace(user_id, user, Self::USERS_TABLE)?;
 
@@ -538,6 +538,31 @@ impl Database {
             .collect::<Result<_, _>>()?;
 
         Ok(thing)
+    }
+
+    pub fn random_decks(&self, num: usize) -> Result<api_structs::RandomDecksResponse, AndyError> {
+        let read_txn = self.db.begin_read()?;
+        let table = read_txn.open_table(Self::DECKS_TABLE)?;
+
+        let decks = table
+            .iter()?
+            .take(num)
+            .map(|x| {
+                let thing = x?;
+                let (user_id, deck_id) = thing.0.value();
+                let deck = thing.1.value();
+
+                Ok(api_structs::CardDeck {
+                    name: deck.name,
+                    deck_id,
+                    user_id,
+                    num_cards: deck.cards.len() as u32,
+                    icon_num: deck.icon_num,
+                })
+            })
+            .collect::<Result<Vec<_>, AndyError>>()?;
+
+        Ok(api_structs::RandomDecksResponse { decks })
     }
 }
 

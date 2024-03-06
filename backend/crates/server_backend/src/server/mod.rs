@@ -176,8 +176,12 @@ async fn handle_request(
             hyper::Method::POST,
             api_structs::ENDPOINT_DELETE_FAVORITE,
             delete_favorite
+        ),
+        (
+            hyper::Method::POST,
+            api_structs::ENDPOINT_GET_RANDOM_DECKS,
+            random_decks
         )
-
     )
 }
 
@@ -412,4 +416,11 @@ async fn delete_favorite(
         .database
         .delete_favorite(user_id, (info.user_id, info.deck_id))?;
     Ok(())
+}
+
+async fn random_decks(
+    info: api_structs::RandomDecksRequest,
+    state: std::sync::Arc<SharedState>,
+) -> Result<api_structs::RandomDecksResponse, AndyError> {
+    state.database.random_decks(info.num_decks as usize)
 }

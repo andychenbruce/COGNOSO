@@ -27,6 +27,8 @@ export const ENDPOINT_DELETE_FAVORITE: string = "/delete_favorite";
 export const ENDPOINT_AI_TEST: string = "/ai_test";
 export const ENDPOINT_CREATE_DECK_PDF: string = "/create_card_deck_pdf";
 
+export const ENDPOINT_GET_RANDOM_DECKS: string = "/get_random_decks";
+
 type AccessToken = [number, number];
 
 export interface Card {
@@ -205,4 +207,14 @@ export interface DeleteFavorite {
   access_token: AccessToken,
   user_id: number,
   deck_id: number,
+}
+
+// request -> ENDPOINT_GET_RANDOM_DECKS
+export interface RandomDecksRequest{
+  num_decks: number
+}
+
+// response -> ENDPOINT_GET_RANDOM_DECKS
+export interface RandomDecksResponse{
+  dekcs: CardDeck[]
 }

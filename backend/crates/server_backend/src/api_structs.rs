@@ -27,6 +27,8 @@ pub const ENDPOINT_DELETE_FAVORITE: &str = "/delete_favorite";
 pub const ENDPOINT_AI_TEST: &str = "/ai_test";
 pub const ENDPOINT_CREATE_DECK_PDF: &str = "/create_card_deck_pdf";
 
+pub const ENDPOINT_GET_RANDOM_DECKS: &str = "/get_random_decks";
+
 pub type AccessToken = (u32, u32);
 
 #[derive(Debug, serde::Serialize)]
@@ -205,4 +207,14 @@ pub struct DeleteFavorite {
     pub access_token: AccessToken,
     pub user_id: u32,
     pub deck_id: u32,
+}
+
+#[derive(Debug, serde::Deserialize)]
+pub struct RandomDecksRequest {
+    pub num_decks: u32,
+}
+
+#[derive(Debug, serde::Serialize)]
+pub struct RandomDecksResponse {
+    pub decks: Vec<CardDeck>,
 }
