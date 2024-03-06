@@ -42,6 +42,7 @@ body {
 }
 
 .Favorites {
+  font-family: "Garamond", sans-serif;
   padding: 10px;
   margin: 20px;
   color: yellow;
@@ -49,6 +50,7 @@ body {
 }
 
 .Decks {
+  font-family: "Garamond", sans-serif;
   padding: 10px;
   margin: 20px;
   color: white;
@@ -56,6 +58,7 @@ body {
 }
 
 .OtherDecks {
+  font-family: "Garamond", sans-serif;
   padding: 10px;
   margin: 20px;
   color: white;
