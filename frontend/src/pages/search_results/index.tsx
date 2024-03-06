@@ -5,19 +5,25 @@ import StarIcon from "@mui/icons-material/Star";
 import ViewCarouselIcon from "@mui/icons-material/ViewCarousel";
 import ViewCarouselTwoToneIcon from "@mui/icons-material/ViewCarouselTwoTone";
 
-import { Button, Grid } from "@mui/material";
-import { send_json_backend } from "../../utils";
+// import { Button, Grid } from "@mui/material";
+import { send_json_backend, get_session_token} from "../../utils";
 import {
 	CardDeck,
   ENDPOINT_SEARCH_DECKS,
   SearchDecksRequest,
   SearchDecksResponse,
+	ListCardDecksResponse,
+	ListCardDecks,
+	ENDPOINT_LIST_CARD_DECKS,
+	ENDPOINT_LIST_FAVORITES,
+	ListFavoritesResponse,
+	ListFavoritesRequest,
+	RandomDecksResponse,
+	RandomDecksRequest,
+	ENDPOINT_GET_RANDOM_DECKS,
 } from "../../backend_interface";
 
 const App: React.FC = () => {
-  const [decks, setDecks]: [CardDeck[], Dispatch<CardDeck[]>] = useState(
-    [] as CardDeck[]
-  );
 
   const get_search_query = () => {
     const urlString = window.location.href;
@@ -47,7 +53,58 @@ const App: React.FC = () => {
       },
     );
   }, []);
+	const updateDecks = () => {
+    let token = get_session_token();
+    if (token == null) {
+      return;
+    }
+    let request1: ListCardDecks = { access_token: token };
+    send_json_backend(ENDPOINT_LIST_CARD_DECKS, JSON.stringify(request1))
+      .then((data: ListCardDecksResponse) => {
+        setDecks(data.decks);
+        // console.log(data.decks);
+      })
+      .catch((error) => {
+        console.error("Error in:", error);
+      });
+    let request2: ListFavoritesRequest = {
+      access_token: token
+    };
+    send_json_backend(ENDPOINT_LIST_FAVORITES, JSON.stringify(request2))
+      .then((data: ListFavoritesResponse) => {
+        // console.log('favorited', data)
+        setFavorites(data.decks);
+      })
+      .catch((error) => {
+        console.error("Error in:", error);
+      });
+    let randNum = 5;
+    let request3: RandomDecksRequest = {
+      num_decks: randNum
+    };
+    send_json_backend(ENDPOINT_GET_RANDOM_DECKS, JSON.stringify(request3))
+    .then((data: RandomDecksResponse) => {
+      // console.log('others', data.decks)
+      setRandomDecks(data.decks);
+    })
+    .catch((error) => {
+      console.error("Error in:", error);
+    });
+  };
 
+  const [_favorites, setFavorites]: [CardDeck[], Dispatch<CardDeck[]>] = useState(
+    [] as CardDeck[]
+  )
+
+	const [_decks, setDecks]: [CardDeck[], Dispatch<CardDeck[]>] = useState(
+    [] as CardDeck[]
+  );
+
+  const [_randomdecks, setRandomDecks]: [CardDeck[], Dispatch<CardDeck[]>] = useState(
+    [] as CardDeck[]
+  );
+
+  useEffect(updateDecks, []);
 
   return (
     <div className="App">
@@ -60,51 +117,17 @@ const App: React.FC = () => {
 	</div>
 	<div className="Decks">
 	  <h2> {<ViewCarouselTwoToneIcon />}Decks</h2>
-	  <div className="Content-box Decks-box">{}</div>
+	  <div className="Content-box Decks-box">{
+	
+		}
+		</div>
 	</div>
 	<div className="OtherDecks">
 	  <h2> {<ViewCarouselIcon />} Decks By Other Users</h2>
 	  <div className="Content-box OtherDecks-box">{}</div>
 	</div>
 
-	<Grid
-	  container
-	  rowSpacing={1}
-	  columnSpacing={1}
-	  justifyContent="flex-start"
-	  style={{ width: "100%", paddingLeft: "10px", paddingRight: "10px" }}
-	>
-	  {decks.map((deck, index) => (
-	    <Grid item xs={3} key={deck.deck_id}>
-	      <div style={{ position: "relative" }}>
-		<Button
-		  variant="contained"
-		  color="primary"
-		  fullWidth
-		  onClick={() => {
-		    const url = new URL(
-		      window.location.origin + "/flashcard_viewer/",
-		    );
-		    url.searchParams.append(
-		      "deck",
-		      JSON.stringify(deck.deck_id),
-		    );
-		    window.location.href = url.toString();
-		  }}
-		  style={{
-		    width: "100%",
-		    height: "70px",
-		    fontSize: "1.5rem",
-		    marginBottom: "10px",
-		    backgroundColor: "#af52bf",
-		  }}
-		>
-		  {JSON.stringify(decks[index])}
-		</Button>
-	      </div>
-	    </Grid>
-	  ))}
-	</Grid>
+
       </div>
     </div>
   );

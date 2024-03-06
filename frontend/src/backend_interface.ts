@@ -216,5 +216,5 @@ export interface RandomDecksRequest{
 
 // response -> ENDPOINT_GET_RANDOM_DECKS
 export interface RandomDecksResponse{
-  dekcs: CardDeck[]
+  decks: CardDeck[]
 }

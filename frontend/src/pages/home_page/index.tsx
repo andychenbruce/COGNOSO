@@ -17,6 +17,9 @@ import {
   ListFavoritesRequest,
   ListFavoritesResponse,
   ENDPOINT_LIST_CARD_DECKS,
+  ENDPOINT_GET_RANDOM_DECKS,
+  RandomDecksRequest,
+  RandomDecksResponse,
 } from "../../backend_interface";
 
 import {
@@ -148,12 +151,24 @@ const App: React.FC = () => {
     };
     send_json_backend(ENDPOINT_LIST_FAVORITES, JSON.stringify(request2))
       .then((data: ListFavoritesResponse) => {
-        console.log('favorited', data)
+        // console.log('favorited', data)
         setFavorites(data.decks);
       })
       .catch((error) => {
         console.error("Error in:", error);
       });
+    let randNum = 5;
+    let request3: RandomDecksRequest = {
+      num_decks: randNum
+    };
+    send_json_backend(ENDPOINT_GET_RANDOM_DECKS, JSON.stringify(request3))
+    .then((data: RandomDecksResponse) => {
+      // console.log('others', data.decks)
+      setRandomDecks(data.decks);
+    })
+    .catch((error) => {
+      console.error("Error in:", error);
+    });
   };
 
   const [favorites, setFavorites]: [CardDeck[], Dispatch<CardDeck[]>] = useState(
@@ -162,6 +177,10 @@ const App: React.FC = () => {
 
   useEffect(updateDecks, []);
 
+  const [randomdecks, setRandomDecks]: [CardDeck[], Dispatch<CardDeck[]>] = useState(
+    [] as CardDeck[]
+  )
+
   return (
     <div className="App">
       <Navbar />
@@ -169,34 +188,31 @@ const App: React.FC = () => {
       <div className="Favorites">
         <h2>{<StarIcon />} Favorites</h2>
         <div className="Content-box Favorites-box">
-
-        <div style={{padding:'10px', backgroundColor: "rgba(128, 128, 128, 0.5)", display: "flex", overflowX: "scroll", overflowY: "hidden", scrollbarWidth: "thin", scrollbarColor: "rgba(255, 255, 255, 0.5) rgba(255, 255, 255, 0.5)" }}>
+          <div style={{padding:'10px',  display: "flex", backgroundColor: "rgba(128, 128, 128, 0.5)", overflowX: "scroll", overflowY: "hidden", scrollbarWidth: "thin", scrollbarColor: "rgba(255, 255, 255, 0.5) rgba(255, 255, 255, 0.5)" }}>
             {favorites.map((deck, index) => (
-            <Button
-            variant="contained"
-            color="primary"
-            fullWidth
-            onClick={() => {
-              const url = new URL(
-                window.location.origin + "/flashcard_viewer/",
-              );
-              url.searchParams.append("deck", JSON.stringify(deck.deck_id));
-              window.location.href = url.toString();
-            }}
-            style={{
-              width: "200px",
-              height: "200px",
-              marginBottom: "10px",
-              backgroundColor: "#af52bf",
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
-              alignItems: "center",
-              position: "relative",
-            }}
-          >
-              {iconList[favorites[index].icon_num]}
-              <Rating
+              <div key={deck.deck_id} style={{ marginRight: "10px" }}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={() => {
+                    const url = new URL(window.location.origin + "/flashcard_viewer/");
+                    url.searchParams.append("deck", JSON.stringify(deck.deck_id));
+                    window.location.href = url.toString();
+                  }}
+                  style={{
+                    width: "200px",
+                    height: "200px",
+                    marginBottom: "10px",
+                    backgroundColor: "#af52bf",
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    position: "relative",
+                  }}
+                >
+                  {iconList[favorites[index].icon_num]}
+                  <Rating
                   name={`deck-rating-${deck.deck_id}`}
                   value={deck.get_rating || 0} 
                   readOnly
@@ -207,19 +223,20 @@ const App: React.FC = () => {
                     left: 10,
                   }}
                 />
-            <span style={{ 
-                marginLeft: "5px", 
-                textAlign: "center", 
-                padding: "5px", 
-                top: "60%",
-                width: "100px",
-                whiteSpace: "nowrap",
-                overflow: "hidden",
-                textOverflow: "ellipsis"
-              }}>
-              {favorites[index].name}
-            </span>
-            </Button>
+                  <span style={{ 
+                    marginLeft: "5px", 
+                    textAlign: "center", 
+                    padding: "5px", 
+                    top: "60%",
+                    width: "100px",
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis"
+                  }}>
+                    {deck.name}
+                  </span>
+                </Button>
+              </div>
             ))}
           </div>
         </div>
@@ -284,13 +301,61 @@ const App: React.FC = () => {
       {/* ---------------- Other Decks AREA ---------------*/}
       <div className="OtherDecks">
         <h2> {<ViewCarouselIcon />} Decks By Other Users</h2>
-        <div className="Content-box OtherDecks-box">{
+        <div className="Content-box OtherDecks-box">
           <div style={{padding:'10px',  display: "flex", backgroundColor: "rgba(128, 128, 128, 0.5)", overflowX: "scroll", overflowY: "hidden", scrollbarWidth: "thin", scrollbarColor: "rgba(255, 255, 255, 0.5) rgba(255, 255, 255, 0.5)" }}>
-          </div>
-        }
+          {randomdecks.map((deck, index) => (
+            <div key={deck.deck_id} style={{ marginRight: "10px" }}>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => {
+                  const url = new URL(window.location.origin + "/flashcard_viewer/");
+                  url.searchParams.append("deck", JSON.stringify(deck.deck_id));
+                  window.location.href = url.toString();
+                }}
+                style={{
+                  width: "200px",
+                  height: "200px",
+                  marginBottom: "10px",
+                  backgroundColor: "#af52bf",
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  position: "relative",
+                }}
+              >
+                {iconList[randomdecks[index].icon_num]}
+                <Rating
+                name={`deck-rating-${deck.deck_id}`}
+                value={deck.get_rating || 0} 
+                readOnly
+                size="small"
+                style={{
+                  position: "absolute",
+                  bottom: 10, 
+                  left: 10,
+                }}
+              />
+                <span style={{ 
+                  marginLeft: "5px", 
+                  textAlign: "center", 
+                  padding: "5px", 
+                  top: "60%",
+                  width: "100px",
+                  whiteSpace: "nowrap",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis"
+                }}>
+                  {deck.name}
+                </span>
+              </Button>
+            </div>
+          ))}
         </div>
       </div>
     </div>
+  </div>
   );
 };
 
