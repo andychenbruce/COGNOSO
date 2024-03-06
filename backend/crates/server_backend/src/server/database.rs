@@ -22,6 +22,7 @@ struct UserEntry {
     //idk prolly serde will fix this const generics in the future
     password_hash: Vec<u8>,
     signup_time: u64,
+    favorites: Vec<UserDeckIdPair>,
 }
 
 #[derive(serde::Serialize, serde::Deserialize, Debug)]
@@ -126,6 +127,7 @@ impl Database {
                     email,
                     password_hash: sha256_hash(password.as_bytes()).to_vec(),
                     signup_time: get_current_unix_time_seconds(),
+                    favorites: vec![],
                 },
             )?;
         }
@@ -393,6 +395,40 @@ impl Database {
         self.insert(key, deck, Self::DECKS_TABLE)?;
 
         Ok(())
+    }
+
+    pub fn list_favorites(
+        &self,
+        user_id: UserId,
+    ) -> Result<api_structs::ListFavoritesResponse, AndyError> {
+        let favorites = {
+            let read_txn = self.db.begin_read()?;
+            let table = read_txn.open_table(Self::USERS_TABLE)?;
+            let user_entry = table
+                .get(user_id)?
+                .ok_or(AndyError::UserDoesNotExist)?
+                .value();
+            user_entry.favorites
+        };
+
+        let decks: Vec<api_structs::CardDeck> = favorites
+            .into_iter()
+            .map(|id| {
+                let read_txn = self.db.begin_read()?;
+                let table = read_txn.open_table(Self::DECKS_TABLE)?;
+                let deck = table.get(id)?.unwrap().value();
+
+                Ok::<api_structs::CardDeck, AndyError>(api_structs::CardDeck {
+                    name: deck.name,
+                    user_id: id.0,
+                    deck_id: id.1,
+                    num_cards: deck.cards.len() as u32,
+                    icon_num: deck.icon_num,
+                })
+            })
+            .collect::<Result<_, _>>()?;
+
+        Ok(api_structs::ListFavoritesResponse { decks })
     }
 }
 

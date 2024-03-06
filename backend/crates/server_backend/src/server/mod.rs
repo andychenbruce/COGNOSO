@@ -151,6 +151,11 @@ async fn handle_request(
             hyper::Method::POST,
             api_structs::ENDPOINT_SET_DECK_ICON,
             set_deck_icon
+        ),
+        (
+            hyper::Method::POST,
+            api_structs::ENDPOINT_LIST_FAVORITES,
+            list_favorites
         )
     )
 }
@@ -321,4 +326,13 @@ async fn set_deck_icon(
         .set_deck_icon(user_id, info.deck_id, info.icon)?;
 
     Ok(())
+}
+
+async fn list_favorites(
+    info: api_structs::ListFavoritesRequest,
+    state: std::sync::Arc<SharedState>,
+) -> Result<api_structs::ListFavoritesResponse, AndyError> {
+    let user_id = state.database.validate_token(info.access_token)?;
+
+    state.database.list_favorites(user_id)
 }
