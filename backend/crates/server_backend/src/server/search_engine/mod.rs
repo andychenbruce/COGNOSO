@@ -140,7 +140,6 @@ impl SearchEngine {
         self.client.as_mut().unwrap()
     }
 
-
     pub fn not_fucked(&self) -> bool {
         matches!((&self.client, &self.embedder), (Some(_), Some(_)))
     }

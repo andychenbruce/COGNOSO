@@ -21,7 +21,7 @@ pub const ENDPOINT_CHANGE_PASSWORD: &str = "/change_password";
 pub const ENDPOINT_SEARCH_DECKS: &str = "/search_decks";
 
 pub const ENDPOINT_LIST_FAVORITES: &str = "/list_favorites";
-pub const ENDPOINT_ADD_FAVORITE: &str = "/list_favorites";
+pub const ENDPOINT_ADD_FAVORITE: &str = "/add_favorite";
 
 pub const ENDPOINT_AI_TEST: &str = "/ai_test";
 pub const ENDPOINT_CREATE_DECK_PDF: &str = "/create_card_deck_pdf";
@@ -190,4 +190,11 @@ pub struct ListFavoritesRequest {
 #[derive(Debug, serde::Serialize)]
 pub struct ListFavoritesResponse {
     pub decks: Vec<CardDeck>,
+}
+
+#[derive(Debug, serde::Deserialize)]
+pub struct AddFavorite {
+    pub access_token: AccessToken,
+    pub user_id: u32,
+    pub deck_id: u32,
 }

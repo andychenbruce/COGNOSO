@@ -257,7 +257,7 @@ impl Database {
         let read_txn = self.db.begin_read()?;
         let table = read_txn.open_table(Self::DECKS_TABLE)?;
         let mut deck = table.get(key)?.ok_or(AndyError::DeckDoesNotExist)?.value();
-        deck.rating = (deck.rating * deck.num_ratings + new_rating)/(deck.num_ratings + 1);
+        deck.rating = (deck.rating * deck.num_ratings + new_rating) / (deck.num_ratings + 1);
         deck.num_ratings += 1;
         self.insert(key, deck, Self::DECKS_TABLE)?;
 
@@ -466,25 +466,44 @@ impl Database {
         Ok(api_structs::ListFavoritesResponse { decks })
     }
 
-    pub fn list_every_single_deck(&self) -> Result<Vec<api_structs::CardDeck>, AndyError>{
+    pub fn add_favorite(&self, user_id: UserId, id_pair: UserDeckIdPair) -> Result<(), AndyError> {
+        let read_txn = self.db.begin_read()?;
+        {
+            let table = read_txn.open_table(Self::DECKS_TABLE)?;
+            table.get(id_pair)?.ok_or(AndyError::DeckDoesNotExist)?;
+        }
+
+        let table = read_txn.open_table(Self::USERS_TABLE)?;
+        let mut user = table
+            .get(user_id)?
+            .ok_or(AndyError::UserDoesNotExist)?
+            .value();
+        user.favorites.push(id_pair);
+        self.insert(user_id, user, Self::USERS_TABLE)?;
+
+        Ok(())
+    }
+
+    pub fn list_every_single_deck(&self) -> Result<Vec<api_structs::CardDeck>, AndyError> {
         let read_txn = self.db.begin_read()?;
         let table = read_txn.open_table(Self::DECKS_TABLE)?;
 
-        let thing: Vec<api_structs::CardDeck> = table.iter()?.map(|x|{
-            let pair = x?;
-            let (user_id, deck_id) = pair.0.value();
-            let deck = pair.1.value();
+        let thing: Vec<api_structs::CardDeck> = table
+            .iter()?
+            .map(|x| {
+                let pair = x?;
+                let (user_id, deck_id) = pair.0.value();
+                let deck = pair.1.value();
 
-            
-            Ok::<_, AndyError>(api_structs::CardDeck{
-                name: deck.name,
-                deck_id,
-                user_id,
-                num_cards: deck.cards.len() as u32,
-                icon_num: deck.icon_num,
+                Ok::<_, AndyError>(api_structs::CardDeck {
+                    name: deck.name,
+                    deck_id,
+                    user_id,
+                    num_cards: deck.cards.len() as u32,
+                    icon_num: deck.icon_num,
+                })
             })
-        }).collect::<Result<_, _>>()?;
-
+            .collect::<Result<_, _>>()?;
 
         Ok(thing)
     }

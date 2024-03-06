@@ -166,6 +166,11 @@ async fn handle_request(
             hyper::Method::POST,
             api_structs::ENDPOINT_LIST_FAVORITES,
             list_favorites
+        ),
+        (
+            hyper::Method::POST,
+            api_structs::ENDPOINT_ADD_FAVORITE,
+            add_favorite
         )
     )
 }
@@ -351,11 +356,9 @@ async fn edit_rating(
     state: std::sync::Arc<SharedState>,
 ) -> Result<(), AndyError> {
     let user_id = state.database.validate_token(info.access_token)?;
-    state.database.add_rating(
-        user_id,
-        info.deck_id,
-        info.new_rating,
-    )?;
+    state
+        .database
+        .add_rating(user_id, info.deck_id, info.new_rating)?;
     Ok(())
 }
 
@@ -379,4 +382,16 @@ async fn list_favorites(
     let user_id = state.database.validate_token(info.access_token)?;
 
     state.database.list_favorites(user_id)
+}
+
+async fn add_favorite(
+    info: api_structs::AddFavorite,
+    state: std::sync::Arc<SharedState>,
+) -> Result<(), AndyError> {
+    let user_id = state.database.validate_token(info.access_token)?;
+
+    state
+        .database
+        .add_favorite(user_id, (info.user_id, info.deck_id))?;
+    Ok(())
 }
