@@ -2,9 +2,13 @@ export const ENDPOINT_CREATE_CARD_DECK: string = "/create_card_deck";
 export const ENDPOINT_DELETE_CARD_DECK: string = "/delete_card_deck";
 export const ENDPOINT_SET_DECK_ICON: string = "/set_deck_icon";
 
+export const ENDPOINT_ADD_RATING: string = "/add_rating";
+export const ENDPOINT_GET_RATING: string = "/get_rating";
+
 export const ENDPOINT_CREATE_CARD: string = "/create_card";
 export const ENDPOINT_DELETE_CARD: string = "/delete_card";
 export const ENDPOINT_EDIT_CARD: string = "/edit_card";
+
 export const ENDPOINT_LIST_CARD_DECKS: string = "/list_card_decks";
 export const ENDPOINT_GET_DECK: string = "/get_deck";
 export const ENDPOINT_LIST_CARDS: string = "/list_cards";
@@ -39,7 +43,7 @@ export interface CardDeck {
   add_rating: number;
 }
 
-// request -> /create_card
+// request -> ENDPOINT_CREATE_CARD
 export interface CreateCard {
   access_token: AccessToken;
   deck_id: number;
@@ -47,14 +51,14 @@ export interface CreateCard {
   answer: string;
 }
 
-// request -> /delete_card
+// request -> ENDPOINT_DELETE_CARD
 export interface DeleteCard {
   access_token: AccessToken;
   deck_id: number;
   card_index: number;
 }
 
-// request -> /edit_card
+// request -> ENDPOINT_EDIT_CARD
 export interface EditCard {
   access_token: AccessToken;
   deck_id: number;
@@ -63,56 +67,69 @@ export interface EditCard {
   new_answer: string;
 }
 
-// request -> /create_card_decki
+// request -> ENDPOINT_CREATE_CARD_DECK
 export interface CreateCardDeck {
   access_token: AccessToken;
   deck_name: string;
 }
 
-// request -> /delete_card_deck
+// request -> ENDPOINT_DELETE_CARD_DECK
 export interface DeleteCardDeck {
   access_token: AccessToken;
   deck_id: number;
 }
 
-// request -> /set_deck_icon
+// request -> ENDPOINT_ADD_RATING
+export interface GetRating {
+  access_token: AccessToken,
+  deck_id: number,
+}
+
+// response <- ENDPOINT_ADD_RATING
+export interface AddRating {
+  access_token: AccessToken,
+  deck_id: number,
+  new_rating: number,
+}
+
+// request -> ENDPOINT_SET_DECK_ICON
 export interface SetDeckIcon {
   access_token: AccessToken;
   deck_id: number;
   icon: number;
 }
 
-// request -> /new_user
+// request -> ENDPOINT_NEW_USER
 export interface NewUser {
   user_name: string;
   email: string;
   password: string;
 }
 
-// request -> /delete_user
+// request -> ENDPOINT_DELETE_USER
 export interface DeleteUser {
   email: string;
   password: string;
 }
 
-// request -> /change_password
+// request -> ENDPOINT_CHANGE_PASSWORD
 export interface ChangePassword {
   email: string;
   old_password: string;
   new_password: string;
 }
 
-// request -> /list_card_decks
+// request -> ENDPOINT_LIST_CARD_DECKS
 export interface ListCardDecks {
   access_token: AccessToken;
 }
 
-// request -> /list_card_decks
+// response <- ENDPOINT_LIST_CARD_DECKS
 export interface ListCardDecksResponse {
   decks: CardDeck[];
 }
 
-// request -> /get_deck
+// request -> ENDPOINT_GET_DECK
 export interface GetDeckRequest {
   user_id: number;
   deck_id: number;
@@ -120,55 +137,59 @@ export interface GetDeckRequest {
 
 export type GetDeckResponse = CardDeck;
 
+// request -> ENDPOINT_LIST_CARDS
 export interface ListCards {
   user_id: number;
   deck_id: number;
 }
 
+// response <- ENDPOINT_LIST_CARDS
 export interface ListCardsResponse {
   cards: Card[];
 }
 
-// request -> /login
+// request -> ENDPOINT_LOGIN
 export interface LoginRequest {
   email: string;
   password: string;
 }
 
-// response <- /login
+// response <- ENDPOINT_LOGIN
 export interface LoginResponse {
   access_token: AccessToken;
   user_id: number;
 }
 
-//requets <- /search_decks
+// request -> ENDPOINT_SEARCH_DECKS
 export interface SearchDecksRequest {
   prompt: string;
 }
 
-//response <- /search_decks//request
+// response <- ENDPOINT_SEARCH_DECKS
 export interface SearchDecksResponse {
   decks: CardDeck[];
 }
 
-// request -> /create_deck_pdf
+// request -> ENDPOINT_CREATE_DECK_PDF
 export interface UploadPdf {
   access_token: AccessToken;
   deck_id: number;
   file_bytes_base64: string;
 }
 
-// request -> /create_deck_pdf
+// request -> ENDPOINT_AI_TEST
 export interface AiPromptTest {
   prompt: string;
 }
 
-// request -> /list_favorites
+// request -> ENDPOINT_LIST_FAVORITES
 export interface ListFavoritesRequest {
   access_token: AccessToken;
 }
 
-// response <- /list_favorites
+// response <- ENDPOINT_LIST_FAVORITES
 export interface ListFavoritesResponse {
   decks: CardDeck[];
 }
+
+
