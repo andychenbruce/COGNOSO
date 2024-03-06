@@ -10,6 +10,8 @@ pub enum AndyError {
     UserDoesNotExist,
     #[error("deck does not exist")]
     DeckDoesNotExist,
+    #[error("favorite does not exist")]
+    FavoriteDoesNotExist,
     #[error("card index not valid")]
     CardIndexOutOfBounds,
     #[error("wrong password")]

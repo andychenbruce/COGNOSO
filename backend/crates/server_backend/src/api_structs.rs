@@ -22,6 +22,7 @@ pub const ENDPOINT_SEARCH_DECKS: &str = "/search_decks";
 
 pub const ENDPOINT_LIST_FAVORITES: &str = "/list_favorites";
 pub const ENDPOINT_ADD_FAVORITE: &str = "/add_favorite";
+pub const ENDPOINT_DELETE_FAVORITE: &str = "/delete_favorite";
 
 pub const ENDPOINT_AI_TEST: &str = "/ai_test";
 pub const ENDPOINT_CREATE_DECK_PDF: &str = "/create_card_deck_pdf";
@@ -194,6 +195,13 @@ pub struct ListFavoritesResponse {
 
 #[derive(Debug, serde::Deserialize)]
 pub struct AddFavorite {
+    pub access_token: AccessToken,
+    pub user_id: u32,
+    pub deck_id: u32,
+}
+
+#[derive(Debug, serde::Deserialize)]
+pub struct DeleteFavorite {
     pub access_token: AccessToken,
     pub user_id: u32,
     pub deck_id: u32,

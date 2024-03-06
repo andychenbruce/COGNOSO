@@ -22,6 +22,7 @@ export const ENDPOINT_SEARCH_DECKS: string = "/search_decks";
 
 export const ENDPOINT_LIST_FAVORITES: string = "/list_favorites";
 export const ENDPOINT_ADD_FAVORITE: string = "/add_favorite";
+export const ENDPOINT_DELETE_FAVORITE: string = "/delete_favorite";
 
 export const ENDPOINT_AI_TEST: string = "/ai_test";
 export const ENDPOINT_CREATE_DECK_PDF: string = "/create_card_deck_pdf";
@@ -199,3 +200,9 @@ export interface AddFavorite {
   deck_id: number,
 }
 
+// request -> ENDPOINT_DELETE_FAVORITE
+export interface DeleteFavorite {
+  access_token: AccessToken,
+  user_id: number,
+  deck_id: number,
+}

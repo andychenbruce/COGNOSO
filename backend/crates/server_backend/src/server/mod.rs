@@ -171,7 +171,13 @@ async fn handle_request(
             hyper::Method::POST,
             api_structs::ENDPOINT_ADD_FAVORITE,
             add_favorite
+        ),
+        (
+            hyper::Method::POST,
+            api_structs::ENDPOINT_DELETE_FAVORITE,
+            delete_favorite
         )
+
     )
 }
 
@@ -393,5 +399,17 @@ async fn add_favorite(
     state
         .database
         .add_favorite(user_id, (info.user_id, info.deck_id))?;
+    Ok(())
+}
+
+async fn delete_favorite(
+    info: api_structs::DeleteFavorite,
+    state: std::sync::Arc<SharedState>,
+) -> Result<(), AndyError> {
+    let user_id = state.database.validate_token(info.access_token)?;
+
+    state
+        .database
+        .delete_favorite(user_id, (info.user_id, info.deck_id))?;
     Ok(())
 }

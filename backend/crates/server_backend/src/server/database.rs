@@ -484,6 +484,34 @@ impl Database {
         Ok(())
     }
 
+    pub fn delete_favorite(
+        &self,
+        user_id: UserId,
+        id_pair: UserDeckIdPair,
+    ) -> Result<(), AndyError> {
+        let read_txn = self.db.begin_read()?;
+        {
+            let table = read_txn.open_table(Self::DECKS_TABLE)?;
+            table.get(id_pair)?.ok_or(AndyError::DeckDoesNotExist)?;
+        }
+
+        let table = read_txn.open_table(Self::USERS_TABLE)?;
+        let mut user = table
+            .get(user_id)?
+            .ok_or(AndyError::UserDoesNotExist)?
+            .value();
+
+        let position = user
+            .favorites
+            .iter()
+            .position(|x| x == &id_pair)
+            .ok_or(AndyError::FavoriteDoesNotExist)?;
+        user.favorites.remove(position);
+        self.insert(user_id, user, Self::USERS_TABLE)?;
+
+        Ok(())
+    }
+
     pub fn list_every_single_deck(&self) -> Result<Vec<api_structs::CardDeck>, AndyError> {
         let read_txn = self.db.begin_read()?;
         let table = read_txn.open_table(Self::DECKS_TABLE)?;
