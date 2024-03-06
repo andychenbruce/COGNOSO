@@ -234,7 +234,7 @@ const App: React.FC = () => {
     };
     send_json_backend(ENDPOINT_LIST_FAVORITES, JSON.stringify(request2))
       .then((data: ListFavoritesResponse) => {
-        console.log('favorited', data)
+        // console.log('favorited', data)
         setFavorites(data.decks);
       })
       .catch((error) => {
@@ -405,7 +405,6 @@ const App: React.FC = () => {
     };
     send_json_backend(ENDPOINT_DELETE_FAVORITE, JSON.stringify(request))
       .then(() => {
-        // Update state to remove the unfavorited deck
         setFavorites(favorites.filter(deck => deck.deck_id !== deckId));
       })
       .catch((error) => {
