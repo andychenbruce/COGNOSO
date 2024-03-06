@@ -140,6 +140,16 @@ async fn handle_request(
             hyper::Method::POST,
             api_structs::ENDPOINT_EDIT_CARD,
             edit_card
+        ),
+        (
+            hyper::Method::POST,
+            api_structs::ENDPOINT_GET_RATING,
+            get_rating
+        ),
+        (
+            hyper::Method::POST,
+            api_structs::ENDPOINT_ADD_RATING,
+            edit_rating
         )
     )
 }
@@ -282,4 +292,26 @@ async fn ai_test(
     let ai_response = state.llm_runner.submit_prompt(info.prompt).await?;
 
     Ok(ai_response)
+}
+
+async fn get_rating(
+    info: api_structs::GetRating,
+    state: std::sync::Arc<SharedState>,
+) -> Result<u32, AndyError> {
+    let user_id = state.database.validate_token(info.access_token)?;
+    let rating = state.database.get_rating(user_id, info.deck_id)?;
+    Ok(rating)
+}
+
+async fn edit_rating(
+    info: api_structs::AddRating,
+    state: std::sync::Arc<SharedState>,
+) -> Result<(), AndyError> {
+    let user_id = state.database.validate_token(info.access_token)?;
+    state.database.add_rating(
+        user_id,
+        info.deck_id,
+        info.new_rating,
+    )?;
+    Ok(())
 }
