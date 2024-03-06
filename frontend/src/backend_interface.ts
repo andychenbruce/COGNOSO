@@ -34,6 +34,8 @@ export interface CardDeck {
   deck_id: number;
   num_cards: number;
   icon_num: number;
+  get_rating: number;
+  add_rating: number;
 }
 
 // request -> /create_card

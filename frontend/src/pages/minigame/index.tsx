@@ -18,7 +18,7 @@ const App: React.FC = () => {
   const [flashcards, setFlashcards] = useState<Card[]>([]);
   const [rightCard, setRightCard] = useState<Card>();
   const [leftCard, setLeftCard] = useState<Card>();
-  const [visibleFlashcards, setVisibleFlashcards] = useState<number>(4);
+  const [_visibleFlashcards, setVisibleFlashcards] = useState<number>(4);
   const [shuffledFlashcards, setShuffledFlashcards] = useState<Card[]>([]);
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
 

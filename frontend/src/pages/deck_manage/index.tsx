@@ -18,6 +18,7 @@ import {
   FormControlLabel,
   Checkbox,
   IconButton,
+  Rating,
 } from "@mui/material";
 import {
   ENDPOINT_LIST_CARD_DECKS,
@@ -29,17 +30,17 @@ import {
   ListCardDecks,
   ListCardDecksResponse,
   CardDeck,
+  SetDeckIcon,
   ENDPOINT_DELETE_CARD_DECK,
+  ENDPOINT_SET_DECK_ICON,
 } from "../../backend_interface";
 import { send_json_backend, get_session_token } from "../../utils";
 import DeleteIcon from "@mui/icons-material/Delete";
 import StarIcon from "@mui/icons-material/Star";
-import SportsSoccerIcon from "@mui/icons-material/SportsSoccer";
 import EditTwoToneIcon from "@mui/icons-material/EditTwoTone";
 
 
 // testing icons
-import AccessAlarmTwoToneIcon from '@mui/icons-material/AccessAlarmTwoTone';
 import BeachAccessTwoToneIcon from '@mui/icons-material/BeachAccessTwoTone';
 import PetsTwoToneIcon from '@mui/icons-material/PetsTwoTone';
 import StarTwoToneIcon from '@mui/icons-material/StarTwoTone';
@@ -73,7 +74,6 @@ import AccessibilityNewIcon from '@mui/icons-material/AccessibilityNew';
 import AccessTimeFilledIcon from '@mui/icons-material/AccessTimeFilled';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import AccessAlarmsIcon from '@mui/icons-material/AccessAlarms';
-import AccessAlarmIcon from '@mui/icons-material/AccessAlarm';
 import AbcIcon from '@mui/icons-material/Abc';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import AirlineSeatIndividualSuiteIcon from '@mui/icons-material/AirlineSeatIndividualSuite';
@@ -91,11 +91,10 @@ import Brightness2Icon from '@mui/icons-material/Brightness2';
 import BungalowIcon from '@mui/icons-material/Bungalow';
 
 const App: React.FC = () => {
-  const icons = [
+  const iconList = [
     <BungalowIcon/>,
     <Brightness2Icon/>,
     <BuildIcon />,
-    <AccessAlarmTwoToneIcon />,
     <BeachAccessTwoToneIcon />,
     <PetsTwoToneIcon />,
     <StarTwoToneIcon />,
@@ -129,7 +128,6 @@ const App: React.FC = () => {
     <AccessTimeFilledIcon />,
     <AccessTimeIcon />,
     <AccessAlarmsIcon />,
-    <AccessAlarmIcon />,
     <AbcIcon />,
     <AccountCircleIcon />,
     <AirlineSeatIndividualSuiteIcon />,
@@ -143,11 +141,15 @@ const App: React.FC = () => {
     <BalanceIcon />,
     <BedIcon />
   ];
+  
   // const [selectedIcon, setSelectedIcon] = useState('')
+  
   const [file, setFile] = useState<File | null>(null);
   const [openCreateDialog, setOpenCreateDialog] = useState(false);
   const [openIconDialog, setOpenIconDialog] = useState(false);
-  const [selectedIconIndex, setSelectedIconIndex] = useState<number | null>(null);
+  const [selectedIcon, setSelectedIcon] = useState<number | null>(null);
+  const [currentEditing, setCurrentEditing] = useState<number | null>(null);
+
   const [deckName, setDeckName] = useState("");
   const [usePDF, setUsePDF] = useState(false);
   const [decks, setDecks]: [CardDeck[], Dispatch<CardDeck[]>] = useState(
@@ -158,12 +160,55 @@ const App: React.FC = () => {
   const [favorites, setFavorites] = useState<boolean[]>(
     new Array(decks.length).fill(false),
   );
+  const [iconerrorsnackbar,changeIconErrorSnackbar] = useState(false);
+
+
+
+
+  const handleIconSelectionConfirm = () => {
+
+    let temp_deck_id = currentEditing
+    if (temp_deck_id == null){
+      console.error('deck_id is null')
+      return;
+    }
+    let access_token = get_session_token();
+    if (access_token == null) {
+      return;
+    }
+    let index = selectedIcon
+    if (index === null) {
+      console.error('No icon selected');
+      return;
+    } 
+    let new_icon: SetDeckIcon = {
+      access_token: access_token,
+      deck_id: temp_deck_id,
+      icon: index,
+    };
+  
+    send_json_backend(ENDPOINT_SET_DECK_ICON, JSON.stringify(new_icon))
+      .then(() => {
+        console.log('Successfully updated deck icon');
+        handleIconDialogClose();
+        updateDecks();
+        setSelectedIcon(null)
+      })
+      .catch((error) => {
+        console.error('Failed to update deck icon:', error);
+        changeIconErrorSnackbar(true)
+      });
+  };
+  
+
 
   const handleIconClick = (index: number) => {
-    setSelectedIconIndex(index);
+    setSelectedIcon(index);
   };
 
-
+  const handleEditDeckIcon = (deckId: number) => {
+    setOpenIconDialog(true);
+  };
 
   const updateDecks = () => {
     let token = get_session_token();
@@ -334,23 +379,7 @@ const App: React.FC = () => {
       });
   };
 
-  const handleEditDeckIcon = (_deckId: number) => {
-    let access_token = get_session_token();
-    if (access_token == null) {
-      return;
-    }
-    setOpenIconDialog(true);
-    // let theIcon: _____ = {
-    //   access_token: access_token,
-    //   deck_id: deckId,
-    // };send_json_backend("/todo", JSON.stringify(deleteRequest))
-    // .then(() => {
-    //   updateDecks();
-    // })
-    // .catch((error) => {
-    //   console.error("Error deleting deck:", error);
-    // });
-  };
+
 
   return (
     <div>
@@ -388,15 +417,10 @@ const App: React.FC = () => {
                   alignItems: "center",
                 }}
               >
-                <SportsSoccerIcon
-                  style={{
-                    fontSize: 30,
-                    color: "gold",
-                    position: "absolute",
-                    top: "30%",
-                    transform: "translateY(-50%)",
-                  }}
-                />
+
+                {iconList[decks[index].icon_num]}
+
+
                 <span
                   style={{
                     marginLeft: "5px",
@@ -434,7 +458,11 @@ const App: React.FC = () => {
                 )}
               </IconButton>
               <IconButton
-                onClick={() => handleEditDeckIcon(deck.deck_id)}
+                onClick={() => {
+                  handleEditDeckIcon(deck.deck_id);
+                  setCurrentEditing(deck.deck_id);
+                }}
+                
                 style={{
                   position: "absolute",
                   top: 0,
@@ -443,7 +471,24 @@ const App: React.FC = () => {
               >
                 <EditTwoToneIcon />
               </IconButton>
+              <Rating
+                  name={`deck-rating-${deck.deck_id}`}
+                  value={deck.get_rating || 0} 
+                  onChange={(event, newValue) => {
+                    console.log(
+                      `New rating for deck ${deck.deck_id}:`,
+                      newValue
+                    );
+                  }}
+                  size="small"
+                  style={{
+                    position: "absolute",
+                    bottom: 10, 
+                    left: 10,
+                  }}
+                />
             </div>
+            
           </Grid>
         ))}
       </Grid>
@@ -533,7 +578,10 @@ const App: React.FC = () => {
               <Button
                 type="submit"
                 variant="contained"
-                onClick={handleCreateConfirm}
+                onClick={() => {
+                  handleCreateConfirm();
+                  setDeckName('');
+                }}                
                 color="primary"
                 fullWidth
               >
@@ -570,10 +618,10 @@ const App: React.FC = () => {
                   <IconButton
                     onClick={() => handleIconClick(row * 12 + col)}
                     style={{
-                      border: selectedIconIndex === row * 12 + col ? '2px solid purple' : 'none'
+                      border: selectedIcon === row * 12 + col ? '2px solid purple' : 'none'
                     }}
                   >
-                    {icons[row * 12 + col]}
+                    {iconList[row * 12 + col]}
                   </IconButton>
                 </Grid>
               ))}
@@ -583,8 +631,8 @@ const App: React.FC = () => {
 
         <DialogActions style={{ backgroundColor: '#9370db' }}>
           <Button
-            onClick={handleIconDialogClose}
-            // onClick={handleIconSelection(selectedIcon)}
+
+            onClick={() => handleIconSelectionConfirm()}
             style={{ backgroundColor: 'green', border: '1px solid green', color: 'white' }}
           >
             Confirm
@@ -604,6 +652,16 @@ const App: React.FC = () => {
         onClose={() => setSnackbarOpen(false)}
         message="Title cannot be empty!"
       ></Snackbar>
+
+
+{/* FIX SOON */}
+      <Snackbar
+        open={iconerrorsnackbar}
+        autoHideDuration={null}
+        onClose={() => changeIconErrorSnackbar(false)}
+        message="Error Changing Icon!"
+      ></Snackbar>
+      
     </div>
   );
 };
