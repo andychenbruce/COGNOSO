@@ -66,7 +66,7 @@ impl Database {
 
         let access_token: AccessToken = rng.gen();
 
-        self.insert(access_token, user_id, Self::SESSION_TOKENS_TABLE)?;
+        self.insert_or_replace(access_token, user_id, Self::SESSION_TOKENS_TABLE)?;
 
         Ok(access_token)
     }
@@ -259,7 +259,7 @@ impl Database {
         let mut deck = table.get(key)?.ok_or(AndyError::DeckDoesNotExist)?.value();
         deck.rating = (deck.rating * deck.num_ratings + new_rating) / (deck.num_ratings + 1);
         deck.num_ratings += 1;
-        self.insert(key, deck, Self::DECKS_TABLE)?;
+        self.insert_or_replace(key, deck, Self::DECKS_TABLE)?;
 
         Ok(())
     }
@@ -278,7 +278,7 @@ impl Database {
         let mut deck = table.get(key)?.ok_or(AndyError::DeckDoesNotExist)?.value();
         deck.cards.push(Card { question, answer });
 
-        self.insert(key, deck, Self::DECKS_TABLE)?;
+        self.insert_or_replace(key, deck, Self::DECKS_TABLE)?;
         Ok(())
     }
 
@@ -298,7 +298,7 @@ impl Database {
         }
         deck.cards.remove(card_index as usize);
 
-        self.insert(key, deck, Self::DECKS_TABLE)?;
+        self.insert_or_replace(key, deck, Self::DECKS_TABLE)?;
         Ok(())
     }
 
@@ -321,7 +321,7 @@ impl Database {
             .ok_or(AndyError::CardIndexOutOfBounds)?;
         card.question = new_question;
         card.answer = new_answer;
-        self.insert(key, deck, Self::DECKS_TABLE)?;
+        self.insert_or_replace(key, deck, Self::DECKS_TABLE)?;
 
         Ok(())
     }
@@ -376,7 +376,7 @@ impl Database {
         })
     }
 
-    fn insert<'a, K, V>(
+    fn insert_or_replace<'a, K, V>(
         &self,
         key: K,
         val: V,
@@ -427,7 +427,7 @@ impl Database {
         let table = read_txn.open_table(Self::DECKS_TABLE)?;
         let mut deck = table.get(key)?.ok_or(AndyError::DeckDoesNotExist)?.value();
         deck.icon_num = icon_num;
-        self.insert(key, deck, Self::DECKS_TABLE)?;
+        self.insert_or_replace(key, deck, Self::DECKS_TABLE)?;
 
         Ok(())
     }
@@ -479,7 +479,7 @@ impl Database {
             .ok_or(AndyError::UserDoesNotExist)?
             .value();
         user.favorites.push(id_pair);
-        self.insert(user_id, user, Self::USERS_TABLE)?;
+        self.insert_or_replace(user_id, user, Self::USERS_TABLE)?;
 
         Ok(())
     }
@@ -507,7 +507,7 @@ impl Database {
             .position(|x| x == &id_pair)
             .ok_or(AndyError::FavoriteDoesNotExist)?;
         user.favorites.remove(position);
-        self.insert(user_id, user, Self::USERS_TABLE)?;
+        self.insert_or_replace(user_id, user, Self::USERS_TABLE)?;
 
         Ok(())
     }
