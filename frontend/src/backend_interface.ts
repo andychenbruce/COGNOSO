@@ -192,4 +192,10 @@ export interface ListFavoritesResponse {
   decks: CardDeck[];
 }
 
+// request -> ENDPOINT_ADD_FAVORITE
+export interface AddFavorite {
+  access_token: AccessToken,
+  user_id: number,
+  deck_id: number,
+}
 
