@@ -8,14 +8,15 @@ import ViewCarouselTwoToneIcon from "@mui/icons-material/ViewCarouselTwoTone";
 import { Button, Grid } from "@mui/material";
 import { send_json_backend } from "../../utils";
 import {
+	CardDeck,
   ENDPOINT_SEARCH_DECKS,
   SearchDecksRequest,
   SearchDecksResponse,
 } from "../../backend_interface";
 
 const App: React.FC = () => {
-  const [decks, setDecks]: [[number, number][], Dispatch<[number, number][]>] = useState(
-    [] as [number, number][]
+  const [decks, setDecks]: [CardDeck[], Dispatch<CardDeck[]>] = useState(
+    [] as CardDeck[]
   );
 
   const get_search_query = () => {
@@ -74,7 +75,7 @@ const App: React.FC = () => {
 	  style={{ width: "100%", paddingLeft: "10px", paddingRight: "10px" }}
 	>
 	  {decks.map((deck, index) => (
-	    <Grid item xs={3} key={deck[1]}>
+	    <Grid item xs={3} key={deck.deck_id}>
 	      <div style={{ position: "relative" }}>
 		<Button
 		  variant="contained"
@@ -86,7 +87,7 @@ const App: React.FC = () => {
 		    );
 		    url.searchParams.append(
 		      "deck",
-		      JSON.stringify(deck[1]),
+		      JSON.stringify(deck.deck_id),
 		    );
 		    window.location.href = url.toString();
 		  }}

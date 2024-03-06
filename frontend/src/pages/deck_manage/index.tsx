@@ -179,6 +179,7 @@ const App: React.FC = () => {
     let index = selectedIcon
     if (index === null) {
       console.error('No icon selected');
+      changeIconErrorSnackbar(true)
       return;
     } 
     let new_icon: SetDeckIcon = {
@@ -206,7 +207,7 @@ const App: React.FC = () => {
     setSelectedIcon(index);
   };
 
-  const handleEditDeckIcon = (deckId: number) => {
+  const handleEditDeckIcon = (_deckId: number) => {
     setOpenIconDialog(true);
   };
 
@@ -443,7 +444,7 @@ const App: React.FC = () => {
               >
                 <DeleteIcon />
               </IconButton>
-              <IconButton
+              {/* <IconButton
                 onClick={() => handleFavoriteDeck(index)}
                 style={{
                   position: "absolute",
@@ -456,7 +457,7 @@ const App: React.FC = () => {
                 ) : (
                   <StarIcon />
                 )}
-              </IconButton>
+              </IconButton> */}
               <IconButton
                 onClick={() => {
                   handleEditDeckIcon(deck.deck_id);
@@ -474,7 +475,7 @@ const App: React.FC = () => {
               <Rating
                   name={`deck-rating-${deck.deck_id}`}
                   value={deck.get_rating || 0} 
-                  onChange={(event, newValue) => {
+                  onChange={(newValue) => {
                     console.log(
                       `New rating for deck ${deck.deck_id}:`,
                       newValue
