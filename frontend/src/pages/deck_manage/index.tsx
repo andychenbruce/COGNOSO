@@ -490,12 +490,7 @@ const App: React.FC = () => {
               <Rating
                   name={`deck-rating-${deck.deck_id}`}
                   value={deck.get_rating || 0} 
-                  onChange={(newValue) => {
-                    console.log(
-                      `New rating for deck ${deck.deck_id}:`,
-                      newValue
-                    );
-                  }}
+                  readOnly
                   size="small"
                   style={{
                     position: "absolute",
