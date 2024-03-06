@@ -36,6 +36,8 @@ import {
   ENDPOINT_ADD_FAVORITE,
   ENDPOINT_LIST_FAVORITES,
   ListFavoritesResponse,
+  ENDPOINT_DELETE_FAVORITE,
+  DeleteFavorite,
 } from "../../backend_interface";
 import { send_json_backend, get_session_token } from "../../utils";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -390,6 +392,26 @@ const App: React.FC = () => {
       });
   }
 
+  const handleUnfavoriteDeck = (deckId: number) => {
+    let access_token = get_session_token();
+    let user_id = get_user_id();
+    if ((access_token == null) || (user_id == null)) {
+      return;
+    }
+    let request: DeleteFavorite = {
+      access_token: access_token,
+      user_id: user_id,
+      deck_id: deckId,
+    };
+    send_json_backend(ENDPOINT_DELETE_FAVORITE, JSON.stringify(request))
+      .then(() => {
+        // Update state to remove the unfavorited deck
+        setFavorites(favorites.filter(deck => deck.deck_id !== deckId));
+      })
+      .catch((error) => {
+        console.error("Error unfavoriting deck:", error);
+      });
+  }
 
   return (
     <div>
@@ -456,7 +478,13 @@ const App: React.FC = () => {
 
               {/* fAV STAR */}
               <IconButton
-                onClick={() => handleFavoriteDeck(deck.deck_id)}
+                onClick={() => {
+                  if (favorites.map(x => x.deck_id).includes(deck.deck_id)) {
+                    handleUnfavoriteDeck(deck.deck_id);
+                  } else {
+                    handleFavoriteDeck(deck.deck_id);
+                  }
+                }}
                 style={{
                   position: "absolute",
                   top: 0,
