@@ -465,6 +465,29 @@ impl Database {
 
         Ok(api_structs::ListFavoritesResponse { decks })
     }
+
+    pub fn list_every_single_deck(&self) -> Result<Vec<api_structs::CardDeck>, AndyError>{
+        let read_txn = self.db.begin_read()?;
+        let table = read_txn.open_table(Self::DECKS_TABLE)?;
+
+        let thing: Vec<api_structs::CardDeck> = table.iter()?.map(|x|{
+            let pair = x?;
+            let (user_id, deck_id) = pair.0.value();
+            let deck = pair.1.value();
+
+            
+            Ok::<_, AndyError>(api_structs::CardDeck{
+                name: deck.name,
+                deck_id,
+                user_id,
+                num_cards: deck.cards.len() as u32,
+                icon_num: deck.icon_num,
+            })
+        }).collect::<Result<_, _>>()?;
+
+
+        Ok(thing)
+    }
 }
 
 fn sha256_hash(bytes: &[u8]) -> [u8; SHA265_NUM_BYTES] {

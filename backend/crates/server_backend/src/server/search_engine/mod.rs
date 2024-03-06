@@ -139,6 +139,11 @@ impl SearchEngine {
     fn get_client(&mut self) -> &mut QdrantClient {
         self.client.as_mut().unwrap()
     }
+
+
+    pub fn not_fucked(&self) -> bool {
+        matches!((&self.client, &self.embedder), (Some(_), Some(_)))
+    }
 }
 
 pub async fn search_engine_updater_loop(resources: std::sync::Arc<super::SharedState>) -> ! {

@@ -292,14 +292,26 @@ async fn search(
     info: api_structs::SearchDecksRequest,
     state: std::sync::Arc<SharedState>,
 ) -> Result<api_structs::SearchDecksResponse, AndyError> {
-    let thing = state
-        .search_engine
-        .lock()
-        .await
-        .search_prompt(&info.prompt, 5)
-        .await?;
+    if state.search_engine.lock().await.not_fucked() {
+        let thing = state
+            .search_engine
+            .lock()
+            .await
+            .search_prompt(&info.prompt, 5)
+            .await?;
 
-    Ok(api_structs::SearchDecksResponse { decks: thing })
+        let decks: Vec<api_structs::CardDeck> = thing
+            .into_iter()
+            .map(|(user_id, deck_id)| state.database.get_deck_info(user_id, deck_id))
+            .collect::<Result<_, AndyError>>()?;
+
+        Ok(api_structs::SearchDecksResponse { decks })
+    } else {
+        //send dummy data
+        let thing = state.database.list_every_single_deck()?;
+
+        Ok(api_structs::SearchDecksResponse { decks: thing })
+    }
 }
 
 async fn create_deck_pdf(

@@ -17,6 +17,7 @@ export const ENDPOINT_CHANGE_PASSWORD: string = "/change_password";
 export const ENDPOINT_SEARCH_DECKS: string = "/search_decks";
 
 export const ENDPOINT_LIST_FAVORITES: string = "/list_favorites";
+export const ENDPOINT_ADD_FAVORITE: string = "/list_favorites";
 
 export const ENDPOINT_AI_TEST: string = "/ai_test";
 export const ENDPOINT_CREATE_DECK_PDF: string = "/create_card_deck_pdf";
@@ -147,7 +148,7 @@ export interface SearchDecksRequest {
 
 //response <- /search_decks//request
 export interface SearchDecksResponse {
-  decks: [[number, number]]; // user_id deck_id pairs
+  decks: CardDeck[];
 }
 
 // request -> /create_deck_pdf
