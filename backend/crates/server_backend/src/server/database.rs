@@ -478,6 +478,10 @@ impl Database {
             .get(user_id)?
             .ok_or(AndyError::UserDoesNotExist)?
             .value();
+        if user.favorites.contains(&id_pair){
+            return Err(AndyError::FavoriteAlreadyExists);
+        }
+                   
         user.favorites.push(id_pair);
         self.insert_or_replace(user_id, user, Self::USERS_TABLE)?;
 
