@@ -157,7 +157,7 @@ const App: React.FC = () => {
       .catch((error) => {
         console.error("Error in:", error);
       });
-    let randNum = 5;
+    let randNum = 10;
     let request3: RandomDecksRequest = {
       num_decks: randNum
     };
