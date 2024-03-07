@@ -129,6 +129,13 @@ const App: React.FC = () => {
     if (leftCard != undefined && rightCard != undefined) {
       if (leftCard.answer === rightCard.answer) {
         setIsCorrect(true);
+        console.log(flashcards)
+        for(let i = 0; i<flashcards.length; i++){
+          if(flashcards[i] == leftCard){
+            flashcards.splice(i, 1); // Removes 1 element starting from indexToRemove
+
+          }
+        }
       } else {
         setIsCorrect(false);
       }
