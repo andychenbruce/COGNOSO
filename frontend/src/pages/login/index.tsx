@@ -1,6 +1,6 @@
 import React from "react";
 import { useState } from "react";
-import { Paper, TextField, Button, Typography, Snackbar } from "@mui/material";
+import { Paper, TextField, Button, Snackbar } from "@mui/material";
 import "./login.css";
 import type { PageProps } from "gatsby";
 import {

@@ -157,8 +157,8 @@ useEffect(() => {
   return (
     <div>
       <Navbar />
-      <div style={{ textAlign: "center", marginTop: "50px" }}>
-        <h1>Match-Minigame</h1>
+      <div style={{ textAlign: "center", marginTop: "50px", color: "white" }}>
+        <h1>Matching Minigame</h1>
       </div>
       <div
         style={{
@@ -191,6 +191,7 @@ useEffect(() => {
         <div
           style={{
             width: "30%",
+            color: "white",
             border: "1px dashed #ccc",
             padding: "20px",
             height: "200px",
@@ -198,6 +199,7 @@ useEffect(() => {
             flexDirection: "column",
             alignItems: "center",
             justifyContent: "center",
+            marginRight: "10px",
             borderRadius: "10px",
             boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
             backgroundColor: isCorrect === false ? "red" : isCorrect === true ? "green" : "inherit",
@@ -213,12 +215,14 @@ useEffect(() => {
   style={{
     width: "30%",
     border: "1px dashed #ccc",
+    color: "white",
     padding: "20px",
     height: "200px",
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
+    marginLeft: "10px",
     borderRadius: "10px",
     boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
     backgroundColor: isCorrect === false ? "red" : isCorrect === true ? "green" : "inherit",
@@ -258,7 +262,7 @@ useEffect(() => {
         <Button onClick={shuffleHandler} style={{ marginRight: "10px", backgroundColor: "white" }}>
           Start
         </Button>
-        <Button onClick={nextHandler} style={{ marginRight: "10px", backgroundColor: "white" }}>Next</Button>
+        <Button onClick={nextHandler} style={{ marginLeft: "10px", backgroundColor: "white" }}>Next</Button>
       </div>
     </div>
   );
