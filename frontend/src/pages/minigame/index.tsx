@@ -133,7 +133,6 @@ const App: React.FC = () => {
         for(let i = 0; i<flashcards.length; i++){
           if(flashcards[i] == leftCard){
             flashcards.splice(i, 1); // Removes 1 element starting from indexToRemove
-
           }
         }
       } else {
