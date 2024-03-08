@@ -12,7 +12,7 @@ import {
   ENDPOINT_SEARCH_DECKS,
   SearchDecksRequest,
   SearchDecksResponse,
-	ListCardDecksResponse,
+	//ListCardDecksResponse,
 	ListCardDecks,
 	ENDPOINT_LIST_CARD_DECKS,
 	ENDPOINT_LIST_FAVORITES,
@@ -176,10 +176,10 @@ const App: React.FC = () => {
     }
     let request1: ListCardDecks = { access_token: token };
     send_json_backend(ENDPOINT_LIST_CARD_DECKS, JSON.stringify(request1))
-      .then((data: ListCardDecksResponse) => {
-        //setDecks(data.decks);
-        // console.log(data.decks);
-      })
+    //   .then((data: ListCardDecksResponse) => {
+    //     //setDecks(data.decks);
+    //     // console.log(data.decks);
+    //   })
       .catch((error) => {
         console.error("Error in:", error);
       });
