@@ -184,6 +184,7 @@ const App: React.FC = () => {
   return (
     <div className="App">
       <Navbar />
+
       {/* ---------------- Favorite Decks AREA ---------------*/}
       <div className="Favorites">
         <h2>{<StarIcon />} Favorites</h2>

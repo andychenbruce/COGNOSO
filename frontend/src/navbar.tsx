@@ -132,6 +132,8 @@ export const Navbar = () => {
         marginBottom: "20px",
       }}
     >
+
+      {/* IMAGEHERE OF LOGO */}
       <Button
         variant="contained"
         sx={{
@@ -146,7 +148,7 @@ export const Navbar = () => {
           redirect("/home_page");
         }}
       >
-        <HomeIcon />
+      <HomeIcon />
         Home
       </Button>
       <div

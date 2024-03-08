@@ -72,9 +72,6 @@ const Main: React.FC<PageProps> = () => {
           }}
           elevation={3}
         >
-          <Typography variant="h5" component="h1" align="center">
-            Login
-          </Typography>
           <form onSubmit={onSubmit}>
             <TextField
               style={{
@@ -104,8 +101,9 @@ const Main: React.FC<PageProps> = () => {
             <Button
               type="submit"
               variant="contained"
-              style={{ backgroundColor: "#4d1a7f", color: "white" }}
+              style={{ backgroundColor: "#4d1a7f", color: "white"}}
               fullWidth
+              
             >
               Login
             </Button>
