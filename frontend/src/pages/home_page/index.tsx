@@ -199,11 +199,14 @@ const App: React.FC = () => {
                     url.searchParams.append("deck", JSON.stringify(deck.deck_id));
                     window.location.href = url.toString();
                   }}
-                  style={{
+                  sx={{
                     width: "200px",
                     height: "200px",
                     marginBottom: "10px",
-                    backgroundColor: "#af52bf",
+                    backgroundColor: "#9c27b0",
+                    "&:hover": {
+                      backgroundColor: "#7b1fa2",
+                    },
                     display: "flex",
                     flexDirection: "column",
                     justifyContent: "center",
@@ -256,11 +259,14 @@ const App: React.FC = () => {
                     url.searchParams.append("deck", JSON.stringify(deck.deck_id));
                     window.location.href = url.toString();
                   }}
-                  style={{
+                  sx={{
                     width: "200px",
                     height: "200px",
                     marginBottom: "10px",
-                    backgroundColor: "#af52bf",
+                    backgroundColor: "#9c27b0",
+                    "&:hover": {
+                      backgroundColor: "#7b1fa2",
+                    },
                     display: "flex",
                     flexDirection: "column",
                     justifyContent: "center",
@@ -313,11 +319,14 @@ const App: React.FC = () => {
                   url.searchParams.append("deck", JSON.stringify(deck.deck_id));
                   window.location.href = url.toString();
                 }}
-                style={{
+                sx={{
                   width: "200px",
                   height: "200px",
                   marginBottom: "10px",
-                  backgroundColor: "#af52bf",
+                  backgroundColor: "#9c27b0",
+                  "&:hover": {
+                    backgroundColor: "#7b1fa2",
+                  },
                   display: "flex",
                   flexDirection: "column",
                   justifyContent: "center",
