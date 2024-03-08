@@ -192,37 +192,6 @@ const FlashcardViewerFunc = () => {
           </Button>
         </div>
 
-        {/* <div style={{
-            textAlign: 'left',
-            padding: '10px', 
-            margin: '20px 0', 
-            backgroundColor: 'transparent', 
-            border: '2px solid purple', 
-            borderRadius: '4px', 
-            boxShadow: '0 2px 4px rgba(0,0,0,0.1)', 
-            alignSelf: 'flex-start', 
-            marginLeft: '20px', 
-          }}>
-            <Button onClick={() => {redirectToDeckManage()}} style={{color:'white'}} >
-              Back
-            </Button>
-          </div>
-          <div style={{
-            textAlign: 'left',
-            padding: '10px', 
-            margin: '20px 0', 
-            backgroundColor: 'transparent', 
-            border: '2px solid purple', 
-            borderRadius: '4px', 
-            boxShadow: '0 2px 4px rgba(0,0,0,0.1)', 
-            alignSelf: 'flex-right', 
-            marginLeft: '20px', 
-          }}>
-            <Button onClick={() => {redirectToMinigame()}} style={{color:'white'}} >
-              Minigame
-            </Button>
-          </div> */}
-
         <div
           style={{
             position: "relative",

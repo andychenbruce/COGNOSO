@@ -132,6 +132,8 @@ export const Navbar = () => {
         marginBottom: "20px",
       }}
     >
+
+      {/* IMAGEHERE OF LOGO */}
       <Button
         variant="contained"
         sx={{
@@ -146,7 +148,7 @@ export const Navbar = () => {
           redirect("/home_page");
         }}
       >
-        <HomeIcon />
+      <HomeIcon />
         Home
       </Button>
       <div
@@ -208,6 +210,7 @@ export const Navbar = () => {
         Account
       </Button>
       <Menu
+        
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
         onClose={handleMenuClose}
@@ -221,6 +224,7 @@ export const Navbar = () => {
         }}
         PaperProps={{
           sx: {
+            width: "400px",
             backgroundColor: "#9370db",
           },
         }}
