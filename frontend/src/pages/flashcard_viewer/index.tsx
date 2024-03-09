@@ -1,6 +1,7 @@
 import "./App.css";
 import React, { useState, useEffect } from "react";
 import { Button, Paper, Typography, IconButton } from "@mui/material";
+import {  Rating } from "@mui/material";
 import Flashcard from "./Flashcard";
 import { Navbar } from "../../navbar";
 import {
@@ -9,6 +10,8 @@ import {
   GetDeckRequest,
   ListCards,
   ListCardsResponse,
+  ENDPOINT_ADD_RATING,
+  AddRating,
 } from "../../backend_interface";
 import { send_json_backend, get_session_token, get_user_id } from "../../utils";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
@@ -23,6 +26,7 @@ const FlashcardViewerFunc = () => {
   const [flashcards, setFlashcards] = useState<Card[]>([]);
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
   const [deckName, setDeckName] = useState("Loading...");
+  const [value, setValue] = React.useState<number | null>(0);
 
   useEffect(() => {
     const urlString = window.location.href;
@@ -74,6 +78,37 @@ const FlashcardViewerFunc = () => {
     fetchDeckName();
     listCards();
   }, []);
+
+  const addRating = () => {
+    const urlString = window.location.href;
+    const url = new URL(urlString);
+    const searchParams = new URLSearchParams(url.search);
+    const deckIdJSON = searchParams.get("deck");
+    const deckId: number = deckIdJSON ? JSON.parse(deckIdJSON) : null;
+    let access_token = get_session_token();
+    if (access_token == null) {
+      return;
+    }
+    let temp =0;
+    if (value == null){
+      temp = 0;
+    }
+    else{
+      temp = value;
+    }
+    let add_rating: AddRating = {
+      access_token: access_token,
+      deck_id: deckId,
+      new_rating: temp,
+    };
+    send_json_backend(ENDPOINT_ADD_RATING, JSON.stringify(add_rating))
+      // .then((data: ListCardsResponse) => {
+      //   setFlashcards(data.cards);
+      // })
+      // .catch((error) => {
+      //   console.error("Error displaying cards:", error);
+      // });
+  }
 
   const addFlashcard = () => {
     window.location.pathname = "/flashcard_editor/";
@@ -166,6 +201,14 @@ const FlashcardViewerFunc = () => {
             marginTop: "50px",
           }}
         >
+           <Rating
+        name="simple-controlled"
+        value={value}
+        onChange={(event, newValue) => {
+          setValue(newValue);
+          addRating();
+        }}
+      />
           <Paper
             elevation={3}
             style={{

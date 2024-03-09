@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Navbar } from "../../navbar";
 import "./flashcard_editor.css";
-import { Button, TextField, Typography, Snackbar } from "@mui/material";
+import { Button, TextField, Typography, Snackbar, Box, Rating } from "@mui/material";
 import { ListCards, ListCardsResponse } from "../../backend_interface";
 import { send_json_backend, get_session_token, get_user_id } from "../../utils";
 import { redirect } from "../../utils";
@@ -14,6 +14,8 @@ import {
   EditCard,
 } from "../../backend_interface";
 // import { EditCard } from "../../backend_interface";
+
+
 
 interface Card {
   question: string;
@@ -173,6 +175,7 @@ const App: React.FC = () => {
   return (
     <div
       style={{ display: "flex", flexDirection: "column", alignItems: "center" }}
+      
     >
       <Navbar />
 
@@ -184,6 +187,7 @@ const App: React.FC = () => {
           backgroundColor: "transparent",
         }}
       >
+
         <Button
           onClick={() => {
             redirect("/flashcard_viewer");
