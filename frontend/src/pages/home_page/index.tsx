@@ -1,9 +1,6 @@
 import React, { Dispatch, useState, useEffect } from "react";
 import { Navbar } from "../../navbar";
 import "./home.css";
-import StarIcon from "@mui/icons-material/Star";
-import ViewCarouselIcon from "@mui/icons-material/ViewCarousel";
-import ViewCarouselTwoToneIcon from "@mui/icons-material/ViewCarouselTwoTone";
 import { redirect, send_json_backend, get_session_token } from "../../utils";
 import {
   ListCardDecks,
@@ -17,10 +14,12 @@ import {
   RandomDecksRequest,
   RandomDecksResponse,
 } from "../../backend_interface";
-
+import DummyDeck from "./dummydeck";
 import { Button, Rating } from "@mui/material";
 
-// testing icons
+import StarIcon from "@mui/icons-material/Star";
+import ViewCarouselIcon from "@mui/icons-material/ViewCarousel";
+import ViewCarouselTwoToneIcon from "@mui/icons-material/ViewCarouselTwoTone";
 import BeachAccessTwoToneIcon from "@mui/icons-material/BeachAccessTwoTone";
 import PetsTwoToneIcon from "@mui/icons-material/PetsTwoTone";
 import StarTwoToneIcon from "@mui/icons-material/StarTwoTone";
@@ -69,33 +68,6 @@ import BedIcon from "@mui/icons-material/Bed";
 import BuildIcon from "@mui/icons-material/Build";
 import Brightness2Icon from "@mui/icons-material/Brightness2";
 import BungalowIcon from "@mui/icons-material/Bungalow";
-
-const DummyDeck = () => {
-  return (
-    <div style={{ marginRight: "10px" }}>
-      <Button
-        variant="contained"
-        color="secondary"
-        onClick={() => redirect("/deck_manage")} 
-        sx={{
-          width: "200px",
-          height: "200px",
-          marginBottom: "10px",
-          backgroundColor: "#f50057",
-          "&:hover": {
-            backgroundColor: "#ab003c",
-          },
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <span>Add New Deck</span>
-      </Button>
-    </div>
-  );
-};
 
 const App: React.FC = () => {
   const iconList = [

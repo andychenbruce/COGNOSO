@@ -176,7 +176,7 @@ export interface SearchDecksResponse {
 // request -> ENDPOINT_CREATE_DECK_PDF
 export interface UploadPdf {
   access_token: AccessToken;
-  deck_id: number;
+  deck_name: string;
   file_bytes_base64: string;
 }
 

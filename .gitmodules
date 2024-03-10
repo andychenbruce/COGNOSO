@@ -1,3 +1,6 @@
 [submodule "backend/qdrant"]
 	path = backend/qdrant
 	url = https://github.com/qdrant/qdrant/
+[submodule "backend/llama.cpp"]
+	path = backend/llama.cpp
+	url = https://github.com/ggerganov/llama.cpp.git
