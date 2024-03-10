@@ -66,7 +66,7 @@ const Main: React.FC<PageProps> = () => {
       <div className="container">
         <Paper
           style={{
-            padding: "20px", // Adjusted padding to make the login area smaller
+            padding: "20px",
             width: 300,
             backgroundColor: "#c993ed",
           }}
@@ -117,9 +117,6 @@ const Main: React.FC<PageProps> = () => {
             >
               Create Account
             </Button>
-            {/* <Button type="submit" variant="text" color="primary" fullWidth>
-            Forgot Password?
-          </Button> */}
           </form>
           <Snackbar
             open={shouldShowPopup}

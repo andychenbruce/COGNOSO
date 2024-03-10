@@ -155,7 +155,7 @@ const App: React.FC = () => {
   const [openIconDialog, setOpenIconDialog] = useState(false);
   const [selectedIcon, setSelectedIcon] = useState<number | null>(null);
   const [currentEditing, setCurrentEditing] = useState<number | null>(null);
-
+  // const [ratingCurrentDeck, setratingCurrentDeck] = useState<number | null>(null);
   const [deckName, setDeckName] = useState("");
   const [usePDF, setUsePDF] = useState(false);
   const [decks, setDecks]: [CardDeck[], Dispatch<CardDeck[]>] = useState(
@@ -166,9 +166,20 @@ const App: React.FC = () => {
   )
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [iconerrorsnackbar,changeIconErrorSnackbar] = useState(false);
+  const [ratings, setRatings] = useState<{ [key: number]: number }>({});
 
+  useEffect(() => {
+    const fetchRatings = async () => {
+      const newRatings: { [key: number]: number } = {};
+      for (const deck of decks) {
+        const rating = await getRating(deck.deck_id);
+        newRatings[deck.deck_id] = rating;
+      }
+      setRatings(newRatings);
+    };
 
-
+    fetchRatings();
+  }, [decks]);
 
   const handleIconSelectionConfirm = () => {
 
@@ -411,22 +422,25 @@ const App: React.FC = () => {
       });
   }
 
-  const getRating = (deckid: number) => {
-    console.log(deckid)
-    let access_token = get_session_token();
-    if ((access_token == null)) {
-      return 0;
-    }
-    let request: GetRating = {
-      access_token: access_token,
-      deck_id: deckid,
-    };
-    send_json_backend(ENDPOINT_GET_RATING, JSON.stringify(request))
-    .then((data) => {
-      console.log(data)
-      return data
-    })  
+const getRating = async (deckid: number): Promise<number> => {
+  let access_token = get_session_token();
+  if (!access_token) {
+    return 0;
   }
+  let request: GetRating = {
+    access_token: access_token,
+    deck_id: deckid,
+  };
+  
+  try {
+    const data = await send_json_backend(ENDPOINT_GET_RATING, JSON.stringify(request));
+    console.log(data);
+    return data;
+  } catch (error) {
+    console.error("Error getting rating:", error);
+    return 0; // Return a default value or handle the error appropriately
+  }
+};
 
   return (
     <div>
@@ -528,18 +542,17 @@ const App: React.FC = () => {
                 <EditTwoToneIcon />
               </IconButton>
               <Rating
-                  name={`deck-rating-${deck.deck_id}`}
-                  value={getRating(deck.deck_id) || 0} 
-                  readOnly
-                  size="small"
-                  style={{
-                    position: "absolute",
-                    bottom: 10, 
-                    left: 10,
-                  }}
-                />
+                name={`deck-rating-${deck.deck_id}`}
+                value={ratings[deck.deck_id] || 0}
+                readOnly
+                size="small"
+                style={{
+                  position: "absolute",
+                  bottom: 10,
+                  left: 10,
+                }}
+              />
             </div>
-            
           </Grid>
         ))}
       </Grid>
