@@ -179,9 +179,7 @@ impl SearchEngine {
             })
             .collect();
 
-        println!("RUNNING EMBEDDINGS");
         let vectors = self.get_embedder().run(sentences)?;
-        println!("DONE EMBEDDINGS");
 
         let points: Vec<_> = vectors
             .into_iter()

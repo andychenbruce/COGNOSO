@@ -442,9 +442,7 @@ async fn create_deck_pdf(
         }
     }
 
-    println!("IEIEIWEIOOWEI");
     let mut locked_engine = state.search_engine.lock().await;
-    println!("LOCKED MUTEX");
     locked_engine
         .add_pdf_sentences(
             user_id,
@@ -459,28 +457,19 @@ async fn create_deck_pdf(
         )
         .await?;
 
-    println!("ADDING SHIT");
     let mut results: Vec<api_structs::Card> = vec![];
-    println!("OOOOOOO");
     for question in slices.into_iter().filter_map(|slice| match slice {
         SliceType::Question(s) => Some(s),
         SliceType::Sentence(_) => None,
     }) {
-        println!("YOOOOOOOOOO");
         let relevant_info = locked_engine
             .search_relevant_text_for_pdf_question(question, 3, user_id, deck_id)
             .await?;
-        println!("QUESTION = {}", question);
-        println!("got shit idk");
-
-        println!("shit = {:?}", relevant_info);
 
         let output = state.llm_runner.submit_prompt(
             //"chat_template": "{% if not add_generation_prompt is defined %}{% set add_generation_prompt = false %}{% endif %}{% for message in messages %}{{'<|im_start|>' + message['role'] + '\n' + message['content'] + '<|im_end|>' + '\n'}}{% endfor %}{% if add_generation_prompt %}{{ '<|im_start|>assistant\n' }}{% endif %}",
             format!("<|im_start|>system\nBelow is a question with some context. Give only the answer and nothing else using only the information provided. If the information provided does not contain the answer then say you do not know.<|im_end|>\n<|im_start|>{}{:?}<|im_end|>\n<|im_start|>assistant\n", question, relevant_info)
         ).await?;
-
-        println!("got output: {}", output);
 
         results.push(api_structs::Card {
             question: question.to_owned(),
@@ -490,12 +479,10 @@ async fn create_deck_pdf(
 
     //we should have some type of handle so the destructor for the collection doesn't need to be called manually
     locked_engine.delete_pdf_data(user_id, deck_id).await?;
-    println!("balls poo");
 
     state
         .database
         .make_deck_from_cards(user_id, &info.deck_name, results)?;
 
-    println!("balls poo");
     Ok(())
 }
