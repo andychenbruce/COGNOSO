@@ -247,7 +247,10 @@ impl Database {
             .ok_or(AndyError::DeckDoesNotExist)?
             .value()
             .rating;
-
+        println!(
+            "user_id = {}, deck_id = {}, sending to frontend rating = {}",
+            user_id, deck_id, rating
+        );
         Ok(rating)
     }
 
@@ -262,9 +265,25 @@ impl Database {
         let read_txn = self.db.begin_read()?;
         let table = read_txn.open_table(Self::DECKS_TABLE)?;
         let mut deck = table.get(key)?.ok_or(AndyError::DeckDoesNotExist)?.value();
+        println!(
+            "changing rating for user_id = {}, deck_id = {}",
+            user_id, deck_id
+        );
+        println!("old rating = {}", deck.rating);
+        println!(
+            "new rating should be (({} * {}) + {}) / ({})",
+            deck.rating,
+            deck.num_ratings,
+            new_rating,
+            deck.num_ratings + 1
+        );
         deck.rating = ((deck.rating * (deck.num_ratings as f32)) + new_rating)
             / ((deck.num_ratings + 1) as f32);
+
         deck.num_ratings += 1;
+        println!("new rating = {}", deck.rating);
+        println!("num ratings now = {}", deck.num_ratings);
+
         self.insert_or_replace(key, deck, Self::DECKS_TABLE)?;
 
         Ok(())
