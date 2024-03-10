@@ -412,7 +412,7 @@ const App: React.FC = () => {
   }
 
   const getRating = (deckid: number) => {
-    console.log(deckid)
+    //console.log(deckid)
     let access_token = get_session_token();
     if ((access_token == null)) {
       return 0;
@@ -426,7 +426,9 @@ const App: React.FC = () => {
       console.log(data)
       return data
     })  
+    return 0
   }
+
 
   return (
     <div>
