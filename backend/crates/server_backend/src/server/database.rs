@@ -31,7 +31,7 @@ pub struct CardDeck {
     pub cards: Vec<Card>,
     pub name: String,
     pub rating: f32,
-    pub num_ratings: f32,
+    pub num_ratings: u32,
     pub icon_num: u32,
 }
 
@@ -197,7 +197,7 @@ impl Database {
                     cards: vec![],
                     name: deck_name,
                     rating: 0.0,
-                    num_ratings: 0.0,
+                    num_ratings: 0,
                     icon_num: DEFAULT_ICON,
                 },
             )?;
@@ -262,8 +262,9 @@ impl Database {
         let read_txn = self.db.begin_read()?;
         let table = read_txn.open_table(Self::DECKS_TABLE)?;
         let mut deck = table.get(key)?.ok_or(AndyError::DeckDoesNotExist)?.value();
-        deck.rating = (deck.rating * deck.num_ratings + new_rating) / (deck.num_ratings + 1.0);
-        deck.num_ratings += 1.0;
+        deck.rating = ((deck.rating * (deck.num_ratings as f32)) + new_rating)
+            / ((deck.num_ratings + 1) as f32);
+        deck.num_ratings += 1;
         self.insert_or_replace(key, deck, Self::DECKS_TABLE)?;
 
         Ok(())
@@ -593,7 +594,7 @@ impl Database {
                         .collect(),
                     name: deck_name.to_owned(),
                     rating: 0.0,
-                    num_ratings: 0.0,
+                    num_ratings: 0,
                     icon_num: DEFAULT_ICON,
                 },
             )?;
