@@ -592,8 +592,8 @@ impl Database {
                         })
                         .collect(),
                     name: deck_name.to_owned(),
-                    rating: 0,
-                    num_ratings: 0,
+                    rating: 0.0,
+                    num_ratings: 0.0,
                     icon_num: DEFAULT_ICON,
                 },
             )?;
