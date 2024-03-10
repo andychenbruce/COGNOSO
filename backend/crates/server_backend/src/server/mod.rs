@@ -355,7 +355,7 @@ async fn ai_test(
 async fn get_rating(
     info: api_structs::GetRating,
     state: std::sync::Arc<SharedState>,
-) -> Result<u32, AndyError> {
+) -> Result<f32, AndyError> {
     let user_id = state.database.validate_token(info.access_token)?;
     let rating = state.database.get_rating(user_id, info.deck_id)?;
     Ok(rating)
