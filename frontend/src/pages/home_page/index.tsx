@@ -196,7 +196,7 @@ const App: React.FC = () => {
                     variant="contained"
                     color="primary"
                     onClick={() => {
-                      redirect("/deck_manage");
+                      window.location.href = `/flashcard_viewer/?deck=${deck.deck_id}`;
                     }}
                     sx={{
                       width: "200px",
@@ -271,7 +271,7 @@ const App: React.FC = () => {
                     variant="contained"
                     color="primary"
                     onClick={() => {
-                      redirect("/deck_manage");
+                      window.location.href = `/flashcard_viewer/?deck=${deck.deck_id}`;
                     }}
                     sx={{
                       width: "200px",
@@ -346,7 +346,7 @@ const App: React.FC = () => {
                     variant="contained"
                     color="primary"
                     onClick={() => {
-                      redirect("/deck_manage");
+                      window.location.href = `/flashcard_viewer/?deck=${deck.deck_id}`;
                     }}
                     sx={{
                       width: "200px",
