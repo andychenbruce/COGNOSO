@@ -261,26 +261,6 @@ checksum = "a2bd12c1caf447e69cd4528f47f94d203fd2582878ecb9e9465484c4148a8223"
 
 [[package]]
 name = "candle-core"
-version = "0.4.0"
-source = "git+https://github.com/huggingface/candle.git?rev=badf886583fdca3c0730aa368bb99c21ad0a5e67#badf886583fdca3c0730aa368bb99c21ad0a5e67"
-dependencies = [
- "byteorder",
- "gemm",
- "half",
- "memmap2",
- "num-traits",
- "num_cpus",
- "rand",
- "rand_distr",
- "rayon",
- "safetensors",
- "thiserror",
- "yoke",
- "zip",
-]
-
-[[package]]
-name = "candle-core"
 version = "0.4.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "6f1b20174c1707e20f4cb364a355b449803c03e9b0c9193324623cf9787a4e00"
@@ -302,48 +282,17 @@ dependencies = [
 
 [[package]]
 name = "candle-nn"
-version = "0.4.0"
-source = "git+https://github.com/huggingface/candle.git?rev=badf886583fdca3c0730aa368bb99c21ad0a5e67#badf886583fdca3c0730aa368bb99c21ad0a5e67"
-dependencies = [
- "candle-core 0.4.0",
- "half",
- "num-traits",
- "rayon",
- "safetensors",
- "serde",
- "thiserror",
-]
-
-[[package]]
-name = "candle-nn"
 version = "0.4.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "66a27533c8edfc915a6459f9850641ef523a829fa1a181c670766c1f752d873a"
 dependencies = [
- "candle-core 0.4.1",
+ "candle-core",
  "half",
  "num-traits",
  "rayon",
  "safetensors",
  "serde",
  "thiserror",
-]
-
-[[package]]
-name = "candle-transformers"
-version = "0.4.0"
-source = "git+https://github.com/huggingface/candle.git?rev=badf886583fdca3c0730aa368bb99c21ad0a5e67#badf886583fdca3c0730aa368bb99c21ad0a5e67"
-dependencies = [
- "byteorder",
- "candle-core 0.4.0",
- "candle-nn 0.4.0",
- "num-traits",
- "rand",
- "rayon",
- "serde",
- "serde_json",
- "serde_plain",
- "tracing",
 ]
 
 [[package]]
@@ -353,8 +302,8 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b5847699f0643da05e57fc473672566e93dc36d82c1b7eeb970c6154d3434fe1"
 dependencies = [
  "byteorder",
- "candle-core 0.4.1",
- "candle-nn 0.4.1",
+ "candle-core",
+ "candle-nn",
  "num-traits",
  "rand",
  "rayon",
@@ -1322,18 +1271,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "0717cef1bc8b636c6e1c1bbdefc09e6322da8a9321966e8928ef80d20f7f770f"
 
 [[package]]
-name = "llm_runner"
-version = "0.1.0"
-dependencies = [
- "anyhow",
- "candle-core 0.4.0",
- "candle-nn 0.4.0",
- "candle-transformers 0.4.0",
- "serde_json",
- "tokenizers",
-]
-
-[[package]]
 name = "lock_api"
 version = "0.4.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2124,9 +2061,9 @@ dependencies = [
 name = "sentence_embedder"
 version = "0.1.0"
 dependencies = [
- "candle-core 0.4.1",
- "candle-nn 0.4.1",
- "candle-transformers 0.4.1",
+ "candle-core",
+ "candle-nn",
+ "candle-transformers",
  "serde_json",
  "tokenizers",
 ]

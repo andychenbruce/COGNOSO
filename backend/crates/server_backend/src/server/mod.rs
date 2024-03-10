@@ -329,20 +329,6 @@ async fn search(
     }
 }
 
-async fn create_deck_pdf(
-    info: api_structs::UploadPdf,
-    state: std::sync::Arc<SharedState>,
-) -> Result<(), AndyError> {
-    let _user_id = state.database.validate_token(info.access_token)?;
-
-    let url = data_url::DataUrl::process(&info.file_bytes_base64).unwrap();
-    let (body, _fragment) = url.decode_to_vec().unwrap();
-
-    let _lines = pdf_parser::extract_text(&body)?;
-
-    todo!()
-}
-
 async fn ai_test(
     info: api_structs::AiPromptTest,
     state: std::sync::Arc<SharedState>,
@@ -423,4 +409,80 @@ async fn random_decks(
     state: std::sync::Arc<SharedState>,
 ) -> Result<api_structs::RandomDecksResponse, AndyError> {
     state.database.random_decks(info.num_decks as usize)
+}
+
+async fn create_deck_pdf(
+    info: api_structs::UploadPdf,
+    state: std::sync::Arc<SharedState>,
+) -> Result<(), AndyError> {
+    let user_id = state.database.validate_token(info.access_token)?;
+    let deck_id = state.database.get_deck_id(&info.deck_name);
+
+    let url = data_url::DataUrl::process(&info.file_bytes_base64).unwrap();
+    let (body, _fragment) = url.decode_to_vec().unwrap();
+
+    let text = pdf_parser::extract_text(&body)?;
+
+    enum SliceType<'a> {
+        Question(&'a str),
+        Sentence(&'a str),
+    }
+
+    let mut slices: Vec<SliceType> = vec![];
+    let mut last: usize = 0;
+
+    for (byte_offset, char) in text.char_indices() {
+        if char == '?' {
+            slices.push(SliceType::Question(&text[last..(byte_offset + 1)]));
+            last = byte_offset + 1;
+        }
+        if char == '.' {
+            slices.push(SliceType::Sentence(&text[last..(byte_offset + 1)]));
+            last = byte_offset + 1;
+        }
+    }
+
+    let mut locked_engine = state.search_engine.lock().await;
+    locked_engine
+        .add_pdf_sentences(
+            user_id,
+            deck_id,
+            slices
+                .iter()
+                .map(|x| match *x {
+                    SliceType::Question(s) => s.to_owned(),
+                    SliceType::Sentence(s) => s.to_owned(),
+                })
+                .collect(),
+        )
+        .await?;
+
+    let mut results: Vec<api_structs::Card> = vec![];
+    for question in slices.into_iter().filter_map(|slice| match slice {
+        SliceType::Question(s) => Some(s),
+        SliceType::Sentence(_) => None,
+    }) {
+        let relevant_info = locked_engine
+            .search_relevant_text_for_pdf_question(question, 3, user_id, deck_id)
+            .await?;
+
+        let output = state.llm_runner.submit_prompt(
+            //"chat_template": "{% if not add_generation_prompt is defined %}{% set add_generation_prompt = false %}{% endif %}{% for message in messages %}{{'<|im_start|>' + message['role'] + '\n' + message['content'] + '<|im_end|>' + '\n'}}{% endfor %}{% if add_generation_prompt %}{{ '<|im_start|>assistant\n' }}{% endif %}",
+            format!("<|im_start|>system\nBelow is a question with some context. Give only the answer and nothing else using only the information provided. If the information provided does not contain the answer then say you do not know.<|im_end|>\n<|im_start|>{}{:?}<|im_end|>\n<|im_start|>assistant\n", question, relevant_info)
+        ).await?;
+
+        results.push(api_structs::Card {
+            question: question.to_owned(),
+            answer: output,
+        });
+    }
+
+    //we should have some type of handle so the destructor for the collection doesn't need to be called manually
+    locked_engine.delete_pdf_data(user_id, deck_id).await?;
+
+    state
+        .database
+        .make_deck_from_cards(user_id, &info.deck_name, results)?;
+
+    Ok(())
 }
