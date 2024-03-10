@@ -176,7 +176,7 @@ pub struct SearchDecksResponse {
 #[derive(Debug, serde::Deserialize)]
 pub struct UploadPdf {
     pub access_token: AccessToken,
-    pub deck_id: u32,
+    pub deck_name: String,
     pub file_bytes_base64: String,
 }
 

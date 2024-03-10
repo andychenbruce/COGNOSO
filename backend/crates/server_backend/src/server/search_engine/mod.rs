@@ -117,13 +117,13 @@ impl SearchEngine {
                     qdrant_client::qdrant::value::Kind::IntegerValue(n) => {
                         TryInto::<u32>::try_into(*n).unwrap()
                     }
-                    _ => panic!("bruh"),
+                    _ => panic!("todo handle this error"),
                 };
                 let user_id = match point.payload.get("user_id").unwrap().kind.as_ref().unwrap() {
                     qdrant_client::qdrant::value::Kind::IntegerValue(n) => {
                         TryInto::<u32>::try_into(*n).unwrap()
                     }
-                    _ => panic!("bruh"),
+                    _ => panic!("todo handle this error"),
                 };
 
                 (user_id, deck_id)
@@ -143,10 +143,98 @@ impl SearchEngine {
     pub fn not_fucked(&self) -> bool {
         matches!((&self.client, &self.embedder), (Some(_), Some(_)))
     }
+
+    pub async fn add_pdf_sentences(
+        &mut self,
+        user_id: u32,
+        deck_id: u32,
+        sentences: Vec<String>,
+    ) -> Result<(), SearchEngineError> {
+        let payloads: Vec<Payload> = sentences
+            .iter()
+            .map(|x| {
+                json!({
+                    "text": x.clone()
+                })
+                .try_into()
+                .unwrap()
+            })
+            .collect();
+
+        let vectors = self.get_embedder().run(sentences)?;
+
+        let points: Vec<_> = vectors
+            .into_iter()
+            .zip(payloads)
+            .map(|(vector, payload)| PointStruct::new(0, vector, payload))
+            .collect();
+
+        self.get_client()
+            .upsert_points_blocking(
+                format!("user_id:{} deck_id{}", user_id, deck_id),
+                None,
+                points,
+                None,
+            )
+            .await?;
+
+        Ok(())
+    }
+
+    pub async fn search_relevant_text_for_pdf_question(
+        &mut self,
+        prompt: &str,
+        num_results: u64,
+        user_id: u32,
+        deck_id: u32,
+    ) -> Result<Vec<String>, SearchEngineError> {
+        let vector = self
+            .get_embedder()
+            .run(vec![prompt.to_owned()])?
+            .into_iter()
+            .next()
+            .unwrap();
+
+        let search_result = self
+            .get_client()
+            .search_points(&SearchPoints {
+                collection_name: format!("user_id:{} deck_id{}", user_id, deck_id),
+                vector,
+                limit: num_results,
+                with_payload: Some(true.into()),
+                ..Default::default()
+            })
+            .await?;
+
+        let results = search_result
+            .result
+            .into_iter()
+            .map(
+                |point| match point.payload.get("text").unwrap().kind.as_ref().unwrap() {
+                    qdrant_client::qdrant::value::Kind::StringValue(n) => n.clone(),
+                    _ => panic!("todo handle this error"),
+                },
+            )
+            .collect();
+
+        Ok(results)
+    }
+
+    pub async fn delete_pdf_data(
+        &mut self,
+        user_id: u32,
+        deck_id: u32,
+    ) -> Result<(), SearchEngineError> {
+        self.get_client()
+            .delete_collection(format!("user_id:{} deck_id{}", user_id, deck_id))
+            .await?;
+        Ok(())
+    }
 }
 
 pub async fn search_engine_updater_loop(resources: std::sync::Arc<super::SharedState>) -> ! {
     loop {
+        //todo this should use use a MPSC queue of requests for whenever the flashcard database changes instead of running every 20 seconds
         tokio::time::sleep(std::time::Duration::from_secs(20)).await;
         if let Err(e) = loop_inside(&resources).await {
             println!("UPDATING ERROR: {:?}", e);

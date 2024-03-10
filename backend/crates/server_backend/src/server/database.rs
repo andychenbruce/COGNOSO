@@ -58,6 +58,11 @@ impl Database {
         hash(email) as u32
     }
 
+    pub fn get_deck_id(&self, name: &str) -> UserId {
+        //todo make actually good
+        hash(name) as u32
+    }
+
     pub fn new_session(&self, user_id: UserId, password: String) -> Result<AccessToken, AndyError> {
         //todo make an actuall token manager instead of just generating a random number lmao
         self.validate_password(user_id, password)?;
@@ -181,7 +186,7 @@ impl Database {
     }
 
     pub fn new_card_deck(&self, user_id: UserId, deck_name: String) -> Result<(), AndyError> {
-        let deck_id = self.get_user_id(&deck_name);
+        let deck_id = self.get_deck_id(&deck_name);
         let write_txn = self.db.begin_write()?;
         {
             let mut table = write_txn.open_table(Self::DECKS_TABLE)?;
@@ -563,6 +568,38 @@ impl Database {
             .collect::<Result<Vec<_>, AndyError>>()?;
 
         Ok(api_structs::RandomDecksResponse { decks })
+    }
+
+    pub fn make_deck_from_cards(
+        &self,
+        user_id: UserId,
+        deck_name: &str,
+        cards: Vec<api_structs::Card>,
+    ) -> Result<(), AndyError> {
+        let deck_id = self.get_deck_id(deck_name);
+        let write_txn = self.db.begin_write()?;
+        {
+            let mut table = write_txn.open_table(Self::DECKS_TABLE)?;
+            table.insert(
+                (user_id, deck_id),
+                CardDeck {
+                    creation_time: get_current_unix_time_seconds(),
+                    cards: cards
+                        .into_iter()
+                        .map(|card| Card {
+                            question: card.question,
+                            answer: card.answer,
+                        })
+                        .collect(),
+                    name: deck_name.to_owned(),
+                    rating: 0,
+                    num_ratings: 0,
+                    icon_num: DEFAULT_ICON,
+                },
+            )?;
+        }
+        write_txn.commit()?;
+        Ok(())
     }
 }
 
