@@ -85,6 +85,7 @@ const FlashcardViewerFunc = () => {
     const searchParams = new URLSearchParams(url.search);
     const deckIdJSON = searchParams.get("deck");
     const deckId: number = deckIdJSON ? JSON.parse(deckIdJSON) : null;
+    console.log(deckId)
     let access_token = get_session_token();
     if (access_token == null) {
       return;
@@ -204,7 +205,8 @@ const FlashcardViewerFunc = () => {
            <Rating
         name="simple-controlled"
         value={value}
-        onChange={(_event, newValue) => {
+        onChange={(event, newValue) => {
+          console.log(event)
           setValue(newValue);
           addRating();
         }}
