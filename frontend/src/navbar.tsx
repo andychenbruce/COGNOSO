@@ -8,6 +8,7 @@ import HomeIcon from "@mui/icons-material/Home";
 import BackupTableOutlinedIcon from "@mui/icons-material/BackupTableOutlined";
 import Person2OutlinedIcon from "@mui/icons-material/Person2Outlined";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
+import ChatIcon from '@mui/icons-material/Chat';
 
 export const Navbar = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -138,7 +139,7 @@ export const Navbar = () => {
         variant="contained"
         sx={{
           fontSize: "20px",
-          width: "400px",
+          width: "250px",
           backgroundColor: "#9c27b0",
           "&:hover": {
             backgroundColor: "#7b1fa2",
@@ -155,7 +156,7 @@ export const Navbar = () => {
         style={{
           display: "flex",
           alignItems: "center",
-          width: "500px",
+          width: "400px",
           border: "2px solid #9c27b0",
           borderRadius: "4px",
           padding: "5px",
@@ -181,7 +182,7 @@ export const Navbar = () => {
         variant="contained"
         sx={{
           fontSize: "20px",
-          width: "400px",
+          width: "250px",
           backgroundColor: "#9c27b0",
           "&:hover": {
             backgroundColor: "#7b1fa2",
@@ -194,11 +195,31 @@ export const Navbar = () => {
         <BackupTableOutlinedIcon />
         Decks
       </Button>
+
       <Button
         variant="contained"
         sx={{
           fontSize: "20px",
-          width: "400px",
+          width: "250px",
+          backgroundColor: "#9c27b0",
+          "&:hover": {
+            backgroundColor: "#7b1fa2",
+          },
+        }}
+        onClick={() => {
+          redirect("/ai_test");
+        }}
+      >
+        <ChatIcon />
+        Ai Chat
+      </Button>
+
+
+      <Button
+        variant="contained"
+        sx={{
+          fontSize: "20px",
+          width: "250px",
           backgroundColor: "#9c27b0",
           "&:hover": {
             backgroundColor: "#7b1fa2",
