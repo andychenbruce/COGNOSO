@@ -38,6 +38,8 @@ import {
   ListFavoritesResponse,
   ENDPOINT_DELETE_FAVORITE,
   DeleteFavorite,
+  ENDPOINT_GET_RATING,
+  GetRating,
 } from "../../backend_interface";
 import { send_json_backend, get_session_token } from "../../utils";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -412,6 +414,23 @@ const App: React.FC = () => {
       });
   }
 
+  const getRating = (deckid: number) => {
+    console.log(deckid)
+    let access_token = get_session_token();
+    if ((access_token == null)) {
+      return 0;
+    }
+    let request: GetRating = {
+      access_token: access_token,
+      deck_id: deckid,
+    };
+    send_json_backend(ENDPOINT_GET_RATING, JSON.stringify(request))
+    .then((data) => {
+      console.log(data)
+      return data
+    })  
+  }
+
   return (
     <div>
       <Navbar />
@@ -516,7 +535,7 @@ const App: React.FC = () => {
               </IconButton>
               <Rating
                   name={`deck-rating-${deck.deck_id}`}
-                  value={deck.get_rating || 0} 
+                  value={getRating(deck.deck_id) || 0} 
                   readOnly
                   size="small"
                   style={{
