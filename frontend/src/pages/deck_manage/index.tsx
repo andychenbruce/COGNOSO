@@ -335,7 +335,7 @@ const App: React.FC = () => {
       console.log("base 64 = ", base64_encode);
       let request_json: UploadPdf = {
         access_token: access_token,
-        deck_id: 123, //todo generate new id
+        deck_name: deckName,
         file_bytes_base64: base64_encode,
       };
       return send_json_backend(
