@@ -205,12 +205,8 @@ const FlashcardViewerFunc = () => {
            <Rating
         name="simple-controlled"
         value={value}
-<<<<<<< HEAD
         onChange={(event, newValue) => {
           console.log(event)
-=======
-        onChange={(_event, newValue) => {
->>>>>>> b4c89453da49c5afb4871cc593a262fac1e1a638
           setValue(newValue);
           addRating();
         }}
