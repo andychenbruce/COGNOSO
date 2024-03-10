@@ -38,8 +38,6 @@ import {
   ListFavoritesResponse,
   ENDPOINT_DELETE_FAVORITE,
   DeleteFavorite,
-  ENDPOINT_GET_RATING,
-  GetRating,
 } from "../../backend_interface";
 import { send_json_backend, get_session_token } from "../../utils";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -166,21 +164,7 @@ const App: React.FC = () => {
   )
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [iconerrorsnackbar,changeIconErrorSnackbar] = useState(false);
-  const [ratings, setRatings] = useState<{ [key: number]: number }>({});
-
-  useEffect(() => {
-    const fetchRatings = async () => {
-      const newRatings: { [key: number]: number } = {};
-      for (const deck of decks) {
-        const rating = await getRating(deck.deck_id);
-        newRatings[deck.deck_id] = rating;
-      }
-      setRatings(newRatings);
-    };
-
-    fetchRatings();
-  }, [decks]);
-
+  
   const handleIconSelectionConfirm = () => {
 
     let temp_deck_id = currentEditing
@@ -422,26 +406,6 @@ const App: React.FC = () => {
       });
   }
 
-const getRating = async (deckid: number): Promise<number> => {
-  let access_token = get_session_token();
-  if (!access_token) {
-    return 0;
-  }
-  let request: GetRating = {
-    access_token: access_token,
-    deck_id: deckid,
-  };
-  
-  try {
-    const data = await send_json_backend(ENDPOINT_GET_RATING, JSON.stringify(request));
-    console.log(data);
-    return data;
-  } catch (error) {
-    console.error("Error getting rating:", error);
-    return 0; // Return a default value or handle the error appropriately
-  }
-};
-
   return (
     <div>
       <Navbar />
@@ -543,7 +507,7 @@ const getRating = async (deckid: number): Promise<number> => {
               </IconButton>
               <Rating
                 name={`deck-rating-${deck.deck_id}`}
-                value={ratings[deck.deck_id] || 0}
+                value={deck.rating}
                 readOnly
                 size="small"
                 style={{

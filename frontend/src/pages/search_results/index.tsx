@@ -266,7 +266,7 @@ const App: React.FC = () => {
                   {iconList[favorites[index].icon_num]}
                   <Rating
                   name={`deck-rating-${deck.deck_id}`}
-                  value={deck.get_rating || 0} 
+                  value={deck.rating} 
                   readOnly
                   size="small"
                   style={{
@@ -323,7 +323,7 @@ const App: React.FC = () => {
                   {iconList[decks[index].icon_num]}
                   <Rating
                   name={`deck-rating-${deck.deck_id}`}
-                  value={deck.get_rating || 0} 
+                  value={deck.rating} 
                   readOnly
                   size="small"
                   style={{
@@ -380,7 +380,7 @@ const App: React.FC = () => {
                 {iconList[randomdecks[index].icon_num]}
                 <Rating
                 name={`deck-rating-${deck.deck_id}`}
-                value={deck.get_rating || 0} 
+                value={deck.rating} 
                 readOnly
                 size="small"
                 style={{
