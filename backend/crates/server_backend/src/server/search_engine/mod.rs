@@ -69,14 +69,15 @@ impl SearchEngine {
 
         let sentences: Vec<_> = cards
             .into_iter()
-            .map(|card| format!("Question: {}, Answer {}", card.question, card.answer))
+            .map(|card| format!("Question: {}, Answer: {}", card.question, card.answer))
             .collect();
 
         let vectors = self.get_embedder().run(sentences)?;
 
         let points: Vec<_> = vectors
             .into_iter()
-            .map(|vector| PointStruct::new(0, vector, payload.clone()))
+            .enumerate()
+            .map(|(num, vector)| PointStruct::new(num as u64, vector, payload.clone()))
             .collect();
 
         self.get_client()
@@ -150,6 +151,23 @@ impl SearchEngine {
         deck_id: u32,
         sentences: Vec<String>,
     ) -> Result<(), SearchEngineError> {
+        self.get_client()
+            .create_collection(&CreateCollection {
+                collection_name: format!("user_id {} deck_id {}", user_id, deck_id),
+                vectors_config: Some(qdrant_client::qdrant::VectorsConfig {
+                    config: Some(qdrant_client::qdrant::vectors_config::Config::Params(
+                        qdrant_client::qdrant::VectorParams {
+                            size: VECTOR_SIZE,
+                            distance: Distance::Cosine.into(),
+                            ..Default::default()
+                        },
+                    )),
+                }),
+                ..Default::default()
+            })
+            .await?;
+
+        //Not found: Collection `user_id:854508108 deck_id2054049807` doesn't
         let payloads: Vec<Payload> = sentences
             .iter()
             .map(|x| {
@@ -161,17 +179,20 @@ impl SearchEngine {
             })
             .collect();
 
+        println!("RUNNING EMBEDDINGS");
         let vectors = self.get_embedder().run(sentences)?;
+        println!("DONE EMBEDDINGS");
 
         let points: Vec<_> = vectors
             .into_iter()
             .zip(payloads)
-            .map(|(vector, payload)| PointStruct::new(0, vector, payload))
+            .enumerate()
+            .map(|(num, (vector, payload))| PointStruct::new(num as u64, vector, payload))
             .collect();
 
         self.get_client()
             .upsert_points_blocking(
-                format!("user_id:{} deck_id{}", user_id, deck_id),
+                format!("user_id {} deck_id {}", user_id, deck_id),
                 None,
                 points,
                 None,
@@ -198,7 +219,7 @@ impl SearchEngine {
         let search_result = self
             .get_client()
             .search_points(&SearchPoints {
-                collection_name: format!("user_id:{} deck_id{}", user_id, deck_id),
+                collection_name: format!("user_id {} deck_id {}", user_id, deck_id),
                 vector,
                 limit: num_results,
                 with_payload: Some(true.into()),
@@ -226,7 +247,7 @@ impl SearchEngine {
         deck_id: u32,
     ) -> Result<(), SearchEngineError> {
         self.get_client()
-            .delete_collection(format!("user_id:{} deck_id{}", user_id, deck_id))
+            .delete_collection(format!("user_id {} deck_id {}", user_id, deck_id))
             .await?;
         Ok(())
     }

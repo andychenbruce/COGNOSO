@@ -7,7 +7,7 @@ edition = "2021"
 
 [dependencies]
 candle-core = "0.4.1"
-candle-nn = "0.4.1"
+candle-nn = { version = "0.4.1", features = ["cuda"] }
 candle-transformers = "0.4.1"
 serde_json = "1.0.113"
 tokenizers = "0.15.1"

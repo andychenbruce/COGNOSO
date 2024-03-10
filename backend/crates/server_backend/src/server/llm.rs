@@ -27,6 +27,13 @@ pub struct LlmRunner {
 struct LlmRequest {
     prompt: String,
     n_predict: u64,
+    stop: Vec<String>,
+}
+
+#[derive(serde::Deserialize)]
+struct LlmResponse {
+    content: String,
+    //... other stuff is also there might be usefull
 }
 
 impl LlmRunner {
@@ -58,16 +65,17 @@ impl LlmRunner {
                 serde_json::to_string(&LlmRequest {
                     prompt,
                     n_predict: 512,
+                    stop: vec!["<|im_end|>".to_owned()], //todo make this read the stop tokens from the GGUF file instead of hard coding
                 })?,
             )))?;
 
         let res = sender.send_request(req).await?;
 
         let bytes = res.collect().await?.to_bytes();
-        //let thing = serde_json::from_reader(bytes.reader())?;
+        let thing: LlmResponse = serde_json::from_reader(bytes.reader())?;
 
-        let poo = std::io::read_to_string(bytes.reader())?;
+        //let poo = std::io::read_to_string(bytes.reader())?;
 
-        Ok(poo)
+        Ok(thing.content)
     }
 }

@@ -432,18 +432,19 @@ async fn create_deck_pdf(
     let mut last: usize = 0;
 
     for (byte_offset, char) in text.char_indices() {
-        if char == '.' {
+        if char == '?' {
             slices.push(SliceType::Question(&text[last..(byte_offset + 1)]));
             last = byte_offset + 1;
         }
-        if char == '?' {
+        if char == '.' {
             slices.push(SliceType::Sentence(&text[last..(byte_offset + 1)]));
             last = byte_offset + 1;
         }
     }
 
+    println!("IEIEIWEIOOWEI");
     let mut locked_engine = state.search_engine.lock().await;
-
+    println!("LOCKED MUTEX");
     locked_engine
         .add_pdf_sentences(
             user_id,
@@ -458,15 +459,21 @@ async fn create_deck_pdf(
         )
         .await?;
 
+    println!("ADDING SHIT");
     let mut results: Vec<api_structs::Card> = vec![];
-
+    println!("OOOOOOO");
     for question in slices.into_iter().filter_map(|slice| match slice {
         SliceType::Question(s) => Some(s),
         SliceType::Sentence(_) => None,
     }) {
+        println!("YOOOOOOOOOO");
         let relevant_info = locked_engine
             .search_relevant_text_for_pdf_question(question, 3, user_id, deck_id)
             .await?;
+        println!("QUESTION = {}", question);
+        println!("got shit idk");
+
+        println!("shit = {:?}", relevant_info);
 
         let output = state.llm_runner.submit_prompt(
             //"chat_template": "{% if not add_generation_prompt is defined %}{% set add_generation_prompt = false %}{% endif %}{% for message in messages %}{{'<|im_start|>' + message['role'] + '\n' + message['content'] + '<|im_end|>' + '\n'}}{% endfor %}{% if add_generation_prompt %}{{ '<|im_start|>assistant\n' }}{% endif %}",
@@ -483,10 +490,12 @@ async fn create_deck_pdf(
 
     //we should have some type of handle so the destructor for the collection doesn't need to be called manually
     locked_engine.delete_pdf_data(user_id, deck_id).await?;
+    println!("balls poo");
 
     state
         .database
         .make_deck_from_cards(user_id, &info.deck_name, results)?;
 
-    todo!()
+    println!("balls poo");
+    Ok(())
 }
