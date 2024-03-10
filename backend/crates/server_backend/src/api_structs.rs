@@ -92,7 +92,7 @@ pub struct GetRating {
 pub struct AddRating {
     pub access_token: AccessToken,
     pub deck_id: u32,
-    pub new_rating: u32,
+    pub new_rating: f32,
 }
 
 #[derive(Debug, serde::Deserialize)]

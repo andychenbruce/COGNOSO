@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { Navbar } from "../../navbar";
 import "./flashcard_editor.css";
+<<<<<<< HEAD
 import { Button, TextField, Typography, Snackbar} from "@mui/material";
+=======
+import { Button, TextField, Typography, Snackbar } from "@mui/material";
+>>>>>>> b4c89453da49c5afb4871cc593a262fac1e1a638
 import { ListCards, ListCardsResponse } from "../../backend_interface";
 import { send_json_backend, get_session_token, get_user_id } from "../../utils";
 import { redirect } from "../../utils";

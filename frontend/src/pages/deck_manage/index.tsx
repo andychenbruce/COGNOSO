@@ -165,7 +165,6 @@ const App: React.FC = () => {
     [] as CardDeck[]
   )
   const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [errorField, setTextFieldError] = useState(false);
   const [iconerrorsnackbar,changeIconErrorSnackbar] = useState(false);
 
 
@@ -249,7 +248,7 @@ const App: React.FC = () => {
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
     setDeckName(value);
-    setTextFieldError(false);
+
   };
 
   const handleCreateButtonClick = () => {
@@ -259,7 +258,6 @@ const App: React.FC = () => {
   const handleCreateConfirm = () => {
     if (deckName.trim() === "") {
       setSnackbarOpen(true);
-      setTextFieldError(true);
       setTimeout(() => {
         setSnackbarOpen(false);
       }, 2000);
@@ -320,7 +318,6 @@ const App: React.FC = () => {
   const handleCreateConfirmPDF = () => {
     if (deckName.trim() === "") {
       setSnackbarOpen(true);
-      setTextFieldError(true);
       setTimeout(() => {
         setSnackbarOpen(false);
       }, 2000);
@@ -516,9 +513,6 @@ const App: React.FC = () => {
                 )}
               </IconButton>
 
-
-
-
               <IconButton
                 onClick={() => {
                   handleEditDeckIcon(deck.deck_id);
@@ -580,8 +574,9 @@ const App: React.FC = () => {
         aria-describedby="alert-dialog-description"
       >
         <DialogTitle
-          style={{ backgroundColor: "#9370db" }}
+          style={{ backgroundColor: "#9370db", fontFamily: "Arial, sans-serif" }}
           id="alert-dialog-title"
+        
         >
           Create New Deck
         </DialogTitle>
@@ -592,8 +587,9 @@ const App: React.FC = () => {
           >
             <TextField
               style={{
+                color: 'white',
                 marginBottom: 20,
-                borderColor: errorField ? "red" : undefined,
+                borderColor: "white",
               }}
               label="Deck Name"
               variant="outlined"
@@ -615,7 +611,11 @@ const App: React.FC = () => {
                   variant="contained"
                   component="label"
                   fullWidth
-                  style={{ border: "1px solid white", color: "white" }}
+                  style={{  }}
+                  sx={{border: "1px solid white", color: "white", backgroundColor: "#9c27b0",
+                "&:hover": {
+                  backgroundColor: "#7b1fa2",
+                }}}
                 >
                   Upload a file
                   <input type="file" hidden onChange={handleChangeFile} />
@@ -624,8 +624,11 @@ const App: React.FC = () => {
                   type="submit"
                   variant="contained"
                   onClick={handleCreateConfirmPDF}
-                  color="primary"
                   fullWidth
+                  sx={{border: "1px solid white", backgroundColor: "#9c27b0",
+                  "&:hover": {
+                    backgroundColor: "#7b1fa2",
+                  }}}
                 >
                   Confirm
                 </Button>
@@ -639,7 +642,10 @@ const App: React.FC = () => {
                   handleCreateConfirm();
                   setDeckName('');
                 }}                
-                color="primary"
+                sx={{border: "1px solid white", backgroundColor: "#9c27b0",
+                "&:hover": {
+                  backgroundColor: "#7b1fa2",
+                }}}
                 fullWidth
               >
                 Confirm
@@ -650,7 +656,10 @@ const App: React.FC = () => {
         <DialogActions style={{ backgroundColor: "#9370db" }}>
           <Button
             onClick={handleCreateDialogClose}
-            style={{ border: "1px solid white", color: "white" }}
+            sx={{ border: "1px solid purple", color: "white", backgroundColor: "#7b1fa2",
+            "&:hover": {
+              backgroundColor: "#9c27b0",
+            } }}
           >
             Cancel
           </Button>

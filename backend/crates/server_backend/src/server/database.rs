@@ -30,8 +30,8 @@ pub struct CardDeck {
     pub creation_time: u64,
     pub cards: Vec<Card>,
     pub name: String,
-    rating: u32,
-    num_ratings: u32,
+    pub rating: f32,
+    pub num_ratings: f32,
     pub icon_num: u32,
 }
 
@@ -191,8 +191,8 @@ impl Database {
                     creation_time: get_current_unix_time_seconds(),
                     cards: vec![],
                     name: deck_name,
-                    rating: 0,
-                    num_ratings: 0,
+                    rating: 0.0,
+                    num_ratings: 0.0,
                     icon_num: DEFAULT_ICON,
                 },
             )?;
@@ -233,11 +233,11 @@ impl Database {
         Ok(())
     }
 
-    pub fn get_rating(&self, user_id: UserId, deck_id: DeckId) -> Result<u32, AndyError> {
+    pub fn get_rating(&self, user_id: UserId, deck_id: DeckId) -> Result<f32, AndyError> {
         let read_txn = self.db.begin_read()?;
 
         let table = read_txn.open_table(Self::DECKS_TABLE)?;
-        let rating: u32 = table
+        let rating: f32 = table
             .get((user_id, deck_id))?
             .ok_or(AndyError::DeckDoesNotExist)?
             .value()
@@ -250,15 +250,15 @@ impl Database {
         &self,
         user_id: UserId,
         deck_id: DeckId,
-        new_rating: u32,
+        new_rating: f32,
     ) -> Result<(), AndyError> {
         let key = (user_id, deck_id);
 
         let read_txn = self.db.begin_read()?;
         let table = read_txn.open_table(Self::DECKS_TABLE)?;
         let mut deck = table.get(key)?.ok_or(AndyError::DeckDoesNotExist)?.value();
-        deck.rating = (deck.rating * deck.num_ratings + new_rating) / (deck.num_ratings + 1);
-        deck.num_ratings += 1;
+        deck.rating = (deck.rating * deck.num_ratings + new_rating) / (deck.num_ratings + 1.0);
+        deck.num_ratings += 1.0;
         self.insert_or_replace(key, deck, Self::DECKS_TABLE)?;
 
         Ok(())
