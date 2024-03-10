@@ -225,6 +225,7 @@ impl Database {
             deck_id,
             user_id,
             icon_num: deck.icon_num,
+            rating: deck.rating,
         })
     }
 
@@ -238,21 +239,21 @@ impl Database {
         Ok(())
     }
 
-    pub fn get_rating(&self, user_id: UserId, deck_id: DeckId) -> Result<f32, AndyError> {
-        let read_txn = self.db.begin_read()?;
+    // pub fn get_rating(&self, user_id: UserId, deck_id: DeckId) -> Result<f32, AndyError> {
+    //     let read_txn = self.db.begin_read()?;
 
-        let table = read_txn.open_table(Self::DECKS_TABLE)?;
-        let rating: f32 = table
-            .get((user_id, deck_id))?
-            .ok_or(AndyError::DeckDoesNotExist)?
-            .value()
-            .rating;
-        println!(
-            "user_id = {}, deck_id = {}, sending to frontend rating = {}",
-            user_id, deck_id, rating
-        );
-        Ok(rating)
-    }
+    //     let table = read_txn.open_table(Self::DECKS_TABLE)?;
+    //     let rating: f32 = table
+    //         .get((user_id, deck_id))?
+    //         .ok_or(AndyError::DeckDoesNotExist)?
+    //         .value()
+    //         .rating;
+    //     println!(
+    //         "user_id = {}, deck_id = {}, sending to frontend rating = {}",
+    //         user_id, deck_id, rating
+    //     );
+    //     Ok(rating)
+    // }
 
     pub fn add_rating(
         &self,
@@ -371,6 +372,7 @@ impl Database {
                     name: deck.name,
                     num_cards: deck.cards.len().try_into()?,
                     icon_num: deck.icon_num,
+                    rating: deck.rating,
                 });
             }
         }
@@ -484,6 +486,7 @@ impl Database {
                     deck_id: id.1,
                     num_cards: deck.cards.len() as u32,
                     icon_num: deck.icon_num,
+                    rating: deck.rating,
                 })
             })
             .collect::<Result<_, _>>()?;
@@ -558,6 +561,7 @@ impl Database {
                     user_id,
                     num_cards: deck.cards.len() as u32,
                     icon_num: deck.icon_num,
+                    rating: deck.rating,
                 })
             })
             .collect::<Result<_, _>>()?;
@@ -583,6 +587,7 @@ impl Database {
                     user_id,
                     num_cards: deck.cards.len() as u32,
                     icon_num: deck.icon_num,
+                    rating: deck.rating,
                 })
             })
             .collect::<Result<Vec<_>, AndyError>>()?;
