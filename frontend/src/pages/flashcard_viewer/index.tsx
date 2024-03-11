@@ -38,7 +38,7 @@ const FlashcardViewerFunc = () => {
     const fetchDeckName = async () => {
       const access_token = get_session_token();
       const user_id = get_user_id();
-      if ((access_token == null) || (user_id == null)) {
+      if (access_token == null || user_id == null) {
         return;
       }
       const payload: GetDeckRequest = {
@@ -48,7 +48,7 @@ const FlashcardViewerFunc = () => {
       try {
         const deck_info = await send_json_backend(
           ENDPOINT_GET_DECK,
-          JSON.stringify(payload)
+          JSON.stringify(payload),
         );
         setDeckName(deck_info.name);
       } catch (error) {
@@ -85,13 +85,13 @@ const FlashcardViewerFunc = () => {
     const searchParams = new URLSearchParams(url.search);
     const deckIdJSON = searchParams.get("deck");
     const deckId: number = deckIdJSON ? JSON.parse(deckIdJSON) : null;
-    console.log(deckId)
+    console.log(deckId);
     const access_token = get_session_token();
     if (access_token == null) {
       return;
     }
 
-    console.log('newValue:', newValue)
+    console.log("newValue:", newValue);
     const add_rating: AddRating = {
       access_token: access_token,
       deck_id: deckId,
@@ -110,7 +110,7 @@ const FlashcardViewerFunc = () => {
 
   const handlePrevCard = () => {
     setCurrentCardIndex(
-      (prevIndex) => (prevIndex - 1 + flashcards.length) % flashcards.length
+      (prevIndex) => (prevIndex - 1 + flashcards.length) % flashcards.length,
     );
   };
 

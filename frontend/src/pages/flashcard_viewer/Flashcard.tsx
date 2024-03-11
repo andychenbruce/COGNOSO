@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import "./Flashcard.css";
 
-export interface FlashcardInfo{
-    front: string,
-back: string
+export interface FlashcardInfo {
+  front: string;
+  back: string;
 }
 
 const Flashcard = ({ front, back }: FlashcardInfo) => {

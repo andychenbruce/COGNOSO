@@ -101,9 +101,8 @@ const Main: React.FC<PageProps> = () => {
             <Button
               type="submit"
               variant="contained"
-              style={{ backgroundColor: "#4d1a7f", color: "white"}}
+              style={{ backgroundColor: "#4d1a7f", color: "white" }}
               fullWidth
-              
             >
               Login
             </Button>

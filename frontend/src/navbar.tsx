@@ -1,6 +1,18 @@
-
 import React, { useState } from "react";
-import {Button,  InputBase,  Menu,  Snackbar,  MenuItem,Dialog,  TextField,  DialogContent,  DialogTitle,  DialogActions,  ListItemText,  DialogContentText,} from "@mui/material";
+import {
+  Button,
+  InputBase,
+  Menu,
+  Snackbar,
+  MenuItem,
+  Dialog,
+  TextField,
+  DialogContent,
+  DialogTitle,
+  DialogActions,
+  ListItemText,
+  DialogContentText,
+} from "@mui/material";
 import { redirect, send_json_backend } from "./utils";
 import { ENDPOINT_DELETE_USER, DeleteUser } from "./backend_interface";
 import { ENDPOINT_CHANGE_PASSWORD, ChangePassword } from "./backend_interface";
@@ -9,20 +21,22 @@ import HomeIcon from "@mui/icons-material/Home";
 import BackupTableOutlinedIcon from "@mui/icons-material/BackupTableOutlined";
 import Person2OutlinedIcon from "@mui/icons-material/Person2Outlined";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
-import ChatIcon from '@mui/icons-material/Chat';
+import ChatIcon from "@mui/icons-material/Chat";
 // import logo from './../../assets/logo.png';
 
 export const Navbar = () => {
   const [searchQuery, setSearchQuery] = useState(""); //state of whats in search bar
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null); //dropdown bar to anchor at 'account' button
-  const [openDeleteDialog, setOpenDeleteDialog] = useState(false); //popup for account deletion 
-  const [openPassChangeDialog, setOpenPassChangeDialog] = useState(false);//popup for password change 
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false); //popup for account deletion
+  const [openPassChangeDialog, setOpenPassChangeDialog] = useState(false); //popup for password change
   const [ChangePassError, setChangePassError] = useState(false);
   const [errorFields, setErrorFields] = useState<string[]>([]);
   const [errorFields2, setErrorFields2] = useState<string[]>([]);
-  const [showPassChangeSuccessSnackbar, setshowPassChangeSuccessSnackbar] = useState(false);
+  const [showPassChangeSuccessSnackbar, setshowPassChangeSuccessSnackbar] =
+    useState(false);
   const [showDeleteErrorSnackbar, setShowDeleteErrorSnackbar] = useState(false);
-  const [showDeleteSuccessSnackbar, setshowDeleteSuccessSnackbar] = useState(false);
+  const [showDeleteSuccessSnackbar, setshowDeleteSuccessSnackbar] =
+    useState(false);
   const [user, setUser] = useState({
     email: "",
     password: "",
@@ -65,24 +79,20 @@ export const Navbar = () => {
       email: user.email,
       password: user.password,
     };
-    send_json_backend(
-      ENDPOINT_DELETE_USER,
-      JSON.stringify(deleteUserRequest),
-    )      
-    .then(() => {
-      console.log("User deleted successfully.");
-      console.log("Logging out...");
-      setshowDeleteSuccessSnackbar(true);
-      logout();
-      window.location.pathname = "/login/";
-    })
-    .catch((error) => {
-      console.error("Error deleting user:", error);
-      setErrorFields2(["email", "password"]);
-      setTimeout(() => setErrorFields2([]), 2000);
-      setShowDeleteErrorSnackbar(true);
-    });
-
+    send_json_backend(ENDPOINT_DELETE_USER, JSON.stringify(deleteUserRequest))
+      .then(() => {
+        console.log("User deleted successfully.");
+        console.log("Logging out...");
+        setshowDeleteSuccessSnackbar(true);
+        logout();
+        window.location.pathname = "/login/";
+      })
+      .catch((error) => {
+        console.error("Error deleting user:", error);
+        setErrorFields2(["email", "password"]);
+        setTimeout(() => setErrorFields2([]), 2000);
+        setShowDeleteErrorSnackbar(true);
+      });
   };
 
   // stuff for pass change
@@ -156,7 +166,7 @@ export const Navbar = () => {
           redirect("/home_page");
         }}
       >
-      <HomeIcon />
+        <HomeIcon />
         Home
       </Button>
       <div
@@ -236,7 +246,6 @@ export const Navbar = () => {
         Account
       </Button>
       <Menu
-        
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
         onClose={handleMenuClose}
@@ -293,7 +302,7 @@ export const Navbar = () => {
         </MenuItem>
       </Menu>
 
-       {/* DELETE ACCOUNT SECTION */}
+      {/* DELETE ACCOUNT SECTION */}
 
       <Dialog
         open={openDeleteDialog}
@@ -302,12 +311,12 @@ export const Navbar = () => {
         aria-describedby="alert-dialog-description"
       >
         <DialogTitle
-          style={{ background: "#140952a6" , color: "white" }}
+          style={{ background: "#140952a6", color: "white" }}
           id="alert-dialog-title"
         >
           Confirm Delete Account
         </DialogTitle>
-        <DialogContent style={{ background: "#140952a6"  }}>
+        <DialogContent style={{ background: "#140952a6" }}>
           <DialogContentText
             style={{ color: "white" }}
             id="alert-dialog-description"
@@ -335,7 +344,9 @@ export const Navbar = () => {
           <TextField
             style={{
               marginBottom: 20,
-              borderColor: errorFields2.includes("password") ? "red" : undefined,
+              borderColor: errorFields2.includes("password")
+                ? "red"
+                : undefined,
             }}
             error={errorFields2.includes("password")}
             label="Password"
@@ -384,11 +395,11 @@ export const Navbar = () => {
       >
         <DialogTitle
           id="alert-dialog-title"
-          style={{ background: "#140952a6" , color: "white" }}
+          style={{ background: "#140952a6", color: "white" }}
         >
           Change Password
         </DialogTitle>
-        <DialogContent style={{ background: "#140952a6"  }}>
+        <DialogContent style={{ background: "#140952a6" }}>
           <DialogContentText
             id="alert-dialog-description"
             style={{ color: "white" }}
@@ -396,7 +407,7 @@ export const Navbar = () => {
             Please enter your Email, Old Password and New Password
           </DialogContentText>
         </DialogContent>
-        <DialogActions style={{ background: "#140952a6"  }}>
+        <DialogActions style={{ background: "#140952a6" }}>
           <TextField
             style={{
               marginBottom: 20,

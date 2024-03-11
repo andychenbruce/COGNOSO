@@ -51,7 +51,6 @@ const App: React.FC = () => {
     shuffleHandler();
   };
 
-
   const listCards = () => {
     const deckId = get_deckid();
     const access_token = get_session_token();
@@ -93,7 +92,7 @@ const App: React.FC = () => {
     e.preventDefault();
     const droppedCard = JSON.parse(e.dataTransfer.getData("card"));
     setLeftCard(droppedCard);
-    console.log(leftCard)
+    console.log(leftCard);
     //submitHandler();
   };
 
@@ -125,13 +124,13 @@ const App: React.FC = () => {
   }, []);
 
   const submitHandler = () => {
-   //console.log(leftCard, rightCard)
+    //console.log(leftCard, rightCard)
     if (leftCard != undefined && rightCard != undefined) {
       if (leftCard.answer === rightCard.answer) {
         setIsCorrect(true);
-        console.log(flashcards)
-        for(let i = 0; i<flashcards.length; i++){
-          if(flashcards[i] == leftCard){
+        console.log(flashcards);
+        for (let i = 0; i < flashcards.length; i++) {
+          if (flashcards[i] == leftCard) {
             flashcards.splice(i, 1); // Removes 1 element starting from indexToRemove
           }
         }
@@ -144,15 +143,16 @@ const App: React.FC = () => {
     // This effect will be triggered whenever leftCard.question changes
     // You can perform any action here that you want to happen when the question changes
     if (leftCard) {
-      submitHandler();    }
-}, [leftCard]); // Re-run the effect whenever leftCard changes
-useEffect(() => {
-  // This effect will be triggered whenever leftCard.question changes
-  // You can perform any action here that you want to happen when the question changes
-  if (rightCard) {
-    submitHandler();  }
-}, [rightCard]); // Re-run the effect whenever leftCard changes
-
+      submitHandler();
+    }
+  }, [leftCard]); // Re-run the effect whenever leftCard changes
+  useEffect(() => {
+    // This effect will be triggered whenever leftCard.question changes
+    // You can perform any action here that you want to happen when the question changes
+    if (rightCard) {
+      submitHandler();
+    }
+  }, [rightCard]); // Re-run the effect whenever leftCard changes
 
   return (
     <div>
@@ -167,11 +167,18 @@ useEffect(() => {
           padding: "20px",
         }}
       >
-        <div style={{ width: "25%", marginRight: "20px", border: "2px solid yellow", borderRadius: "10px", padding: "10px" }}>
-          
+        <div
+          style={{
+            width: "25%",
+            marginRight: "20px",
+            border: "2px solid yellow",
+            borderRadius: "10px",
+            padding: "10px",
+          }}
+        >
           {shuffledFlashcards
-          .sort(() => Math.random() * 100.12012)
-          .map((flashcard, index) => (
+            .sort(() => Math.random() * 100.12012)
+            .map((flashcard, index) => (
               <div key={index} style={{ marginBottom: "10px" }}>
                 <button
                   draggable
@@ -202,8 +209,13 @@ useEffect(() => {
             marginRight: "10px",
             borderRadius: "10px",
             boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-            backgroundColor: isCorrect === false ? "red" : isCorrect === true ? "green" : "inherit",
-                  }}
+            backgroundColor:
+              isCorrect === false
+                ? "red"
+                : isCorrect === true
+                  ? "green"
+                  : "inherit",
+          }}
           onDragOver={handleDragOver}
           onDrop={handleDropLeft}
         >
@@ -212,20 +224,25 @@ useEffect(() => {
         </div>
 
         <div
-  style={{
-    width: "30%",
-    border: "1px dashed #ccc",
-    color: "white",
-    padding: "20px",
-    height: "200px",
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "center",
-    marginLeft: "10px",
-    borderRadius: "10px",
-    boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-    backgroundColor: isCorrect === false ? "red" : isCorrect === true ? "green" : "inherit",
+          style={{
+            width: "30%",
+            border: "1px dashed #ccc",
+            color: "white",
+            padding: "20px",
+            height: "200px",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            marginLeft: "10px",
+            borderRadius: "10px",
+            boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+            backgroundColor:
+              isCorrect === false
+                ? "red"
+                : isCorrect === true
+                  ? "green"
+                  : "inherit",
           }}
           onDragOver={handleDragOver}
           onDrop={handleDropRight}
@@ -234,10 +251,17 @@ useEffect(() => {
           {rightCard && <div>{rightCard.answer}</div>}
         </div>
 
-
-        <div style={{ width: "25%", marginLeft: "20px", border: "2px solid yellow", borderRadius: "10px", padding: "10px" }}>
+        <div
+          style={{
+            width: "25%",
+            marginLeft: "20px",
+            border: "2px solid yellow",
+            borderRadius: "10px",
+            padding: "10px",
+          }}
+        >
           {shuffledFlashcards
-          .sort(() => Math.random() - 0.5)
+            .sort(() => Math.random() - 0.5)
             //.slice(0, visibleFlashcards)
             .map((flashcard, index) => (
               <div key={index} style={{ marginBottom: "10px" }}>
@@ -257,12 +281,26 @@ useEffect(() => {
         </div>
       </div>
       <div
-        style={{ position: "absolute", top: "calc(100% - 150px)", left: "50%", transform: "translateX(-50%)", display: "flex" }}
+        style={{
+          position: "absolute",
+          top: "calc(100% - 150px)",
+          left: "50%",
+          transform: "translateX(-50%)",
+          display: "flex",
+        }}
       >
-        <Button onClick={shuffleHandler} style={{ marginRight: "10px", backgroundColor: "white" }}>
+        <Button
+          onClick={shuffleHandler}
+          style={{ marginRight: "10px", backgroundColor: "white" }}
+        >
           Start
         </Button>
-        <Button onClick={nextHandler} style={{ marginLeft: "10px", backgroundColor: "white" }}>Next</Button>
+        <Button
+          onClick={nextHandler}
+          style={{ marginLeft: "10px", backgroundColor: "white" }}
+        >
+          Next
+        </Button>
       </div>
     </div>
   );

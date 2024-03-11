@@ -89,9 +89,9 @@ export interface DeleteCardDeck {
 
 // response <- ENDPOINT_ADD_RATING
 export interface AddRating {
-  access_token: AccessToken,
-  deck_id: number,
-  new_rating: number,
+  access_token: AccessToken;
+  deck_id: number;
+  new_rating: number;
 }
 
 // request -> ENDPOINT_SET_DECK_ICON
@@ -196,24 +196,24 @@ export interface ListFavoritesResponse {
 
 // request -> ENDPOINT_ADD_FAVORITE
 export interface AddFavorite {
-  access_token: AccessToken,
-  user_id: number,
-  deck_id: number,
+  access_token: AccessToken;
+  user_id: number;
+  deck_id: number;
 }
 
 // request -> ENDPOINT_DELETE_FAVORITE
 export interface DeleteFavorite {
-  access_token: AccessToken,
-  user_id: number,
-  deck_id: number,
+  access_token: AccessToken;
+  user_id: number;
+  deck_id: number;
 }
 
 // request -> ENDPOINT_GET_RANDOM_DECKS
-export interface RandomDecksRequest{
-  num_decks: number
+export interface RandomDecksRequest {
+  num_decks: number;
 }
 
 // response -> ENDPOINT_GET_RANDOM_DECKS
-export interface RandomDecksResponse{
-  decks: CardDeck[]
+export interface RandomDecksResponse {
+  decks: CardDeck[];
 }

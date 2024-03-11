@@ -2,7 +2,10 @@ import React, { useState, Dispatch } from "react";
 import Flashcard, { FlashcardInfo } from "./Flashcard";
 
 const FlashcardApp = () => {
-  const [flashcards, setFlashcards]: [FlashcardInfo[], Dispatch<FlashcardInfo[]>] = useState([] as FlashcardInfo[]);
+  const [flashcards, setFlashcards]: [
+    FlashcardInfo[],
+    Dispatch<FlashcardInfo[]>,
+  ] = useState([] as FlashcardInfo[]);
   const [frontText, setFrontText] = useState("");
   const [backText, setBackText] = useState("");
 

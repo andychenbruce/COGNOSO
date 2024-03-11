@@ -121,7 +121,7 @@ const App: React.FC = () => {
     <BedIcon />,
   ];
   const [decks, setDecks]: [CardDeck[], Dispatch<CardDeck[]>] = useState(
-    [] as CardDeck[]
+    [] as CardDeck[],
   );
   const updateDecks = () => {
     const token = get_session_token();
@@ -215,9 +215,7 @@ const App: React.FC = () => {
                         left: 10,
                       }}
                     />
-                    <span className="span_style">
-                      {deck.name}
-                    </span>
+                    <span className="span_style">{deck.name}</span>
                   </Button>
                 </div>
               ))
@@ -268,9 +266,7 @@ const App: React.FC = () => {
                         left: 10,
                       }}
                     />
-                    <span className="span_style">
-                      {deck.name}
-                    </span>
+                    <span className="span_style">{deck.name}</span>
                   </Button>
                 </div>
               ))
@@ -321,9 +317,7 @@ const App: React.FC = () => {
                         left: 10,
                       }}
                     />
-                    <span className="span_style">
-                      {deck.name}
-                    </span>
+                    <span className="span_style">{deck.name}</span>
                   </Button>
                 </div>
               ))
