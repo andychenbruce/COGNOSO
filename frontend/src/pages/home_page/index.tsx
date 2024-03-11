@@ -129,7 +129,10 @@ const App: React.FC = () => {
       return;
     }
     const request1: ListCardDecks = { access_token: token };
-    send_json_backend(ENDPOINT_LIST_CARD_DECKS, JSON.stringify(request1))
+    send_json_backend<ListCardDecksResponse>(
+      ENDPOINT_LIST_CARD_DECKS,
+      JSON.stringify(request1),
+    )
       .then((data: ListCardDecksResponse) => {
         setDecks(data.decks);
       })
@@ -139,7 +142,10 @@ const App: React.FC = () => {
     const request2: ListFavoritesRequest = {
       access_token: token,
     };
-    send_json_backend(ENDPOINT_LIST_FAVORITES, JSON.stringify(request2))
+    send_json_backend<ListFavoritesResponse>(
+      ENDPOINT_LIST_FAVORITES,
+      JSON.stringify(request2),
+    )
       .then((data: ListFavoritesResponse) => {
         // console.log('favorited', data)
         setFavorites(data.decks);
@@ -151,7 +157,10 @@ const App: React.FC = () => {
     const request3: RandomDecksRequest = {
       num_decks: randNum,
     };
-    send_json_backend(ENDPOINT_GET_RANDOM_DECKS, JSON.stringify(request3))
+    send_json_backend<RandomDecksResponse>(
+      ENDPOINT_GET_RANDOM_DECKS,
+      JSON.stringify(request3),
+    )
       .then((data: RandomDecksResponse) => {
         // console.log('others', data.decks)
         setRandomDecks(data.decks);

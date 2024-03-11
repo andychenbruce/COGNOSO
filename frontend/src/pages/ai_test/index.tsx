@@ -13,8 +13,8 @@ const App: React.FC = () => {
       prompt: prompt,
     };
     console.log("prompt:", prompt);
-    send_json_backend(ENDPOINT_AI_TEST, JSON.stringify(aiSend))
-      .then((data: any) => {
+    send_json_backend<string>(ENDPOINT_AI_TEST, JSON.stringify(aiSend))
+      .then((data: string) => {
         setResponse(data);
       })
       .catch((error) => {

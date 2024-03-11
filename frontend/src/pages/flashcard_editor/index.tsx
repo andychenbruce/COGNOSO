@@ -96,7 +96,10 @@ const App: React.FC = () => {
       user_id: user_id,
       deck_id: deckId,
     };
-    send_json_backend(ENDPOINT_LIST_CARDS, JSON.stringify(prev_cards))
+    send_json_backend<ListCardsResponse>(
+      ENDPOINT_LIST_CARDS,
+      JSON.stringify(prev_cards),
+    )
       .then((data: ListCardsResponse) => {
         console.log("Prev_Cards:", data);
         setFlashcards(data.cards);

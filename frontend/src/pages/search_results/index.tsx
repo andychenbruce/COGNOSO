@@ -138,17 +138,18 @@ const App: React.FC = () => {
     const request: SearchDecksRequest = {
       prompt: get_search_query(),
     };
-    send_json_backend(ENDPOINT_SEARCH_DECKS, JSON.stringify(request)).then(
-      (data: SearchDecksResponse) => {
-        const temp = [];
-        for (let i = 0; i < data.decks.length; i++) {
-          if (data.decks[i].name == get_search_query()) {
-            temp.push(data.decks[i]);
-          }
+    send_json_backend<SearchDecksResponse>(
+      ENDPOINT_SEARCH_DECKS,
+      JSON.stringify(request),
+    ).then((data: SearchDecksResponse) => {
+      const temp = [];
+      for (let i = 0; i < data.decks.length; i++) {
+        if (data.decks[i].name == get_search_query()) {
+          temp.push(data.decks[i]);
         }
-        setDecks(data.decks);
-      },
-    );
+      }
+      setDecks(data.decks);
+    });
   }, []);
 
   const updateDecks = () => {

@@ -29,7 +29,7 @@ const Main: React.FC<PageProps> = () => {
 
   const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    send_json_backend(ENDPOINT_LOGIN, JSON.stringify(user))
+    send_json_backend<LoginResponse>(ENDPOINT_LOGIN, JSON.stringify(user))
       .then((data: LoginResponse) => {
         set_session_info(data.access_token, data.user_id);
         console.log("got back json: ", data);

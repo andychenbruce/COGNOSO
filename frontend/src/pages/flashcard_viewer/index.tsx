@@ -8,6 +8,7 @@ import {
   ENDPOINT_LIST_CARDS,
   ENDPOINT_GET_DECK,
   GetDeckRequest,
+  GetDeckResponse,
   ListCards,
   ListCardsResponse,
   ENDPOINT_ADD_RATING,
@@ -45,15 +46,11 @@ const FlashcardViewerFunc = () => {
         user_id: user_id,
         deck_id: deckId,
       };
-      try {
-        const deck_info = await send_json_backend(
-          ENDPOINT_GET_DECK,
-          JSON.stringify(payload),
-        );
-        setDeckName(deck_info.name);
-      } catch (error) {
-        console.error("Error fetching deck name:", error);
-      }
+      const deck_info = await send_json_backend<GetDeckResponse>(
+        ENDPOINT_GET_DECK,
+        JSON.stringify(payload),
+      );
+      setDeckName(deck_info.name);
     };
 
     const listCards = () => {
@@ -66,7 +63,10 @@ const FlashcardViewerFunc = () => {
         user_id: user_id,
         deck_id: deckId,
       };
-      send_json_backend(ENDPOINT_LIST_CARDS, JSON.stringify(prev_cards))
+      send_json_backend<ListCardsResponse>(
+        ENDPOINT_LIST_CARDS,
+        JSON.stringify(prev_cards),
+      )
         .then((data: ListCardsResponse) => {
           setFlashcards(data.cards);
         })
