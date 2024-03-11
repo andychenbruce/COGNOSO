@@ -507,12 +507,26 @@ impl Database {
             })
             .collect::<Result<_, AndyError>>()?;
 
-        for index in decks.iter().rev().filter_map(|x| match x {
-            LookupResult::NotFound(position) => Some(position),
-            LookupResult::Found(_) => None,
-        }) {
-            user_entry.favorites.remove(*index);
-        }
+        let missing_indicies: Vec<_> = decks
+            .iter()
+            .filter_map(|x| match x {
+                LookupResult::NotFound(position) => Some(*position),
+                LookupResult::Found(_) => None,
+            })
+            .collect();
+
+        user_entry.favorites = user_entry
+            .favorites
+            .into_iter()
+            .enumerate()
+            .filter_map(|(index, entry)| {
+                if missing_indicies.contains(&index) {
+                    None
+                } else {
+                    Some(entry)
+                }
+            })
+            .collect();
 
         Ok(api_structs::ListFavoritesResponse {
             decks: decks
