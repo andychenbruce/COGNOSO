@@ -14,16 +14,8 @@ const App: React.FC = () => {
     };
     console.log('prompt:', prompt)
     send_json_backend(ENDPOINT_AI_TEST, JSON.stringify(aiSend))
-<<<<<<< HEAD
       .then((data: any) => {
-        // const responseData = JSON.parse(data);
         setResponse(data);
-        // console.log(data)
-=======
-      .then((data: string) => {
-        const responseData = JSON.parse(data);
-        setResponse(responseData.content);
->>>>>>> d60423a3a62aa03d49d7f3d03365b75f53d6e009
       })
       .catch((error) => {
         console.error("Error talking card:", error);
