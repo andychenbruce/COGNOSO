@@ -1,34 +1,14 @@
 import * as React from "react";
 import type { HeadFC, PageProps } from "gatsby";
+import { redirect } from "../utils";
 
 const Main: React.FC<PageProps> = () => {
+  React.useEffect(() => {
+    redirect("/login", []); // Assuming "/login" is the path to your login page
+  }, []); // Empty dependency array ensures this effect runs only once, on mount
+
   return (
     <>
-      <p>
-        <a href="/login">login</a>
-      </p>
-      <p>
-        <a href="/flashcard_viewer">view flashcards</a>
-      </p>
-      <p>
-        <a href="/acc_create">acc_create</a>
-      </p>
-      <p>
-        <a href="home_page">home_page</a>
-      </p>
-      <p>
-        <a href="deck_manage">deck_manage</a>
-      </p>
-      <p>
-        <a href="deck_manage">deck_manage</a>
-      </p>
-      <p>
-        <a href="flashcard_editor">flashcard_editor</a>
-      </p>
-      <p>
-        <a href="minigame">minigame</a>
-      </p>
-      <p>bruh bruh</p>
     </>
   );
 };

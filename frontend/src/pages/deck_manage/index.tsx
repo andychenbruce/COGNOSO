@@ -188,6 +188,7 @@ const App: React.FC = () => {
 
     send_json_backend(ENDPOINT_SET_DECK_ICON, JSON.stringify(new_icon))
       .then(() => {
+        console.log("Successfully updated deck icon");
         handleIconDialogClose();
         updateDecks();
         setSelectedIcon(null);
@@ -215,18 +216,28 @@ const App: React.FC = () => {
     send_json_backend<ListCardDecksResponse>(
       ENDPOINT_LIST_CARD_DECKS,
       JSON.stringify(request1),
-    ).then((data: ListCardDecksResponse) => {
-      setDecks(data.decks);
-    });
+    )
+      .then((data: ListCardDecksResponse) => {
+        setDecks(data.decks);
+        // console.log(data.decks);
+      })
+      .catch((error) => {
+        console.error("Error in:", error);
+      });
     const request2: ListFavoritesRequest = {
       access_token: token,
     };
     send_json_backend<ListFavoritesResponse>(
       ENDPOINT_LIST_FAVORITES,
       JSON.stringify(request2),
-    ).then((data: ListFavoritesResponse) => {
-      setFavorites(data.decks);
-    });
+    )
+      .then((data: ListFavoritesResponse) => {
+        // console.log('favorited', data)
+        setFavorites(data.decks);
+      })
+      .catch((error) => {
+        console.error("Error in:", error);
+      });
   };
 
   useEffect(updateDecks, []);
@@ -252,15 +263,18 @@ const App: React.FC = () => {
     if (access_token == null) {
       return;
     }
+    console.log("access token = ", access_token);
     const request: CreateCardDeck = {
       access_token: access_token,
       deck_name: deckName,
     };
-    send_json_backend(ENDPOINT_CREATE_CARD_DECK, JSON.stringify(request)).then(
-      () => {
+    send_json_backend(ENDPOINT_CREATE_CARD_DECK, JSON.stringify(request))
+      .then(() => {
         updateDecks();
-      },
-    );
+      })
+      .catch((error) => {
+        console.error("Error in:", error);
+      });
     setOpenCreateDialog(false);
   };
 
@@ -314,6 +328,7 @@ const App: React.FC = () => {
       if (access_token == null) {
         return;
       }
+      console.log("base 64 = ", base64_encode);
       const request_json: UploadPdf = {
         access_token: access_token,
         deck_name: deckName,
@@ -322,10 +337,14 @@ const App: React.FC = () => {
       return send_json_backend(
         ENDPOINT_CREATE_DECK_PDF,
         JSON.stringify(request_json),
-      ).then(() => {
-        updateDecks();
-        setOpenCreateDialog(false);
-      });
+      )
+        .then(() => {
+          updateDecks();
+          setOpenCreateDialog(false);
+        })
+        .catch((error) => {
+          console.error("Error in:", error);
+        });
     });
   };
 
@@ -338,12 +357,13 @@ const App: React.FC = () => {
       access_token: access_token,
       deck_id: deckId,
     };
-    send_json_backend(
-      ENDPOINT_DELETE_CARD_DECK,
-      JSON.stringify(deleteRequest),
-    ).then(() => {
-      updateDecks();
-    });
+    send_json_backend(ENDPOINT_DELETE_CARD_DECK, JSON.stringify(deleteRequest))
+      .then(() => {
+        updateDecks();
+      })
+      .catch((error) => {
+        console.error("Error deleting deck:", error);
+      });
   };
 
   const handleFavoriteDeck = (deckid: number) => {
@@ -357,11 +377,13 @@ const App: React.FC = () => {
       user_id: user_id,
       deck_id: deckid,
     };
-    send_json_backend(ENDPOINT_ADD_FAVORITE, JSON.stringify(request)).then(
-      () => {
+    send_json_backend(ENDPOINT_ADD_FAVORITE, JSON.stringify(request))
+      .then(() => {
         updateDecks();
-      },
-    );
+      })
+      .catch((error) => {
+        console.error("Error favoriting deck:", error);
+      });
   };
 
   const handleUnfavoriteDeck = (deckId: number) => {
@@ -375,12 +397,15 @@ const App: React.FC = () => {
       user_id: user_id,
       deck_id: deckId,
     };
-    send_json_backend(ENDPOINT_DELETE_FAVORITE, JSON.stringify(request)).then(
-      () => {
+    send_json_backend(ENDPOINT_DELETE_FAVORITE, JSON.stringify(request))
+      .then(() => {
         setFavorites(favorites.filter((deck) => deck.deck_id !== deckId));
-      },
-    );
+      })
+      .catch((error) => {
+        console.error("Error unfavoriting deck:", error);
+      });
   };
+
 
   return (
     <div>
