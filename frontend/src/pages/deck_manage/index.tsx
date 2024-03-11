@@ -153,7 +153,6 @@ const App: React.FC = () => {
   const [openIconDialog, setOpenIconDialog] = useState(false);
   const [selectedIcon, setSelectedIcon] = useState<number | null>(null);
   const [currentEditing, setCurrentEditing] = useState<number | null>(null);
-  // const [ratingCurrentDeck, setratingCurrentDeck] = useState<number | null>(null);
   const [deckName, setDeckName] = useState("");
   const [usePDF, setUsePDF] = useState(false);
   const [decks, setDecks]: [CardDeck[], Dispatch<CardDeck[]>] = useState(
