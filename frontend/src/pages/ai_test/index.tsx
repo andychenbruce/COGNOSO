@@ -12,13 +12,15 @@ const App: React.FC = () => {
     const aiSend: AiPromptTest = {
       prompt: prompt,
     };
+    console.log('prompt:', prompt)
     send_json_backend(ENDPOINT_AI_TEST, JSON.stringify(aiSend))
       .then((data: any) => {
-        const responseData = JSON.parse(data);
-        setResponse(responseData.content);
+        // const responseData = JSON.parse(data);
+        setResponse(data);
+        // console.log(data)
       })
       .catch((error) => {
-        console.error("Error creating card:", error);
+        console.error("Error talking card:", error);
       });
   };
 
@@ -44,18 +46,12 @@ const App: React.FC = () => {
           },}}  fullWidth>
             Submit Prompt
           </Button>
-
+          <p style={{color: 'white'}}> *Please Note that responses may take a minute to process and generate </p>
         </Paper>
         <Paper className='paper2' sx={{borderRadius: '50px', backgroundColor: 'rgba(128, 128, 128, 0.5)'}}>
           <header>Response:</header>
             <Paper className="paper3" sx={{borderRadius: '20px', backgroundColor: 'rgba(128, 128, 128, 0.5)'}}>
-              {response && (
-                <Box mt={2}>
-                  <Typography variant="body1" align="center" style={{ backgroundColor: '#ffffff', padding: '10px', borderRadius: '4px' }}>
-                    {response}
-                  </Typography>
-                </Box>
-              )}
+              {response}
             </Paper>
         </Paper>
       </div>

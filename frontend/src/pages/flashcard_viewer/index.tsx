@@ -1,7 +1,7 @@
 import "./App.css";
 import React, { useState, useEffect } from "react";
 import { Button, Paper, Typography, IconButton } from "@mui/material";
-import {  Rating } from "@mui/material";
+import { Rating } from "@mui/material";
 import Flashcard from "./Flashcard";
 import { Navbar } from "../../navbar";
 import {
@@ -38,7 +38,7 @@ const FlashcardViewerFunc = () => {
     const fetchDeckName = async () => {
       let access_token = get_session_token();
       let user_id = get_user_id();
-      if ((access_token == null) || (user_id == null)) {
+      if (access_token == null || user_id == null) {
         return;
       }
       let payload: GetDeckRequest = {
@@ -48,7 +48,7 @@ const FlashcardViewerFunc = () => {
       try {
         const deck_info = await send_json_backend(
           ENDPOINT_GET_DECK,
-          JSON.stringify(payload),
+          JSON.stringify(payload)
         );
         setDeckName(deck_info.name);
       } catch (error) {
@@ -85,20 +85,20 @@ const FlashcardViewerFunc = () => {
     const searchParams = new URLSearchParams(url.search);
     const deckIdJSON = searchParams.get("deck");
     const deckId: number = deckIdJSON ? JSON.parse(deckIdJSON) : null;
-    console.log(deckId)
+    console.log(deckId);
     let access_token = get_session_token();
     if (access_token == null) {
       return;
     }
 
-    console.log('newValue:', newValue)
+    console.log("newValue:", newValue);
     let add_rating: AddRating = {
       access_token: access_token,
       deck_id: deckId,
       new_rating: newValue,
     };
-    send_json_backend(ENDPOINT_ADD_RATING, JSON.stringify(add_rating))
-  }
+    send_json_backend(ENDPOINT_ADD_RATING, JSON.stringify(add_rating));
+  };
 
   const addFlashcard = () => {
     window.location.pathname = "/flashcard_editor/";
@@ -110,7 +110,7 @@ const FlashcardViewerFunc = () => {
 
   const handlePrevCard = () => {
     setCurrentCardIndex(
-      (prevIndex) => (prevIndex - 1 + flashcards.length) % flashcards.length,
+      (prevIndex) => (prevIndex - 1 + flashcards.length) % flashcards.length
     );
   };
 
@@ -191,18 +191,17 @@ const FlashcardViewerFunc = () => {
             marginTop: "50px",
           }}
         >
-           <Rating
-        name="simple-controlled"
-        value={value}
-        onChange={(event, newValue) => {
-          console.log(event, 'new value is:', newValue)
-          setValue(newValue);
-          if (newValue !== null) {
-            addRating(newValue);
-          }
-          
-        }}
-      />
+          <Rating
+            name="simple-controlled"
+            value={value}
+            onChange={(event, newValue) => {
+              console.log(event, "new value is:", newValue);
+              setValue(newValue);
+              if (newValue !== null) {
+                addRating(newValue);
+              }
+            }}
+          />
           <Paper
             elevation={3}
             style={{
@@ -211,14 +210,22 @@ const FlashcardViewerFunc = () => {
               textAlign: "center",
               marginBottom: "20px",
               backgroundColor: "#ce93d8",
+              border: "2px solid purple",
             }}
           >
-            <Typography variant="h5">{deckName}</Typography>
+            <Typography
+              variant="h5"
+              style={{ fontFamily: "Arial, sans-serif" }}
+            >
+              {deckName}
+            </Typography>{" "}
+            {}
           </Paper>
           {flashcards.length > 0 && (
             <Flashcard
               question={flashcards[currentCardIndex].question}
               answer={flashcards[currentCardIndex].answer}
+              style={{ padding: "20px", overflow: "auto" }}
             />
           )}
           <IconButton

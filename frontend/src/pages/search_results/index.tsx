@@ -147,7 +147,6 @@ const App: React.FC = () => {
     };
     send_json_backend(ENDPOINT_SEARCH_DECKS, JSON.stringify(request)).then(
       (data: SearchDecksResponse) => {
-        console.log('data:', data);
         let temp = []
         for(let i = 0; i < data.decks.length; i++){
           if(data.decks[i].name == get_search_query()){

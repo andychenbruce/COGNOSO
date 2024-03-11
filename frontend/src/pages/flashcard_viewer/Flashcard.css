@@ -3,7 +3,7 @@
   width: 600px;
   height: 300px;
   position: relative;
-  margin: 75px auto; /* Center horizontally */
+  margin: 75px auto; 
 }
 
 .card {
@@ -23,9 +23,14 @@
   height: 100%;
   backface-visibility: hidden;
   position: absolute;
-  display: flex; /* Center content vertically */
-  justify-content: center; /* Center content horizontally */
-  align-items: center; /* Center content vertically */
+  display: flex; 
+  justify-content: center;
+  align-items: center;
+  padding: 20px; 
+  box-sizing: border-box; 
+  overflow-wrap: break-word; 
+  text-align: center; 
+  overflow-y: auto; 
 }
 
 .front {
@@ -35,4 +40,10 @@
 .back {
   background-color: #ce93d8;
   transform: rotateY(180deg);
+}
+
+.front p, .back p {
+  font-size: max(16px, min(4vw, 22px)); 
+  word-wrap: break-word; 
+  margin: 0; 
 }
