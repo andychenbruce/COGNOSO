@@ -48,3 +48,9 @@
   word-wrap: break-word;
   margin: 0;
 }
+
+.flashcard-content {
+  padding: 20px;
+  overflow: auto; /* Make content scrollable */
+  max-height: 100%; /* Limit height to fit within flashcard */
+}

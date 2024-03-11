@@ -22,10 +22,10 @@ const Flashcard = ({ front, back }: FlashcardInfo) => {
     >
       <div className="card">
         <div className="front">
-          <p>{front}</p>
+        <div className="flashcard-content">{front}</div>
         </div>
         <div className="back">
-          <p>{back}</p>
+        <div className="flashcard-content">{back}</div>
         </div>
       </div>
     </div>
