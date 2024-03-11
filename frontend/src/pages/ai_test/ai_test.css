@@ -9,28 +9,26 @@
   height: 100vh;
 }
 
-.paper {
-  padding: 20px;
-  width: 70%;
+.paper, .paper2, .paper3 {
+  padding: 40px;
+  margin: 20px auto; 
   background-color: rgba(128, 128, 128, 0.4);
   border: 2px solid black;
+  width: 90%; 
+}
+
+.paper {
+  background-color: rgba(128, 128, 128, 0.4); 
+  width: 70%; 
 }
 
 .paper2 {
-  width: 90%;
-  height: 60%;
-  margin: 1%;
-  border: 2px solid black;
-  padding: 20px;
   background-color: rgba(128, 128, 128, 0.3);
-  border-radius: '20px';
+  border-radius: 20px; 
+  height: auto; 
 }
 
 .paper3 {
-  width: 90%;
-  height: 90%;
-  margin: 10px auto auto auto;
-  border: 2px solid black;
-  padding: 20px;
   background-color: rgba(128, 128, 128, 0.5);
+  height: auto; 
 }
