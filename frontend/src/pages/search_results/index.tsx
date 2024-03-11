@@ -3,15 +3,12 @@ import { Navbar } from "../../navbar";
 import "./search_results.css";
 
 import { Grid } from "@mui/material";
-import { send_json_backend, get_session_token, redirect } from "../../utils";
+import { send_json_backend, redirect } from "../../utils";
 import {
   CardDeck,
   ENDPOINT_SEARCH_DECKS,
   SearchDecksRequest,
   SearchDecksResponse,
-  //ListCardDecksResponse,
-  ListCardDecks,
-  ENDPOINT_LIST_CARD_DECKS,
 } from "../../backend_interface";
 import { Button, Rating } from "@mui/material";
 
@@ -149,21 +146,6 @@ const App: React.FC = () => {
       setDecks(data.decks);
     });
   }, []);
-
-  const updateDecks = () => {
-    const token = get_session_token();
-    if (token == null) {
-      return;
-    }
-    const request1: ListCardDecks = { access_token: token };
-    send_json_backend(ENDPOINT_LIST_CARD_DECKS, JSON.stringify(request1)).catch(
-      (error) => {
-        console.error("Error in:", error);
-      },
-    );
-  };
-
-  useEffect(updateDecks, []);
 
   return (
     <div className="App">

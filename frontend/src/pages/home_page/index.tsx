@@ -132,27 +132,18 @@ const App: React.FC = () => {
     send_json_backend<ListCardDecksResponse>(
       ENDPOINT_LIST_CARD_DECKS,
       JSON.stringify(request1),
-    )
-      .then((data: ListCardDecksResponse) => {
-        setDecks(data.decks);
-      })
-      .catch((error) => {
-        console.error("Error in:", error);
-      });
+    ).then((data: ListCardDecksResponse) => {
+      setDecks(data.decks);
+    });
     const request2: ListFavoritesRequest = {
       access_token: token,
     };
     send_json_backend<ListFavoritesResponse>(
       ENDPOINT_LIST_FAVORITES,
       JSON.stringify(request2),
-    )
-      .then((data: ListFavoritesResponse) => {
-        // console.log('favorited', data)
-        setFavorites(data.decks);
-      })
-      .catch((error) => {
-        console.error("Error in:", error);
-      });
+    ).then((data: ListFavoritesResponse) => {
+      setFavorites(data.decks);
+    });
     const randNum = 10;
     const request3: RandomDecksRequest = {
       num_decks: randNum,
@@ -160,14 +151,9 @@ const App: React.FC = () => {
     send_json_backend<RandomDecksResponse>(
       ENDPOINT_GET_RANDOM_DECKS,
       JSON.stringify(request3),
-    )
-      .then((data: RandomDecksResponse) => {
-        // console.log('others', data.decks)
-        setRandomDecks(data.decks);
-      })
-      .catch((error) => {
-        console.error("Error in:", error);
-      });
+    ).then((data: RandomDecksResponse) => {
+      setRandomDecks(data.decks);
+    });
   };
 
   const [favorites, setFavorites]: [CardDeck[], Dispatch<CardDeck[]>] =
