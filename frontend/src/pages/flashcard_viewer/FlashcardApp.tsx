@@ -1,33 +1,18 @@
-import React, { useState } from "react";
-import Flashcard from "./Flashcard"; // Adjust the import path based on your project structure
+import React, { useState, Dispatch } from "react";
+import Flashcard, { FlashcardInfo } from "./Flashcard";
 
 const FlashcardApp = () => {
-  const [flashcards, setFlashcards] = useState([]);
+  const [flashcards, setFlashcards]: [FlashcardInfo[], Dispatch<FlashcardInfo[]>] = useState([] as FlashcardInfo[]);
   const [frontText, setFrontText] = useState("");
   const [backText, setBackText] = useState("");
 
   const addFlashcard = () => {
     if (frontText && backText) {
       const newFlashcard = { front: frontText, back: backText };
-      setFlashcards([...flashcards, newFlashcard] as any);
+      setFlashcards([...flashcards, newFlashcard]);
       setFrontText("");
       setBackText("");
     }
-
-    //   let new_user_request: ListCards = {
-    //     user_name: user.username,
-    //     email: user.email,
-    //     password: user.password1,
-    //   };
-    //   send_json_backend(ENDPOINT_NEW_USER, JSON.stringify(new_user_request))
-    //     .then((data) => {
-    //       console.log("New user made:", data);
-    //       redirectToLogin();
-    //     })
-    //     .catch((error) => {
-    //       console.error("Error creating new user:", error);
-    //     });
-    // };
   };
 
   return (
@@ -52,7 +37,7 @@ const FlashcardApp = () => {
         <button onClick={addFlashcard}>Add Flashcard</button>
       </div>
 
-      {flashcards.map((flashcard: any, index) => (
+      {flashcards.map((flashcard: FlashcardInfo, index) => (
         <Flashcard key={index} front={flashcard.front} back={flashcard.back} />
       ))}
     </div>

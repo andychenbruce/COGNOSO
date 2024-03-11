@@ -142,12 +142,12 @@ const App: React.FC = () => {
   };
 
   useEffect(() => {
-    let request: SearchDecksRequest = {
+    const request: SearchDecksRequest = {
       prompt: get_search_query(),
     };
     send_json_backend(ENDPOINT_SEARCH_DECKS, JSON.stringify(request)).then(
       (data: SearchDecksResponse) => {
-        let temp = []
+        const temp = []
         for(let i = 0; i < data.decks.length; i++){
           if(data.decks[i].name == get_search_query()){
             temp.push(data.decks[i])
@@ -159,11 +159,11 @@ const App: React.FC = () => {
   }, []);
 
 	const updateDecks = () => {
-    let token = get_session_token();
+    const token = get_session_token();
     if (token == null) {
       return;
     }
-    let request1: ListCardDecks = { access_token: token };
+    const request1: ListCardDecks = { access_token: token };
     send_json_backend(ENDPOINT_LIST_CARD_DECKS, JSON.stringify(request1))
       .catch((error) => {
         console.error("Error in:", error);

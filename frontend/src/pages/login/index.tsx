@@ -1,5 +1,5 @@
 import React from "react";
-import { useState } from "react";
+import { useState, Dispatch } from "react";
 import { Paper, TextField, Button, Snackbar } from "@mui/material";
 import "./login.css";
 import type { PageProps } from "gatsby";
@@ -11,7 +11,7 @@ import {
 import { send_json_backend, set_session_info } from "../../utils";
 
 const Main: React.FC<PageProps> = () => {
-  const [user, setUser]: [LoginRequest, any] = useState({
+  const [user, setUser]: [LoginRequest, Dispatch<LoginRequest>] = useState({
     email: "",
     password: "",
   });
@@ -21,10 +21,10 @@ const Main: React.FC<PageProps> = () => {
     event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
   ) => {
     const { value, name } = event.target;
-    setUser((prevUser: LoginRequest) => ({
-      ...prevUser,
+    setUser({
+      ...user,
       [name]: value,
-    }));
+    });
   };
 
   const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {

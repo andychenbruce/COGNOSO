@@ -53,8 +53,8 @@ const App: React.FC = () => {
   };
 
   const Create_card = () => {
-    let deckId = get_deckid();
-    let access_token = get_session_token();
+    const deckId = get_deckid();
+    const access_token = get_session_token();
     if (access_token == null) {
       return;
     }
@@ -69,7 +69,7 @@ const App: React.FC = () => {
       return;
     }
 
-    let create_card = {
+    const create_card = {
       access_token: access_token,
       deck_id: deckId,
       question: q1,
@@ -88,13 +88,13 @@ const App: React.FC = () => {
   };
 
   const listCards = () => {
-    let deckId = get_deckid();
-    let access_token = get_session_token();
-    let user_id = get_user_id();
+    const deckId = get_deckid();
+    const access_token = get_session_token();
+    const user_id = get_user_id();
     if (access_token == null || user_id == null) {
       return;
     }
-    let prev_cards: ListCards = {
+    const prev_cards: ListCards = {
       user_id: user_id,
       deck_id: deckId,
     };
@@ -116,14 +116,14 @@ const App: React.FC = () => {
   };
 
   const handleDeleteCard = (index: number) => {
-    let access_token = get_session_token();
+    const access_token = get_session_token();
     if (access_token == null) {
       return;
     }
 
     const cardIndexToDelete = index;
 
-    let deleteCardPayload: DeleteCard = {
+    const deleteCardPayload: DeleteCard = {
       access_token: access_token,
       deck_id: get_deckid(),
       card_index: cardIndexToDelete,
@@ -143,13 +143,13 @@ const App: React.FC = () => {
   };
 
   const handleSaveEdit = (index: number) => {
-    let access_token = get_session_token();
+    const access_token = get_session_token();
     if (access_token == null) {
       return;
     }
     const cardIndexToEdit = index;
     console.log(editedQuestion, editedAnswer);
-    let edit_card: EditCard = {
+    const edit_card: EditCard = {
       access_token: access_token,
       deck_id: get_deckid(),
       card_index: cardIndexToEdit,
