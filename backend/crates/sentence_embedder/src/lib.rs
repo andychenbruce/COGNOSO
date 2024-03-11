@@ -70,7 +70,7 @@ impl SentenceEmbedder {
         let tokens = self
             .tokenizer
             .encode_batch(sentences.to_vec(), true)
-            .unwrap();
+            .map_err(EmbedderError::Tokenizer)?;
         let token_ids = tokens
             .iter()
             .map(|tokens| {
@@ -93,8 +93,8 @@ impl SentenceEmbedder {
         };
 
         let embeddings_list: Vec<Vec<f32>> = (0..n_sentences)
-            .map(|i| embeddings.get(i).unwrap().to_vec1::<f32>().unwrap())
-            .collect();
+            .map(|i| Ok(embeddings.get(i)?.to_vec1::<f32>()?))
+            .collect::<Result<_, EmbedderError>>()?;
 
         Ok(embeddings_list)
     }

@@ -466,37 +466,77 @@ impl Database {
         &self,
         user_id: UserId,
     ) -> Result<api_structs::ListFavoritesResponse, AndyError> {
-        let favorites = {
+        let mut user_entry = {
             let read_txn = self.db.begin_read()?;
             let table = read_txn.open_table(Self::USERS_TABLE)?;
-            let user_entry = table
+            let x = table
                 .get(user_id)?
                 .ok_or(AndyError::UserDoesNotExist)?
                 .value();
-            user_entry.favorites
+            x
         };
 
-        let decks: Vec<api_structs::CardDeck> = favorites
-            .into_iter()
-            .map(|id| {
+        enum LookupResult {
+            Found(api_structs::CardDeck),
+            NotFound(usize),
+        }
+
+        let decks: Vec<LookupResult> = user_entry
+            .favorites
+            .iter()
+            .enumerate()
+            .map(|(index, id)| {
                 let read_txn = self.db.begin_read()?;
                 let table = read_txn.open_table(Self::DECKS_TABLE)?;
 
                 //todo: delete favorites to decks that no longer exist
-                let deck = table.get(id)?.unwrap().value();
+                let deck = match table.get(id)? {
+                    Some(x) => x,
+                    None => return Ok(LookupResult::NotFound(index)),
+                }
+                .value();
 
-                Ok::<api_structs::CardDeck, AndyError>(api_structs::CardDeck {
+                Ok::<_, AndyError>(LookupResult::Found(api_structs::CardDeck {
                     name: deck.name,
                     user_id: id.0,
                     deck_id: id.1,
                     num_cards: deck.cards.len() as u32,
                     icon_num: deck.icon_num,
                     rating: deck.rating,
-                })
+                }))
             })
-            .collect::<Result<_, _>>()?;
+            .collect::<Result<_, AndyError>>()?;
 
-        Ok(api_structs::ListFavoritesResponse { decks })
+        let missing_indicies: Vec<_> = decks
+            .iter()
+            .filter_map(|x| match x {
+                LookupResult::NotFound(position) => Some(*position),
+                LookupResult::Found(_) => None,
+            })
+            .collect();
+
+        user_entry.favorites = user_entry
+            .favorites
+            .into_iter()
+            .enumerate()
+            .filter_map(|(index, entry)| {
+                if missing_indicies.contains(&index) {
+                    None
+                } else {
+                    Some(entry)
+                }
+            })
+            .collect();
+
+        Ok(api_structs::ListFavoritesResponse {
+            decks: decks
+                .into_iter()
+                .filter_map(|x| match x {
+                    LookupResult::NotFound(_) => None,
+                    LookupResult::Found(deck) => Some(deck),
+                })
+                .collect(),
+        })
     }
 
     pub fn add_favorite(&self, user_id: UserId, id_pair: UserDeckIdPair) -> Result<(), AndyError> {
