@@ -1,7 +1,7 @@
 import React, { Dispatch, useState, useEffect } from "react";
 import { Navbar } from "../../navbar";
 import "./home.css";
-import { redirect, send_json_backend, get_session_token } from "../../utils";
+import { send_json_backend, get_session_token } from "../../utils";
 import {
   ListCardDecks,
   ListCardDecksResponse,
@@ -121,44 +121,39 @@ const App: React.FC = () => {
     <BedIcon />,
   ];
   const [decks, setDecks]: [CardDeck[], Dispatch<CardDeck[]>] = useState(
-    [] as CardDeck[]
+    [] as CardDeck[],
   );
   const updateDecks = () => {
-    let token = get_session_token();
+    const token = get_session_token();
     if (token == null) {
       return;
     }
-    let request1: ListCardDecks = { access_token: token };
-    send_json_backend(ENDPOINT_LIST_CARD_DECKS, JSON.stringify(request1))
-      .then((data: ListCardDecksResponse) => {
-        setDecks(data.decks);
-      })
-      .catch((error) => {
-        console.error("Error in:", error);
-      });
-    let request2: ListFavoritesRequest = {
+    const request1: ListCardDecks = { access_token: token };
+    send_json_backend<ListCardDecksResponse>(
+      ENDPOINT_LIST_CARD_DECKS,
+      JSON.stringify(request1),
+    ).then((data: ListCardDecksResponse) => {
+      setDecks(data.decks);
+    });
+    const request2: ListFavoritesRequest = {
       access_token: token,
     };
-    send_json_backend(ENDPOINT_LIST_FAVORITES, JSON.stringify(request2))
-      .then((data: ListFavoritesResponse) => {
-        // console.log('favorited', data)
-        setFavorites(data.decks);
-      })
-      .catch((error) => {
-        console.error("Error in:", error);
-      });
-    let randNum = 10;
-    let request3: RandomDecksRequest = {
+    send_json_backend<ListFavoritesResponse>(
+      ENDPOINT_LIST_FAVORITES,
+      JSON.stringify(request2),
+    ).then((data: ListFavoritesResponse) => {
+      setFavorites(data.decks);
+    });
+    const randNum = 10;
+    const request3: RandomDecksRequest = {
       num_decks: randNum,
     };
-    send_json_backend(ENDPOINT_GET_RANDOM_DECKS, JSON.stringify(request3))
-      .then((data: RandomDecksResponse) => {
-        // console.log('others', data.decks)
-        setRandomDecks(data.decks);
-      })
-      .catch((error) => {
-        console.error("Error in:", error);
-      });
+    send_json_backend<RandomDecksResponse>(
+      ENDPOINT_GET_RANDOM_DECKS,
+      JSON.stringify(request3),
+    ).then((data: RandomDecksResponse) => {
+      setRandomDecks(data.decks);
+    });
   };
 
   const [favorites, setFavorites]: [CardDeck[], Dispatch<CardDeck[]>] =
@@ -177,18 +172,7 @@ const App: React.FC = () => {
       <div className="Favorites">
         <h2>{<StarIcon />} Favorites</h2>
         <div className="Content-box Favorites-box">
-          <div
-            style={{
-              padding: "10px",
-              display: "flex",
-              backgroundColor: "rgba(128, 128, 128, 0.5)",
-              overflowX: "scroll",
-              overflowY: "hidden",
-              scrollbarWidth: "thin",
-              scrollbarColor:
-                "rgba(255, 255, 255, 0.5) rgba(255, 255, 255, 0.5)",
-            }}
-          >
+          <div className="deckAreaBackground">
             {favorites.length > 0 ? (
               favorites.map((deck, index) => (
                 <div key={deck.deck_id} style={{ marginRight: "10px" }}>
@@ -196,8 +180,9 @@ const App: React.FC = () => {
                     variant="contained"
                     color="primary"
                     onClick={() => {
-                      redirect("/deck_manage");
+                      window.location.href = `/flashcard_viewer/?deck=${deck.deck_id}`;
                     }}
+                    className="button_sx"
                     sx={{
                       width: "200px",
                       height: "200px",
@@ -216,7 +201,7 @@ const App: React.FC = () => {
                     {iconList[favorites[index].icon_num]}
                     <Rating
                       name={`deck-rating-${deck.deck_id}`}
-                      value={deck.get_rating || 0}
+                      value={deck.rating}
                       readOnly
                       size="small"
                       style={{
@@ -225,20 +210,7 @@ const App: React.FC = () => {
                         left: 10,
                       }}
                     />
-                    <span
-                      style={{
-                        marginLeft: "5px",
-                        textAlign: "center",
-                        padding: "5px",
-                        top: "60%",
-                        width: "100px",
-                        whiteSpace: "nowrap",
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                      }}
-                    >
-                      {deck.name}
-                    </span>
+                    <span className="span_style">{deck.name}</span>
                   </Button>
                 </div>
               ))
@@ -252,18 +224,7 @@ const App: React.FC = () => {
       <div className="Decks">
         <h2>{<ViewCarouselTwoToneIcon />} My Decks</h2>
         <div className="Content-box Decks-box">
-          <div
-            style={{
-              padding: "10px",
-              display: "flex",
-              backgroundColor: "rgba(128, 128, 128, 0.5)",
-              overflowX: "scroll",
-              overflowY: "hidden",
-              scrollbarWidth: "thin",
-              scrollbarColor:
-                "rgba(255, 255, 255, 0.5) rgba(255, 255, 255, 0.5)",
-            }}
-          >
+          <div className="deckAreaBackground">
             {decks.length > 0 ? (
               decks.map((deck, index) => (
                 <div key={deck.deck_id} style={{ marginRight: "10px" }}>
@@ -271,7 +232,7 @@ const App: React.FC = () => {
                     variant="contained"
                     color="primary"
                     onClick={() => {
-                      redirect("/deck_manage");
+                      window.location.href = `/flashcard_viewer/?deck=${deck.deck_id}`;
                     }}
                     sx={{
                       width: "200px",
@@ -291,7 +252,7 @@ const App: React.FC = () => {
                     {iconList[decks[index].icon_num]}
                     <Rating
                       name={`deck-rating-${deck.deck_id}`}
-                      value={deck.get_rating || 0}
+                      value={deck.rating}
                       readOnly
                       size="small"
                       style={{
@@ -300,20 +261,7 @@ const App: React.FC = () => {
                         left: 10,
                       }}
                     />
-                    <span
-                      style={{
-                        marginLeft: "5px",
-                        textAlign: "center",
-                        padding: "5px",
-                        top: "60%",
-                        width: "100px",
-                        whiteSpace: "nowrap",
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                      }}
-                    >
-                      {deck.name}
-                    </span>
+                    <span className="span_style">{deck.name}</span>
                   </Button>
                 </div>
               ))
@@ -327,18 +275,7 @@ const App: React.FC = () => {
       <div className="OtherDecks">
         <h2>{<ViewCarouselIcon />} Decks By Other Users</h2>
         <div className="Content-box OtherDecks-box">
-          <div
-            style={{
-              padding: "10px",
-              display: "flex",
-              backgroundColor: "rgba(128, 128, 128, 0.5)",
-              overflowX: "scroll",
-              overflowY: "hidden",
-              scrollbarWidth: "thin",
-              scrollbarColor:
-                "rgba(255, 255, 255, 0.5) rgba(255, 255, 255, 0.5)",
-            }}
-          >
+          <div className="deckAreaBackground">
             {randomdecks.length > 0 ? (
               randomdecks.map((deck, index) => (
                 <div key={deck.deck_id} style={{ marginRight: "10px" }}>
@@ -346,7 +283,7 @@ const App: React.FC = () => {
                     variant="contained"
                     color="primary"
                     onClick={() => {
-                      redirect("/deck_manage");
+                      window.location.href = `/flashcard_viewer/?deck=${deck.deck_id}`;
                     }}
                     sx={{
                       width: "200px",
@@ -366,7 +303,7 @@ const App: React.FC = () => {
                     {iconList[randomdecks[index].icon_num]}
                     <Rating
                       name={`deck-rating-${deck.deck_id}`}
-                      value={deck.get_rating || 0}
+                      value={deck.rating}
                       readOnly
                       size="small"
                       style={{
@@ -375,20 +312,7 @@ const App: React.FC = () => {
                         left: 10,
                       }}
                     />
-                    <span
-                      style={{
-                        marginLeft: "5px",
-                        textAlign: "center",
-                        padding: "5px",
-                        top: "60%",
-                        width: "100px",
-                        whiteSpace: "nowrap",
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                      }}
-                    >
-                      {deck.name}
-                    </span>
+                    <span className="span_style">{deck.name}</span>
                   </Button>
                 </div>
               ))

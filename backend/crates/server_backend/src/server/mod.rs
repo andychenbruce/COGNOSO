@@ -149,11 +149,6 @@ async fn handle_request(
         ),
         (
             hyper::Method::POST,
-            api_structs::ENDPOINT_GET_RATING,
-            get_rating
-        ),
-        (
-            hyper::Method::POST,
             api_structs::ENDPOINT_ADD_RATING,
             edit_rating
         ),
@@ -338,23 +333,14 @@ async fn ai_test(
     Ok(ai_response)
 }
 
-async fn get_rating(
-    info: api_structs::GetRating,
-    state: std::sync::Arc<SharedState>,
-) -> Result<f32, AndyError> {
-    let user_id = state.database.validate_token(info.access_token)?;
-    let rating = state.database.get_rating(user_id, info.deck_id)?;
-    Ok(rating)
-}
-
 async fn edit_rating(
     info: api_structs::AddRating,
     state: std::sync::Arc<SharedState>,
 ) -> Result<(), AndyError> {
-    let user_id = state.database.validate_token(info.access_token)?;
+    let from_user_id = state.database.validate_token(info.access_token)?;
     state
         .database
-        .add_rating(user_id, info.deck_id, info.new_rating)?;
+        .add_rating(from_user_id, info.user_id, info.deck_id, info.new_rating)?;
     Ok(())
 }
 
@@ -418,8 +404,8 @@ async fn create_deck_pdf(
     let user_id = state.database.validate_token(info.access_token)?;
     let deck_id = state.database.get_deck_id(&info.deck_name);
 
-    let url = data_url::DataUrl::process(&info.file_bytes_base64).unwrap();
-    let (body, _fragment) = url.decode_to_vec().unwrap();
+    let url = data_url::DataUrl::process(&info.file_bytes_base64)?;
+    let (body, _fragment) = url.decode_to_vec()?;
 
     let text = pdf_parser::extract_text(&body)?;
 

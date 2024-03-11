@@ -82,3 +82,24 @@ body {
 .OtherDecks-box {
   border-color: rgba(255, 255, 255, 0.37);
 }
+
+.deckAreaBackground {
+  padding: 10px;
+  display: flex;
+  background-color: rgba(128, 128, 128, 0.5);
+  overflow-x: scroll;
+  overflow-y: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.5) rgba(255, 255, 255, 0.5);
+}
+
+.span_style {
+  margin-left: 5px;
+  text-align: center;
+  padding: 5px;
+  top: 60%;
+  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

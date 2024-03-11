@@ -1,7 +1,12 @@
 import React, { useState } from "react";
 import "./Flashcard.css";
 
-const Flashcard = ({ question, answer }: any) => {
+export interface FlashcardInfo {
+  front: string;
+  back: string;
+}
+
+const Flashcard = ({ front, back }: FlashcardInfo) => {
   const [showAnswer, setShowAnswer] = useState(false);
 
   const toggleShowAnswer = () => {
@@ -15,10 +20,10 @@ const Flashcard = ({ question, answer }: any) => {
     >
       <div className="card">
         <div className="front">
-          <p>{question}</p>
+          <p>{front}</p>
         </div>
         <div className="back">
-          <p>{answer}</p>
+          <p>{back}</p>
         </div>
       </div>
     </div>

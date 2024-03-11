@@ -3,7 +3,6 @@ export const ENDPOINT_DELETE_CARD_DECK: string = "/delete_card_deck";
 export const ENDPOINT_SET_DECK_ICON: string = "/set_deck_icon";
 
 export const ENDPOINT_ADD_RATING: string = "/add_rating";
-export const ENDPOINT_GET_RATING: string = "/get_rating";
 
 export const ENDPOINT_CREATE_CARD: string = "/create_card";
 export const ENDPOINT_DELETE_CARD: string = "/delete_card";
@@ -42,8 +41,7 @@ export interface CardDeck {
   deck_id: number;
   num_cards: number;
   icon_num: number;
-  get_rating: number;
-  add_rating: number;
+  rating: number;
 }
 
 // request -> ENDPOINT_CREATE_CARD
@@ -66,7 +64,7 @@ export interface EditCard {
   access_token: AccessToken;
   deck_id: number;
   card_index: number;
-  new_question: String;
+  new_question: string;
   new_answer: string;
 }
 
@@ -83,16 +81,11 @@ export interface DeleteCardDeck {
 }
 
 // request -> ENDPOINT_ADD_RATING
-export interface GetRating {
-  access_token: AccessToken,
-  deck_id: number,
-}
-
-// response <- ENDPOINT_ADD_RATING
 export interface AddRating {
-  access_token: AccessToken,
-  deck_id: number,
-  new_rating: number,
+  access_token: AccessToken;
+  user_id: number;
+  deck_id: number;
+  new_rating: number;
 }
 
 // request -> ENDPOINT_SET_DECK_ICON
@@ -197,24 +190,24 @@ export interface ListFavoritesResponse {
 
 // request -> ENDPOINT_ADD_FAVORITE
 export interface AddFavorite {
-  access_token: AccessToken,
-  user_id: number,
-  deck_id: number,
+  access_token: AccessToken;
+  user_id: number;
+  deck_id: number;
 }
 
 // request -> ENDPOINT_DELETE_FAVORITE
 export interface DeleteFavorite {
-  access_token: AccessToken,
-  user_id: number,
-  deck_id: number,
+  access_token: AccessToken;
+  user_id: number;
+  deck_id: number;
 }
 
 // request -> ENDPOINT_GET_RANDOM_DECKS
-export interface RandomDecksRequest{
-  num_decks: number
+export interface RandomDecksRequest {
+  num_decks: number;
 }
 
 // response -> ENDPOINT_GET_RANDOM_DECKS
-export interface RandomDecksResponse{
-  decks: CardDeck[]
+export interface RandomDecksResponse {
+  decks: CardDeck[];
 }

@@ -1,25 +1,46 @@
 import React, { useState } from "react";
-import {Button,  InputBase,  Menu,  Snackbar,  MenuItem,Dialog,  TextField,  DialogContent,  DialogTitle,  DialogActions,  ListItemText,  DialogContentText,} from "@mui/material";
+import {
+  Button,
+  InputBase,
+  Menu,
+  Snackbar,
+  MenuItem,
+  Dialog,
+  TextField,
+  DialogContent,
+  DialogTitle,
+  DialogActions,
+  ListItemText,
+  DialogContentText,
+} from "@mui/material";
 import { redirect, send_json_backend } from "./utils";
-import { ENDPOINT_DELETE_USER, DeleteUser } from "./backend_interface";
-import { ENDPOINT_CHANGE_PASSWORD, ChangePassword } from "./backend_interface";
+import {
+  ENDPOINT_DELETE_USER,
+  DeleteUser,
+  ENDPOINT_CHANGE_PASSWORD,
+  ChangePassword,
+} from "./backend_interface";
 import { logout } from "./utils";
 import HomeIcon from "@mui/icons-material/Home";
 import BackupTableOutlinedIcon from "@mui/icons-material/BackupTableOutlined";
 import Person2OutlinedIcon from "@mui/icons-material/Person2Outlined";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
+import ChatIcon from "@mui/icons-material/Chat";
+// import logo from './../../assets/logo.png';
 
 export const Navbar = () => {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
-  const [openPassChangeDialog, setOpenPassChangeDialog] = useState(false);
-  const [shouldShowPopup, setShouldShowPopup] = useState(false);
+  const [searchQuery, setSearchQuery] = useState(""); //state of whats in search bar
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null); //dropdown bar to anchor at 'account' button
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false); //popup for account deletion
+  const [openPassChangeDialog, setOpenPassChangeDialog] = useState(false); //popup for password change
+  const [ChangePassError, setChangePassError] = useState(false);
   const [errorFields, setErrorFields] = useState<string[]>([]);
-  const [showPassChangeSuccessSnackbar, setshowPassChangeSuccessSnackbar] = useState(false);
+  const [errorFields2, setErrorFields2] = useState<string[]>([]);
+  const [showPassChangeSuccessSnackbar, setshowPassChangeSuccessSnackbar] =
+    useState(false);
   const [showDeleteErrorSnackbar, setShowDeleteErrorSnackbar] = useState(false);
-  const [showDeleteSuccessSnackbar, setshowDeleteSuccessSnackbar] = useState(false);
-  
+  const [showDeleteSuccessSnackbar, setshowDeleteSuccessSnackbar] =
+    useState(false);
   const [user, setUser] = useState({
     email: "",
     password: "",
@@ -38,6 +59,7 @@ export const Navbar = () => {
     }));
   };
 
+  // menu popup for change pass, logout and delete acc
   const handleMenuOpen = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -46,6 +68,7 @@ export const Navbar = () => {
     setAnchorEl(null);
   };
 
+  //Stuff for account deletion
   const handleDeleteButtonClick = () => {
     setOpenDeleteDialog(true);
   };
@@ -55,35 +78,35 @@ export const Navbar = () => {
   };
 
   const handleDeleteConfirm = () => {
-    console.log("Account deletion initiated!");
     const deleteUserRequest: DeleteUser = {
       email: user.email,
       password: user.password,
     };
-    send_json_backend(
-      ENDPOINT_DELETE_USER,
-      JSON.stringify(deleteUserRequest),
-    )      
-    .then(() => {
-      console.log("User deleted successfully.");
-      console.log("Logging out...");
-      setshowDeleteSuccessSnackbar(true);
-      logout();
-      window.location.pathname = "/login/";
-    })
-    .catch((error) => {
-      console.error("Error deleting user:", error);
-      setShowDeleteErrorSnackbar(true);
-    });
-
+    send_json_backend(ENDPOINT_DELETE_USER, JSON.stringify(deleteUserRequest))
+      .then(() => {
+        setshowDeleteSuccessSnackbar(true);
+        logout();
+        window.location.pathname = "/login/";
+      })
+      .catch((error) => {
+        console.error("Error deleting user:", error);
+        setErrorFields2(["email", "password"]);
+        setTimeout(() => setErrorFields2([]), 2000);
+        setShowDeleteErrorSnackbar(true);
+      });
   };
 
+  // stuff for pass change
   const handleChangePassDialog = () => {
     setOpenPassChangeDialog(true);
   };
 
   const handleChanegPassDialogClose = () => {
     setOpenPassChangeDialog(false);
+  };
+
+  const PassChangeNotSame = () => {
+    setChangePassError(false);
   };
 
   const handleChangePass = () => {
@@ -97,7 +120,6 @@ export const Navbar = () => {
       JSON.stringify(changePassRequest),
     )
       .then(() => {
-        console.log("success!");
         handleChanegPassDialogClose();
         setshowPassChangeSuccessSnackbar(true);
       })
@@ -105,17 +127,14 @@ export const Navbar = () => {
         console.error("Error changing password:", error);
         setErrorFields(["email2", "pass1", "pass2"]);
         setTimeout(() => setErrorFields([]), 2000);
-        setShouldShowPopup(true);
+        setChangePassError(true);
       });
   };
 
+  // logout button
   const handleLogOut = () => {
     sessionStorage.clear();
     window.location.pathname = "/login/";
-  };
-
-  const PassChangeNotSame = () => {
-    setShouldShowPopup(false);
   };
 
   return (
@@ -132,30 +151,29 @@ export const Navbar = () => {
         marginBottom: "20px",
       }}
     >
-
       {/* IMAGEHERE OF LOGO */}
       <Button
         variant="contained"
         sx={{
           fontSize: "20px",
-          width: "400px",
+          width: "250px",
           backgroundColor: "#9c27b0",
           "&:hover": {
             backgroundColor: "#7b1fa2",
           },
         }}
         onClick={() => {
-          redirect("/home_page");
+          redirect("/home_page", []);
         }}
       >
-      <HomeIcon />
+        <HomeIcon />
         Home
       </Button>
       <div
         style={{
           display: "flex",
           alignItems: "center",
-          width: "500px",
+          width: "400px",
           border: "2px solid #9c27b0",
           borderRadius: "4px",
           padding: "5px",
@@ -170,9 +188,9 @@ export const Navbar = () => {
           style={{ flex: 1, fontSize: "20px", paddingLeft: "10px" }}
           onKeyDown={(e) => {
             if (e.key === "Enter") {
-              const url = new URL(window.location.origin + "/search_results/");
-              url.searchParams.append("query", JSON.stringify(searchQuery));
-              window.location.href = url.toString();
+              redirect("/search_results/", [
+                ["query", JSON.stringify(searchQuery)],
+              ]);
             }
           }}
         />
@@ -181,24 +199,42 @@ export const Navbar = () => {
         variant="contained"
         sx={{
           fontSize: "20px",
-          width: "400px",
+          width: "250px",
           backgroundColor: "#9c27b0",
           "&:hover": {
             backgroundColor: "#7b1fa2",
           },
         }}
         onClick={() => {
-          redirect("/deck_manage");
+          redirect("/deck_manage", []);
         }}
       >
         <BackupTableOutlinedIcon />
         Decks
       </Button>
+
       <Button
         variant="contained"
         sx={{
           fontSize: "20px",
-          width: "400px",
+          width: "250px",
+          backgroundColor: "#9c27b0",
+          "&:hover": {
+            backgroundColor: "#7b1fa2",
+          },
+        }}
+        onClick={() => {
+          redirect("/ai_test", []);
+        }}
+      >
+        <ChatIcon />
+        Ai Chat
+      </Button>
+      <Button
+        variant="contained"
+        sx={{
+          fontSize: "20px",
+          width: "250px",
           backgroundColor: "#9c27b0",
           "&:hover": {
             backgroundColor: "#7b1fa2",
@@ -210,7 +246,6 @@ export const Navbar = () => {
         Account
       </Button>
       <Menu
-        
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
         onClose={handleMenuClose}
@@ -224,7 +259,7 @@ export const Navbar = () => {
         }}
         PaperProps={{
           sx: {
-            width: "400px",
+            width: "250px",
             backgroundColor: "#9370db",
           },
         }}
@@ -266,6 +301,9 @@ export const Navbar = () => {
           <ListItemText primary="Delete Account" sx={{ color: "white" }} />
         </MenuItem>
       </Menu>
+
+      {/* DELETE ACCOUNT SECTION */}
+
       <Dialog
         open={openDeleteDialog}
         onClose={handleDeleteDialogClose}
@@ -273,14 +311,14 @@ export const Navbar = () => {
         aria-describedby="alert-dialog-description"
       >
         <DialogTitle
-          style={{ background: "#140952a6", color: "#E6E6FA" }}
+          style={{ background: "#140952a6", color: "white" }}
           id="alert-dialog-title"
         >
           Confirm Delete Account
         </DialogTitle>
         <DialogContent style={{ background: "#140952a6" }}>
           <DialogContentText
-            style={{ color: "#E6E6FA" }}
+            style={{ color: "white" }}
             id="alert-dialog-description"
           >
             Are you sure you want to delete your account? This action cannot be
@@ -291,7 +329,9 @@ export const Navbar = () => {
           <TextField
             style={{
               marginBottom: 20,
+              borderColor: errorFields2.includes("email") ? "red" : undefined,
             }}
+            error={errorFields2.includes("email")}
             label="Email"
             variant="outlined"
             fullWidth
@@ -304,7 +344,11 @@ export const Navbar = () => {
           <TextField
             style={{
               marginBottom: 20,
+              borderColor: errorFields2.includes("password")
+                ? "red"
+                : undefined,
             }}
+            error={errorFields2.includes("password")}
             label="Password"
             type="password"
             variant="outlined"
@@ -340,24 +384,22 @@ export const Navbar = () => {
           </Button>
         </DialogActions>
       </Dialog>
+
+      {/* Change Password Section */}
+
       <Dialog
         open={openPassChangeDialog}
         onClose={handleChanegPassDialogClose}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
-        sx={{
-          ".MuiDialog-paper": {
-            background: "linear-gradient(to left, #140952a6, #22032e)",
-          },
-        }}
       >
         <DialogTitle
           id="alert-dialog-title"
-          style={{ background: "#9370db", color: "white" }}
+          style={{ background: "#140952a6", color: "white" }}
         >
           Change Password
         </DialogTitle>
-        <DialogContent style={{ background: "#9370db" }}>
+        <DialogContent style={{ background: "#140952a6" }}>
           <DialogContentText
             id="alert-dialog-description"
             style={{ color: "white" }}
@@ -365,7 +407,7 @@ export const Navbar = () => {
             Please enter your Email, Old Password and New Password
           </DialogContentText>
         </DialogContent>
-        <DialogActions style={{ background: "#9370db" }}>
+        <DialogActions style={{ background: "#140952a6" }}>
           <TextField
             style={{
               marginBottom: 20,
@@ -427,9 +469,9 @@ export const Navbar = () => {
           <Button
             onClick={handleChangePass}
             sx={{
-              color: "#90EE90",
+              color: "white",
               "&:hover": {
-                backgroundColor: "#4caf50",
+                backgroundColor: "#7b1fa2",
               },
             }}
             autoFocus
@@ -439,7 +481,7 @@ export const Navbar = () => {
         </DialogActions>
       </Dialog>
       <Snackbar
-        open={shouldShowPopup}
+        open={ChangePassError}
         autoHideDuration={3000}
         onClose={PassChangeNotSame}
         message="Password Change Failed!"

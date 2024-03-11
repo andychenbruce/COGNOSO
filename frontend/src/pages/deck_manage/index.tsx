@@ -24,12 +24,14 @@ import {
   ENDPOINT_LIST_CARD_DECKS,
   ENDPOINT_CREATE_CARD_DECK,
   ENDPOINT_CREATE_DECK_PDF,
-  UploadPdf,ListFavoritesRequest,
+  UploadPdf,
+  ListFavoritesRequest,
   CreateCardDeck,
   DeleteCardDeck,
   ListCardDecks,
   ListCardDecksResponse,
-  CardDeck,AddFavorite,
+  CardDeck,
+  AddFavorite,
   SetDeckIcon,
   ENDPOINT_DELETE_CARD_DECK,
   ENDPOINT_SET_DECK_ICON,
@@ -38,69 +40,67 @@ import {
   ListFavoritesResponse,
   ENDPOINT_DELETE_FAVORITE,
   DeleteFavorite,
-  ENDPOINT_GET_RATING,
-  GetRating,
 } from "../../backend_interface";
-import { send_json_backend, get_session_token } from "../../utils";
+import { send_json_backend, get_session_token, redirect } from "../../utils";
 import DeleteIcon from "@mui/icons-material/Delete";
 import StarIcon from "@mui/icons-material/Star";
 import EditTwoToneIcon from "@mui/icons-material/EditTwoTone";
-import {get_user_id} from "../../utils"
+import { get_user_id } from "../../utils";
 
 // testing icons
-import BeachAccessTwoToneIcon from '@mui/icons-material/BeachAccessTwoTone';
-import PetsTwoToneIcon from '@mui/icons-material/PetsTwoTone';
-import StarTwoToneIcon from '@mui/icons-material/StarTwoTone';
-import CakeTwoToneIcon from '@mui/icons-material/CakeTwoTone';
-import HomeTwoToneIcon from '@mui/icons-material/HomeTwoTone';
-import GradeTwoToneIcon from '@mui/icons-material/GradeTwoTone';
-import AccountCircleTwoToneIcon from '@mui/icons-material/AccountCircleTwoTone';
-import AcUnitIcon from '@mui/icons-material/AcUnit';
-import AirIcon from '@mui/icons-material/Air';
-import AirlineSeatFlatIcon from '@mui/icons-material/AirlineSeatFlat';
-import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
-import BackHandIcon from '@mui/icons-material/BackHand';
-import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import AirplanemodeActiveIcon from '@mui/icons-material/AirplanemodeActive';
-import AdsClickIcon from '@mui/icons-material/AdsClick';
-import AirportShuttleIcon from '@mui/icons-material/AirportShuttle';
-import AnnouncementIcon from '@mui/icons-material/Announcement';
-import AllOutIcon from '@mui/icons-material/AllOut';
-import AllInclusiveIcon from '@mui/icons-material/AllInclusive';
-import AlignHorizontalRightIcon from '@mui/icons-material/AlignHorizontalRight';
-import AlignVerticalBottomIcon from '@mui/icons-material/AlignVerticalBottom';
-import AlignVerticalCenterIcon from '@mui/icons-material/AlignVerticalCenter';
-import AlignVerticalTopIcon from '@mui/icons-material/AlignVerticalTop';
-import AllInboxIcon from '@mui/icons-material/AllInbox';
-import ApiIcon from '@mui/icons-material/Api';
-import AdbIcon from '@mui/icons-material/Adb';
-import AccessibleIcon from '@mui/icons-material/Accessible';
-import AccessibleForwardIcon from '@mui/icons-material/AccessibleForward';
-import AccessibilityIcon from '@mui/icons-material/Accessibility';
-import AccessibilityNewIcon from '@mui/icons-material/AccessibilityNew';
-import AccessTimeFilledIcon from '@mui/icons-material/AccessTimeFilled';
-import AccessTimeIcon from '@mui/icons-material/AccessTime';
-import AccessAlarmsIcon from '@mui/icons-material/AccessAlarms';
-import AbcIcon from '@mui/icons-material/Abc';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import AirlineSeatIndividualSuiteIcon from '@mui/icons-material/AirlineSeatIndividualSuite';
-import AirlinesIcon from '@mui/icons-material/Airlines';
-import AssignmentReturnedIcon from '@mui/icons-material/AssignmentReturned';
-import AutoStoriesIcon from '@mui/icons-material/AutoStories';
-import BakeryDiningIcon from '@mui/icons-material/BakeryDining';
-import BeenhereIcon from '@mui/icons-material/Beenhere';
-import BoltIcon from '@mui/icons-material/Bolt';
-import AttachmentIcon from '@mui/icons-material/Attachment';
-import BalanceIcon from '@mui/icons-material/Balance';
-import BedIcon from '@mui/icons-material/Bed';
-import BuildIcon from '@mui/icons-material/Build';
-import Brightness2Icon from '@mui/icons-material/Brightness2';
-import BungalowIcon from '@mui/icons-material/Bungalow';
+import BeachAccessTwoToneIcon from "@mui/icons-material/BeachAccessTwoTone";
+import PetsTwoToneIcon from "@mui/icons-material/PetsTwoTone";
+import StarTwoToneIcon from "@mui/icons-material/StarTwoTone";
+import CakeTwoToneIcon from "@mui/icons-material/CakeTwoTone";
+import HomeTwoToneIcon from "@mui/icons-material/HomeTwoTone";
+import GradeTwoToneIcon from "@mui/icons-material/GradeTwoTone";
+import AccountCircleTwoToneIcon from "@mui/icons-material/AccountCircleTwoTone";
+import AcUnitIcon from "@mui/icons-material/AcUnit";
+import AirIcon from "@mui/icons-material/Air";
+import AirlineSeatFlatIcon from "@mui/icons-material/AirlineSeatFlat";
+import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
+import BackHandIcon from "@mui/icons-material/BackHand";
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import AirplanemodeActiveIcon from "@mui/icons-material/AirplanemodeActive";
+import AdsClickIcon from "@mui/icons-material/AdsClick";
+import AirportShuttleIcon from "@mui/icons-material/AirportShuttle";
+import AnnouncementIcon from "@mui/icons-material/Announcement";
+import AllOutIcon from "@mui/icons-material/AllOut";
+import AllInclusiveIcon from "@mui/icons-material/AllInclusive";
+import AlignHorizontalRightIcon from "@mui/icons-material/AlignHorizontalRight";
+import AlignVerticalBottomIcon from "@mui/icons-material/AlignVerticalBottom";
+import AlignVerticalCenterIcon from "@mui/icons-material/AlignVerticalCenter";
+import AlignVerticalTopIcon from "@mui/icons-material/AlignVerticalTop";
+import AllInboxIcon from "@mui/icons-material/AllInbox";
+import ApiIcon from "@mui/icons-material/Api";
+import AdbIcon from "@mui/icons-material/Adb";
+import AccessibleIcon from "@mui/icons-material/Accessible";
+import AccessibleForwardIcon from "@mui/icons-material/AccessibleForward";
+import AccessibilityIcon from "@mui/icons-material/Accessibility";
+import AccessibilityNewIcon from "@mui/icons-material/AccessibilityNew";
+import AccessTimeFilledIcon from "@mui/icons-material/AccessTimeFilled";
+import AccessTimeIcon from "@mui/icons-material/AccessTime";
+import AccessAlarmsIcon from "@mui/icons-material/AccessAlarms";
+import AbcIcon from "@mui/icons-material/Abc";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import AirlineSeatIndividualSuiteIcon from "@mui/icons-material/AirlineSeatIndividualSuite";
+import AirlinesIcon from "@mui/icons-material/Airlines";
+import AssignmentReturnedIcon from "@mui/icons-material/AssignmentReturned";
+import AutoStoriesIcon from "@mui/icons-material/AutoStories";
+import BakeryDiningIcon from "@mui/icons-material/BakeryDining";
+import BeenhereIcon from "@mui/icons-material/Beenhere";
+import BoltIcon from "@mui/icons-material/Bolt";
+import AttachmentIcon from "@mui/icons-material/Attachment";
+import BalanceIcon from "@mui/icons-material/Balance";
+import BedIcon from "@mui/icons-material/Bed";
+import BuildIcon from "@mui/icons-material/Build";
+import Brightness2Icon from "@mui/icons-material/Brightness2";
+import BungalowIcon from "@mui/icons-material/Bungalow";
 
 const App: React.FC = () => {
   const iconList = [
-    <BungalowIcon/>,
-    <Brightness2Icon/>,
+    <BungalowIcon />,
+    <Brightness2Icon />,
     <BuildIcon />,
     <BeachAccessTwoToneIcon />,
     <PetsTwoToneIcon />,
@@ -146,101 +146,87 @@ const App: React.FC = () => {
     <BoltIcon />,
     <AttachmentIcon />,
     <BalanceIcon />,
-    <BedIcon />
+    <BedIcon />,
   ];
-  
-  
+
   const [file, setFile] = useState<File | null>(null);
   const [openCreateDialog, setOpenCreateDialog] = useState(false);
   const [openIconDialog, setOpenIconDialog] = useState(false);
   const [selectedIcon, setSelectedIcon] = useState<number | null>(null);
   const [currentEditing, setCurrentEditing] = useState<number | null>(null);
-
   const [deckName, setDeckName] = useState("");
   const [usePDF, setUsePDF] = useState(false);
   const [decks, setDecks]: [CardDeck[], Dispatch<CardDeck[]>] = useState(
     [] as CardDeck[],
   );
-  const [favorites, setFavorites]: [CardDeck[], Dispatch<CardDeck[]>] = useState(
-    [] as CardDeck[]
-  )
+  const [favorites, setFavorites]: [CardDeck[], Dispatch<CardDeck[]>] =
+    useState([] as CardDeck[]);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [iconerrorsnackbar,changeIconErrorSnackbar] = useState(false);
-
-
-
+  const [iconerrorsnackbar, changeIconErrorSnackbar] = useState(false);
 
   const handleIconSelectionConfirm = () => {
-
-    let temp_deck_id = currentEditing
-    if (temp_deck_id == null){
-      console.error('deck_id is null')
+    const temp_deck_id = currentEditing;
+    if (temp_deck_id == null) {
+      console.error("deck_id is null");
       return;
     }
-    let access_token = get_session_token();
+    const access_token = get_session_token();
     if (access_token == null) {
       return;
     }
-    let index = selectedIcon
+    const index = selectedIcon;
     if (index === null) {
-      console.error('No icon selected');
-      changeIconErrorSnackbar(true)
+      console.error("No icon selected");
+      changeIconErrorSnackbar(true);
       return;
-    } 
-    let new_icon: SetDeckIcon = {
+    }
+    const new_icon: SetDeckIcon = {
       access_token: access_token,
       deck_id: temp_deck_id,
       icon: index,
     };
-  
+
     send_json_backend(ENDPOINT_SET_DECK_ICON, JSON.stringify(new_icon))
       .then(() => {
-        console.log('Successfully updated deck icon');
         handleIconDialogClose();
         updateDecks();
-        setSelectedIcon(null)
+        setSelectedIcon(null);
       })
       .catch((error) => {
-        console.error('Failed to update deck icon:', error);
-        changeIconErrorSnackbar(true)
+        console.error("Failed to update deck icon:", error);
+        changeIconErrorSnackbar(true);
       });
   };
-  
-
 
   const handleIconClick = (index: number) => {
     setSelectedIcon(index);
   };
 
-  const handleEditDeckIcon = (_deckId: number) => {
+  const handleEditDeckIcon = () => {
     setOpenIconDialog(true);
   };
 
   const updateDecks = () => {
-    let token = get_session_token();
+    const token = get_session_token();
     if (token == null) {
       return;
     }
-    let request1: ListCardDecks = { access_token: token };
-    send_json_backend(ENDPOINT_LIST_CARD_DECKS, JSON.stringify(request1))
-      .then((data: ListCardDecksResponse) => {
-        setDecks(data.decks);
-        // console.log(data.decks);
-      })
-      .catch((error) => {
-        console.error("Error in:", error);
-      });
-    let request2: ListFavoritesRequest = {
-      access_token: token
+    const request1: ListCardDecks = { access_token: token };
+    send_json_backend<ListCardDecksResponse>(
+      ENDPOINT_LIST_CARD_DECKS,
+      JSON.stringify(request1),
+    ).then((data: ListCardDecksResponse) => {
+      setDecks(data.decks);
+    });
+    const request2: ListFavoritesRequest = {
+      access_token: token,
     };
-    send_json_backend(ENDPOINT_LIST_FAVORITES, JSON.stringify(request2))
-      .then((data: ListFavoritesResponse) => {
-        // console.log('favorited', data)
-        setFavorites(data.decks);
-      })
-      .catch((error) => {
-        console.error("Error in:", error);
-      });
+    send_json_backend<ListFavoritesResponse>(
+      ENDPOINT_LIST_FAVORITES,
+      JSON.stringify(request2),
+    ).then((data: ListFavoritesResponse) => {
+      setFavorites(data.decks);
+    });
   };
 
   useEffect(updateDecks, []);
@@ -248,7 +234,6 @@ const App: React.FC = () => {
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
     setDeckName(value);
-
   };
 
   const handleCreateButtonClick = () => {
@@ -263,23 +248,19 @@ const App: React.FC = () => {
       }, 2000);
       return;
     }
-    let access_token = get_session_token();
+    const access_token = get_session_token();
     if (access_token == null) {
       return;
     }
-    console.log("access token = ", access_token);
-    let request: CreateCardDeck = {
+    const request: CreateCardDeck = {
       access_token: access_token,
       deck_name: deckName,
     };
-    send_json_backend(ENDPOINT_CREATE_CARD_DECK, JSON.stringify(request))
-      .then((data: null) => {
-        console.log("ok: ", data);
+    send_json_backend(ENDPOINT_CREATE_CARD_DECK, JSON.stringify(request)).then(
+      () => {
         updateDecks();
-      })
-      .catch((error) => {
-        console.error("Error in:", error);
-      });
+      },
+    );
     setOpenCreateDialog(false);
   };
 
@@ -287,14 +268,14 @@ const App: React.FC = () => {
     if (event.target.files == null) {
       console.error("missing file");
     } else {
-      let input_file = event.target.files[0];
+      const input_file = event.target.files[0];
       setFile(input_file);
     }
   };
 
   const getBase64 = (file: File): Promise<string> => {
     return new Promise((resolve, reject) => {
-      var reader = new FileReader();
+      const reader = new FileReader();
       reader.onerror = reject;
       reader.readAsDataURL(file);
       reader.onload = () => {
@@ -327,14 +308,13 @@ const App: React.FC = () => {
       console.error("missing file");
       return;
     }
-    let access_token = get_session_token();
+    const access_token = get_session_token();
 
     getBase64(file).then((base64_encode: string) => {
       if (access_token == null) {
         return;
       }
-      console.log("base 64 = ", base64_encode);
-      let request_json: UploadPdf = {
+      const request_json: UploadPdf = {
         access_token: access_token,
         deck_name: deckName,
         file_bytes_base64: base64_encode,
@@ -342,66 +322,60 @@ const App: React.FC = () => {
       return send_json_backend(
         ENDPOINT_CREATE_DECK_PDF,
         JSON.stringify(request_json),
-      )
-        .then(() => {
-          updateDecks();
-          setOpenCreateDialog(false);
-        })
-        .catch((error) => {
-          console.error("Error in:", error);
-        });
+      ).then(() => {
+        updateDecks();
+        setOpenCreateDialog(false);
+      });
     });
   };
 
   const handleDeleteDeck = (deckId: number) => {
-    let access_token = get_session_token();
+    const access_token = get_session_token();
     if (access_token == null) {
       return;
     }
-    let deleteRequest: DeleteCardDeck = {
+    const deleteRequest: DeleteCardDeck = {
       access_token: access_token,
       deck_id: deckId,
     };
-    send_json_backend(ENDPOINT_DELETE_CARD_DECK, JSON.stringify(deleteRequest))
-      .then(() => {
-        updateDecks();
-      })
-      .catch((error) => {
-        console.error("Error deleting deck:", error);
-      });
+    send_json_backend(
+      ENDPOINT_DELETE_CARD_DECK,
+      JSON.stringify(deleteRequest),
+    ).then(() => {
+      updateDecks();
+    });
   };
 
   const handleFavoriteDeck = (deckid: number) => {
-    let access_token = get_session_token();
-    let user_id = get_user_id();
-    if ((access_token == null) || (user_id == null)) {
+    const access_token = get_session_token();
+    const user_id = get_user_id();
+    if (access_token == null || user_id == null) {
       return;
     }
-    let request: AddFavorite = {
+    const request: AddFavorite = {
       access_token: access_token,
       user_id: user_id,
       deck_id: deckid,
-    }
-    send_json_backend(ENDPOINT_ADD_FAVORITE, JSON.stringify(request))
-      .then(() => {
+    };
+    send_json_backend(ENDPOINT_ADD_FAVORITE, JSON.stringify(request)).then(
+      () => {
         updateDecks();
-      })
-      .catch((error) => {
-        console.error("Error favoriting deck:", error);
-      });
-  }
+      },
+    );
+  };
 
   const handleUnfavoriteDeck = (deckId: number) => {
-    let access_token = get_session_token();
-    let user_id = get_user_id();
-    if ((access_token == null) || (user_id == null)) {
+    const access_token = get_session_token();
+    const user_id = get_user_id();
+    if (access_token == null || user_id == null) {
       return;
     }
-    let request: DeleteFavorite = {
+    const request: DeleteFavorite = {
       access_token: access_token,
       user_id: user_id,
       deck_id: deckId,
     };
+<<<<<<< HEAD
     send_json_backend(ENDPOINT_DELETE_FAVORITE, JSON.stringify(request))
       .then(() => {
         setFavorites(favorites.filter(deck => deck.deck_id !== deckId));
@@ -428,6 +402,14 @@ const App: React.FC = () => {
     })  
     return 0
   }
+=======
+    send_json_backend(ENDPOINT_DELETE_FAVORITE, JSON.stringify(request)).then(
+      () => {
+        setFavorites(favorites.filter((deck) => deck.deck_id !== deckId));
+      },
+    );
+  };
+>>>>>>> 4af5eaeae959df68dc36e90dd709a11b2ad264c5
 
 
   return (
@@ -448,11 +430,9 @@ const App: React.FC = () => {
                 color="primary"
                 fullWidth
                 onClick={() => {
-                  const url = new URL(
-                    window.location.origin + "/flashcard_viewer/",
-                  );
-                  url.searchParams.append("deck", JSON.stringify(deck.deck_id));
-                  window.location.href = url.toString();
+                  redirect("/flashcard_viewer/", [
+                    ["deck", JSON.stringify(deck.deck_id)],
+                  ]);
                 }}
                 style={{
                   width: "100%",
@@ -466,20 +446,9 @@ const App: React.FC = () => {
                   alignItems: "center",
                 }}
               >
-
                 {iconList[decks[index].icon_num]}
 
-
-                <span
-                  style={{
-                    marginLeft: "5px",
-                    textAlign: "center",
-                    padding: "5px",
-                    top: "60%",
-                  }}
-                >
-                  {decks[index].name}
-                </span>
+                <span className="span_style">{decks[index].name}</span>
               </Button>
 
               <IconButton
@@ -496,7 +465,7 @@ const App: React.FC = () => {
               {/* fAV STAR */}
               <IconButton
                 onClick={() => {
-                  if (favorites.map(x => x.deck_id).includes(deck.deck_id)) {
+                  if (favorites.map((x) => x.deck_id).includes(deck.deck_id)) {
                     handleUnfavoriteDeck(deck.deck_id);
                   } else {
                     handleFavoriteDeck(deck.deck_id);
@@ -517,10 +486,9 @@ const App: React.FC = () => {
 
               <IconButton
                 onClick={() => {
-                  handleEditDeckIcon(deck.deck_id);
+                  handleEditDeckIcon();
                   setCurrentEditing(deck.deck_id);
                 }}
-                
                 style={{
                   position: "absolute",
                   top: 0,
@@ -530,18 +498,17 @@ const App: React.FC = () => {
                 <EditTwoToneIcon />
               </IconButton>
               <Rating
-                  name={`deck-rating-${deck.deck_id}`}
-                  value={getRating(deck.deck_id) || 0} 
-                  readOnly
-                  size="small"
-                  style={{
-                    position: "absolute",
-                    bottom: 10, 
-                    left: 10,
-                  }}
-                />
+                name={`deck-rating-${deck.deck_id}`}
+                value={deck.rating}
+                readOnly
+                size="small"
+                style={{
+                  position: "absolute",
+                  bottom: 10,
+                  left: 10,
+                }}
+              />
             </div>
-            
           </Grid>
         ))}
       </Grid>
@@ -576,9 +543,11 @@ const App: React.FC = () => {
         aria-describedby="alert-dialog-description"
       >
         <DialogTitle
-          style={{ backgroundColor: "#9370db", fontFamily: "Arial, sans-serif" }}
+          style={{
+            backgroundColor: "#9370db",
+            fontFamily: "Arial, sans-serif",
+          }}
           id="alert-dialog-title"
-        
         >
           Create New Deck
         </DialogTitle>
@@ -589,7 +558,7 @@ const App: React.FC = () => {
           >
             <TextField
               style={{
-                color: 'white',
+                color: "white",
                 marginBottom: 20,
                 borderColor: "white",
               }}
@@ -613,11 +582,15 @@ const App: React.FC = () => {
                   variant="contained"
                   component="label"
                   fullWidth
-                  style={{  }}
-                  sx={{border: "1px solid white", color: "white", backgroundColor: "#9c27b0",
-                "&:hover": {
-                  backgroundColor: "#7b1fa2",
-                }}}
+                  style={{}}
+                  sx={{
+                    border: "1px solid white",
+                    color: "white",
+                    backgroundColor: "#9c27b0",
+                    "&:hover": {
+                      backgroundColor: "#7b1fa2",
+                    },
+                  }}
                 >
                   Upload a file
                   <input type="file" hidden onChange={handleChangeFile} />
@@ -627,10 +600,13 @@ const App: React.FC = () => {
                   variant="contained"
                   onClick={handleCreateConfirmPDF}
                   fullWidth
-                  sx={{border: "1px solid white", backgroundColor: "#9c27b0",
-                  "&:hover": {
-                    backgroundColor: "#7b1fa2",
-                  }}}
+                  sx={{
+                    border: "1px solid white",
+                    backgroundColor: "#9c27b0",
+                    "&:hover": {
+                      backgroundColor: "#7b1fa2",
+                    },
+                  }}
                 >
                   Confirm
                 </Button>
@@ -642,12 +618,15 @@ const App: React.FC = () => {
                 variant="contained"
                 onClick={() => {
                   handleCreateConfirm();
-                  setDeckName('');
-                }}                
-                sx={{border: "1px solid white", backgroundColor: "#9c27b0",
-                "&:hover": {
-                  backgroundColor: "#7b1fa2",
-                }}}
+                  setDeckName("");
+                }}
+                sx={{
+                  border: "1px solid white",
+                  backgroundColor: "#9c27b0",
+                  "&:hover": {
+                    backgroundColor: "#7b1fa2",
+                  },
+                }}
                 fullWidth
               >
                 Confirm
@@ -658,10 +637,14 @@ const App: React.FC = () => {
         <DialogActions style={{ backgroundColor: "#9370db" }}>
           <Button
             onClick={handleCreateDialogClose}
-            sx={{ border: "1px solid purple", color: "white", backgroundColor: "#7b1fa2",
-            "&:hover": {
-              backgroundColor: "#9c27b0",
-            } }}
+            sx={{
+              border: "1px solid purple",
+              color: "white",
+              backgroundColor: "#7b1fa2",
+              "&:hover": {
+                backgroundColor: "#9c27b0",
+              },
+            }}
           >
             Cancel
           </Button>
@@ -674,11 +657,14 @@ const App: React.FC = () => {
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle style={{ backgroundColor: '#8916c7' }} id="alert-dialog-title">
+        <DialogTitle
+          style={{ backgroundColor: "#8916c7" }}
+          id="alert-dialog-title"
+        >
           Choose Deck Icon
         </DialogTitle>
 
-        <Grid container spacing={1} style={{backgroundColor: '#9370db'}}>
+        <Grid container spacing={1} style={{ backgroundColor: "#9370db" }}>
           {[...Array(5)].map((_, row) => (
             <Grid container item key={row} spacing={1}>
               {[...Array(12)].map((_, col) => (
@@ -686,7 +672,10 @@ const App: React.FC = () => {
                   <IconButton
                     onClick={() => handleIconClick(row * 12 + col)}
                     style={{
-                      border: selectedIcon === row * 12 + col ? '2px solid purple' : 'none'
+                      border:
+                        selectedIcon === row * 12 + col
+                          ? "2px solid purple"
+                          : "none",
                     }}
                   >
                     {iconList[row * 12 + col]}
@@ -697,17 +686,24 @@ const App: React.FC = () => {
           ))}
         </Grid>
 
-        <DialogActions style={{ backgroundColor: '#9370db' }}>
+        <DialogActions style={{ backgroundColor: "#9370db" }}>
           <Button
-
             onClick={() => handleIconSelectionConfirm()}
-            style={{ backgroundColor: 'green', border: '1px solid green', color: 'white' }}
+            style={{
+              backgroundColor: "green",
+              border: "1px solid green",
+              color: "white",
+            }}
           >
             Confirm
           </Button>
           <Button
             onClick={handleIconDialogClose}
-            style={{ backgroundColor: 'red', border: '1px solid white', color: 'white' }}
+            style={{
+              backgroundColor: "red",
+              border: "1px solid white",
+              color: "white",
+            }}
           >
             Cancel
           </Button>
@@ -721,15 +717,13 @@ const App: React.FC = () => {
         message="Title cannot be empty!"
       ></Snackbar>
 
-
-{/* FIX SOON */}
+      {/* FIX SOON */}
       <Snackbar
         open={iconerrorsnackbar}
         autoHideDuration={null}
         onClose={() => changeIconErrorSnackbar(false)}
         message="Error Changing Icon!"
       ></Snackbar>
-      
     </div>
   );
 };

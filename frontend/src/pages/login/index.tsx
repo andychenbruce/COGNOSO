@@ -1,5 +1,5 @@
 import React from "react";
-import { useState } from "react";
+import { useState, Dispatch } from "react";
 import { Paper, TextField, Button, Snackbar } from "@mui/material";
 import "./login.css";
 import type { PageProps } from "gatsby";
@@ -11,33 +11,32 @@ import {
 import { send_json_backend, set_session_info } from "../../utils";
 
 const Main: React.FC<PageProps> = () => {
-  const [user, setUser]: [LoginRequest, any] = useState({
+  const [user, setUser]: [LoginRequest, Dispatch<LoginRequest>] = useState({
     email: "",
     password: "",
   });
-  const [shouldShowPopup, setShouldShowPopup] = useState(false);
+
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const handleInputChange = (
     event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
   ) => {
     const { value, name } = event.target;
-    setUser((prevUser: LoginRequest) => ({
-      ...prevUser,
+    setUser({
+      ...user,
       [name]: value,
-    }));
+    });
   };
 
   const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    send_json_backend(ENDPOINT_LOGIN, JSON.stringify(user))
+    send_json_backend<LoginResponse>(ENDPOINT_LOGIN, JSON.stringify(user))
       .then((data: LoginResponse) => {
         set_session_info(data.access_token, data.user_id);
-        console.log("got back json: ", data);
         redirectTohome_page();
       })
       .catch((error) => {
-        console.error("Error loggin in:", error);
-        setShouldShowPopup(true);
+        setErrorMessage(error.message);
       });
   };
 
@@ -48,7 +47,7 @@ const Main: React.FC<PageProps> = () => {
     window.location.pathname = "/home_page/";
   };
   const handleClosePopup = () => {
-    setShouldShowPopup(false);
+    setErrorMessage(null);
   };
 
   const HeaderText = () => {
@@ -66,7 +65,7 @@ const Main: React.FC<PageProps> = () => {
       <div className="container">
         <Paper
           style={{
-            padding: "20px", // Adjusted padding to make the login area smaller
+            padding: "20px",
             width: 300,
             backgroundColor: "#c993ed",
           }}
@@ -101,9 +100,8 @@ const Main: React.FC<PageProps> = () => {
             <Button
               type="submit"
               variant="contained"
-              style={{ backgroundColor: "#4d1a7f", color: "white"}}
+              style={{ backgroundColor: "#4d1a7f", color: "white" }}
               fullWidth
-              
             >
               Login
             </Button>
@@ -117,15 +115,12 @@ const Main: React.FC<PageProps> = () => {
             >
               Create Account
             </Button>
-            {/* <Button type="submit" variant="text" color="primary" fullWidth>
-            Forgot Password?
-          </Button> */}
           </form>
           <Snackbar
-            open={shouldShowPopup}
+            open={errorMessage != null}
             autoHideDuration={3000}
             onClose={handleClosePopup}
-            message="Login failed. Please try again."
+            message={"Login failed: " + errorMessage}
           />
         </Paper>
       </div>

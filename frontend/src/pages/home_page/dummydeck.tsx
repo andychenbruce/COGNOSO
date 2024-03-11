@@ -8,7 +8,7 @@ const DummyDeck = () => {
       <Button
         variant="contained"
         color="secondary"
-        onClick={() => redirect("/deck_manage")}
+        onClick={() => redirect("/deck_manage", [])}
         sx={{
           width: "200px",
           height: "200px",

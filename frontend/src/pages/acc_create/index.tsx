@@ -1,3 +1,8 @@
+// This file is used for the account creation page. It manages 4 textfields and two buttons (used MUI).
+// It checks if the user has input the same password twice but does NOT validate whether the input in the email section is actucally an email
+// If successful, the account creation page should rerout to the login page with the backend having saved the user's credentials
+// Otherwise, the user will be prompted that something is wrong with their credentials (i.e passwords dont match)
+
 import React from "react";
 import { useState } from "react";
 import {
@@ -13,7 +18,7 @@ import type { PageProps } from "gatsby";
 import { ENDPOINT_NEW_USER, NewUser } from "../../backend_interface";
 import { send_json_backend } from "../../utils";
 
-const Main: React.FC<PageProps> = () => {
+const acc_create: React.FC<PageProps> = () => {
   const [passwordMismatch, setPasswordMismatch] = useState(false);
   const [user, setUser] = useState({
     username: "",
@@ -38,19 +43,16 @@ const Main: React.FC<PageProps> = () => {
       setPasswordMismatch(true);
       return;
     }
-    let new_user_request: NewUser = {
+    const new_user_request: NewUser = {
       user_name: user.username,
       email: user.email,
       password: user.password1,
     };
-    send_json_backend(ENDPOINT_NEW_USER, JSON.stringify(new_user_request))
-      .then((data) => {
-        console.log("New user made:", data);
+    send_json_backend(ENDPOINT_NEW_USER, JSON.stringify(new_user_request)).then(
+      (_data) => {
         redirectToLogin();
-      })
-      .catch((error) => {
-        console.error("Error creating new user:", error);
-      });
+      },
+    );
   };
 
   const redirectToLogin = () => {
@@ -166,4 +168,4 @@ const Main: React.FC<PageProps> = () => {
   );
 };
 
-export default Main;
+export default acc_create;

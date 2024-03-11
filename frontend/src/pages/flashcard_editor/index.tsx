@@ -1,9 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { Navbar } from "../../navbar";
 import "./flashcard_editor.css";
-import { Button, TextField, Typography, Snackbar} from "@mui/material";
+import { Button, TextField, Typography, Snackbar } from "@mui/material";
 import { ListCards, ListCardsResponse } from "../../backend_interface";
-import { send_json_backend, get_session_token, get_user_id } from "../../utils";
+import {
+  send_json_backend,
+  get_session_token,
+  get_user_id,
+  get_param,
+} from "../../utils";
 import { redirect } from "../../utils";
 import {
   ENDPOINT_CREATE_CARD,
@@ -15,23 +20,12 @@ import {
 } from "../../backend_interface";
 // import { EditCard } from "../../backend_interface";
 
-
-
 interface Card {
   question: string;
   answer: string;
 }
 
 const App: React.FC = () => {
-  const get_deckid = () => {
-    const urlString = window.location.href;
-    const url = new URL(urlString);
-    const searchParams = new URLSearchParams(url.search);
-    const deckIdJSON = searchParams.get("deck");
-    const deckId = deckIdJSON ? JSON.parse(deckIdJSON) : null;
-    return deckId;
-  };
-
   const [flashcards, setFlashcards] = useState<Card[]>([]);
   const [question, setQuestion] = useState("");
   const [answer, setAnswer] = useState("");
@@ -53,8 +47,8 @@ const App: React.FC = () => {
   };
 
   const Create_card = () => {
-    let deckId = get_deckid();
-    let access_token = get_session_token();
+    const deckId = get_param("deck");
+    const access_token = get_session_token();
     if (access_token == null) {
       return;
     }
@@ -69,44 +63,37 @@ const App: React.FC = () => {
       return;
     }
 
-    let create_card = {
+    const create_card = {
       access_token: access_token,
       deck_id: deckId,
       question: q1,
       answer: a1,
     };
-    send_json_backend(ENDPOINT_CREATE_CARD, JSON.stringify(create_card))
-      .then((data) => {
-        console.log("result:", data);
+    send_json_backend(ENDPOINT_CREATE_CARD, JSON.stringify(create_card)).then(
+      (_data) => {
         listCards();
         setq1("");
         seta1("");
-      })
-      .catch((error) => {
-        console.error("Error creating card:", error);
-      });
+      },
+    );
   };
 
   const listCards = () => {
-    let deckId = get_deckid();
-    let access_token = get_session_token();
-    let user_id = get_user_id();
-    if (access_token == null || user_id == null) {
+    const deckId: number | null = get_param("deck");
+    const userId = get_user_id();
+    if (deckId == null || userId == null) {
       return;
     }
-    let prev_cards: ListCards = {
-      user_id: user_id,
+    const prev_cards: ListCards = {
+      user_id: userId,
       deck_id: deckId,
     };
-    send_json_backend(ENDPOINT_LIST_CARDS, JSON.stringify(prev_cards))
-      .then((data: ListCardsResponse) => {
-        console.log("Prev_Cards:", data);
-        setFlashcards(data.cards);
-        console.log(flashcards);
-      })
-      .catch((error) => {
-        console.error("Error displaying cards:", error);
-      });
+    send_json_backend<ListCardsResponse>(
+      ENDPOINT_LIST_CARDS,
+      JSON.stringify(prev_cards),
+    ).then((data: ListCardsResponse) => {
+      setFlashcards(data.cards);
+    });
   };
 
   const cancelEdit = () => {
@@ -116,56 +103,51 @@ const App: React.FC = () => {
   };
 
   const handleDeleteCard = (index: number) => {
-    let access_token = get_session_token();
-    if (access_token == null) {
+    const access_token = get_session_token();
+    const deckId: number | null = get_param("deck");
+    if (access_token == null || deckId == null) {
       return;
     }
 
     const cardIndexToDelete = index;
 
-    let deleteCardPayload: DeleteCard = {
+    const deleteCardPayload: DeleteCard = {
       access_token: access_token,
-      deck_id: get_deckid(),
+      deck_id: deckId,
       card_index: cardIndexToDelete,
     };
 
-    send_json_backend(ENDPOINT_DELETE_CARD, JSON.stringify(deleteCardPayload))
-      .then(() => {
-        console.log("Card deleted with index:", cardIndexToDelete);
-
-        const updatedFlashcards = [...flashcards];
-        updatedFlashcards.splice(index, 1);
-        setFlashcards(updatedFlashcards);
-      })
-      .catch((error) => {
-        console.error("Error deleting card:", error);
-      });
+    send_json_backend(
+      ENDPOINT_DELETE_CARD,
+      JSON.stringify(deleteCardPayload),
+    ).then(() => {
+      const updatedFlashcards = [...flashcards];
+      updatedFlashcards.splice(index, 1);
+      setFlashcards(updatedFlashcards);
+    });
   };
 
   const handleSaveEdit = (index: number) => {
-    let access_token = get_session_token();
-    if (access_token == null) {
+    const access_token = get_session_token();
+    const deckId: number | null = get_param("deck");
+    if (access_token == null || deckId == null) {
       return;
     }
     const cardIndexToEdit = index;
-    console.log(editedQuestion, editedAnswer);
-    let edit_card: EditCard = {
+    const edit_card: EditCard = {
       access_token: access_token,
-      deck_id: get_deckid(),
+      deck_id: deckId,
       card_index: cardIndexToEdit,
       new_question: editedQuestion,
       new_answer: editedAnswer,
     };
 
-    send_json_backend(ENDPOINT_EDIT_CARD, JSON.stringify(edit_card))
-      .then((data) => {
-        console.log("result:", data);
+    send_json_backend(ENDPOINT_EDIT_CARD, JSON.stringify(edit_card)).then(
+      (_data) => {
         listCards();
         cancelEdit();
-      })
-      .catch((error) => {
-        console.error("Error editing card:", error);
-      });
+      },
+    );
   };
 
   useEffect(() => {
@@ -175,7 +157,6 @@ const App: React.FC = () => {
   return (
     <div
       style={{ display: "flex", flexDirection: "column", alignItems: "center" }}
-      
     >
       <Navbar />
 
@@ -187,10 +168,9 @@ const App: React.FC = () => {
           backgroundColor: "transparent",
         }}
       >
-
         <Button
           onClick={() => {
-            redirect("/flashcard_viewer");
+            redirect("/flashcard_viewer", []);
           }}
           style={{
             position: "absolute",

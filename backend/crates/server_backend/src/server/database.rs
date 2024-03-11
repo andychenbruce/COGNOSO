@@ -7,7 +7,7 @@ use std::hash::Hasher;
 use crate::api_structs;
 
 const DEFAULT_ICON: u32 = 0;
-const SHA265_NUM_BYTES: usize = 32;
+const SHA256_NUM_BYTES: usize = 32;
 
 type AccessToken = (u32, u32);
 pub type UserId = u32;
@@ -85,7 +85,7 @@ impl Database {
             .value();
 
         let test_password_hash = sha256_hash(password.as_bytes());
-        let real_password_hash: [u8; SHA265_NUM_BYTES] = user_info
+        let real_password_hash: [u8; SHA256_NUM_BYTES] = user_info
             .password_hash
             .try_into()
             .map_err(AndyError::BadHash)?;
@@ -152,6 +152,9 @@ impl Database {
             if table.remove(user_id)?.is_none() {
                 return Err(AndyError::UserDoesNotExist);
             }
+            let mut table = write_txn.open_table(Self::DECKS_TABLE)?;
+
+            table.drain_filter::<&(u32, u32), _>(.., |key, _val| key.0 == user_id)?;
         }
         write_txn.commit()?;
         Ok(())
@@ -179,7 +182,7 @@ impl Database {
                 ..entry
             };
 
-            table.insert(user_id, out)?.unwrap();
+            table.insert(user_id, out)?;
         }
         write_txn.commit()?;
         Ok(())
@@ -225,6 +228,7 @@ impl Database {
             deck_id,
             user_id,
             icon_num: deck.icon_num,
+            rating: deck.rating,
         })
     }
 
@@ -238,24 +242,9 @@ impl Database {
         Ok(())
     }
 
-    pub fn get_rating(&self, user_id: UserId, deck_id: DeckId) -> Result<f32, AndyError> {
-        let read_txn = self.db.begin_read()?;
-
-        let table = read_txn.open_table(Self::DECKS_TABLE)?;
-        let rating: f32 = table
-            .get((user_id, deck_id))?
-            .ok_or(AndyError::DeckDoesNotExist)?
-            .value()
-            .rating;
-        println!(
-            "user_id = {}, deck_id = {}, sending to frontend rating = {}",
-            user_id, deck_id, rating
-        );
-        Ok(rating)
-    }
-
     pub fn add_rating(
         &self,
+        _from_user_id: UserId, //todo make sure not already rated
         user_id: UserId,
         deck_id: DeckId,
         new_rating: f32,
@@ -265,24 +254,10 @@ impl Database {
         let read_txn = self.db.begin_read()?;
         let table = read_txn.open_table(Self::DECKS_TABLE)?;
         let mut deck = table.get(key)?.ok_or(AndyError::DeckDoesNotExist)?.value();
-        println!(
-            "changing rating for user_id = {}, deck_id = {}",
-            user_id, deck_id
-        );
-        println!("old rating = {}", deck.rating);
-        println!(
-            "new rating should be (({} * {}) + {}) / ({})",
-            deck.rating,
-            deck.num_ratings,
-            new_rating,
-            deck.num_ratings + 1
-        );
         deck.rating = ((deck.rating * (deck.num_ratings as f32)) + new_rating)
             / ((deck.num_ratings + 1) as f32);
 
         deck.num_ratings += 1;
-        println!("new rating = {}", deck.rating);
-        println!("num ratings now = {}", deck.num_ratings);
 
         self.insert_or_replace(key, deck, Self::DECKS_TABLE)?;
 
@@ -371,6 +346,7 @@ impl Database {
                     name: deck.name,
                     num_cards: deck.cards.len().try_into()?,
                     icon_num: deck.icon_num,
+                    rating: deck.rating,
                 });
             }
         }
@@ -461,34 +437,77 @@ impl Database {
         &self,
         user_id: UserId,
     ) -> Result<api_structs::ListFavoritesResponse, AndyError> {
-        let favorites = {
+        let mut user_entry = {
             let read_txn = self.db.begin_read()?;
             let table = read_txn.open_table(Self::USERS_TABLE)?;
-            let user_entry = table
+            let x = table
                 .get(user_id)?
                 .ok_or(AndyError::UserDoesNotExist)?
                 .value();
-            user_entry.favorites
+            x
         };
 
-        let decks: Vec<api_structs::CardDeck> = favorites
-            .into_iter()
-            .map(|id| {
+        enum LookupResult {
+            Found(api_structs::CardDeck),
+            NotFound(usize),
+        }
+
+        let decks: Vec<LookupResult> = user_entry
+            .favorites
+            .iter()
+            .enumerate()
+            .map(|(index, id)| {
                 let read_txn = self.db.begin_read()?;
                 let table = read_txn.open_table(Self::DECKS_TABLE)?;
-                let deck = table.get(id)?.unwrap().value();
 
-                Ok::<api_structs::CardDeck, AndyError>(api_structs::CardDeck {
+                //todo: delete favorites to decks that no longer exist
+                let deck = match table.get(id)? {
+                    Some(x) => x,
+                    None => return Ok(LookupResult::NotFound(index)),
+                }
+                .value();
+
+                Ok::<_, AndyError>(LookupResult::Found(api_structs::CardDeck {
                     name: deck.name,
                     user_id: id.0,
                     deck_id: id.1,
                     num_cards: deck.cards.len() as u32,
                     icon_num: deck.icon_num,
-                })
+                    rating: deck.rating,
+                }))
             })
-            .collect::<Result<_, _>>()?;
+            .collect::<Result<_, AndyError>>()?;
 
-        Ok(api_structs::ListFavoritesResponse { decks })
+        let missing_indicies: Vec<_> = decks
+            .iter()
+            .filter_map(|x| match x {
+                LookupResult::NotFound(position) => Some(*position),
+                LookupResult::Found(_) => None,
+            })
+            .collect();
+
+        user_entry.favorites = user_entry
+            .favorites
+            .into_iter()
+            .enumerate()
+            .filter_map(|(index, entry)| {
+                if missing_indicies.contains(&index) {
+                    None
+                } else {
+                    Some(entry)
+                }
+            })
+            .collect();
+
+        Ok(api_structs::ListFavoritesResponse {
+            decks: decks
+                .into_iter()
+                .filter_map(|x| match x {
+                    LookupResult::NotFound(_) => None,
+                    LookupResult::Found(deck) => Some(deck),
+                })
+                .collect(),
+        })
     }
 
     pub fn add_favorite(&self, user_id: UserId, id_pair: UserDeckIdPair) -> Result<(), AndyError> {
@@ -558,6 +577,7 @@ impl Database {
                     user_id,
                     num_cards: deck.cards.len() as u32,
                     icon_num: deck.icon_num,
+                    rating: deck.rating,
                 })
             })
             .collect::<Result<_, _>>()?;
@@ -583,6 +603,7 @@ impl Database {
                     user_id,
                     num_cards: deck.cards.len() as u32,
                     icon_num: deck.icon_num,
+                    rating: deck.rating,
                 })
             })
             .collect::<Result<Vec<_>, AndyError>>()?;
@@ -623,14 +644,14 @@ impl Database {
     }
 }
 
-fn sha256_hash(bytes: &[u8]) -> [u8; SHA265_NUM_BYTES] {
+fn sha256_hash(bytes: &[u8]) -> [u8; SHA256_NUM_BYTES] {
     let mut hasher = sha2::Sha256::new();
 
     hasher.update(bytes);
 
     let result: Vec<u8> = hasher.finalize().to_vec();
 
-    result.try_into().unwrap()
+    result.try_into().expect("sha256 size mismatch")
 }
 
 fn hash<K>(username: K) -> u64
