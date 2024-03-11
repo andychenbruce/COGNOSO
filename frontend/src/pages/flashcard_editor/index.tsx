@@ -9,7 +9,6 @@ import {
   get_user_id,
   get_param,
 } from "../../utils";
-import { redirect } from "../../utils";
 import {
   ENDPOINT_CREATE_CARD,
   ENDPOINT_LIST_CARDS,
@@ -18,7 +17,6 @@ import {
   DeleteCard,
   EditCard,
 } from "../../backend_interface";
-// import { EditCard } from "../../backend_interface";
 
 interface Card {
   question: string;
@@ -170,7 +168,7 @@ const App: React.FC = () => {
       >
         <Button
           onClick={() => {
-            redirect("/flashcard_viewer", []);
+            window.location.href = "/flashcard_viewer";
           }}
           style={{
             position: "absolute",

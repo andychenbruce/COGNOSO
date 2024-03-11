@@ -1,7 +1,7 @@
 import React, { Dispatch, useState, useEffect } from "react";
 import { Navbar } from "../../navbar";
 import "./home.css";
-import { send_json_backend, get_session_token } from "../../utils";
+import { send_json_backend, get_session_token, redirect } from "../../utils";
 import {
   ListCardDecks,
   ListCardDecksResponse,
@@ -180,7 +180,7 @@ const App: React.FC = () => {
                     variant="contained"
                     color="primary"
                     onClick={() => {
-                      window.location.href = `/flashcard_viewer/?deck=${deck.deck_id}`;
+                      redirect("/flashcard_viewer/", [["deck", JSON.stringify(deck.deck_id)], ["user", JSON.stringify(deck.user_id)]]);
                     }}
                     className="button_sx"
                     sx={{
@@ -232,7 +232,7 @@ const App: React.FC = () => {
                     variant="contained"
                     color="primary"
                     onClick={() => {
-                      window.location.href = `/flashcard_viewer/?deck=${deck.deck_id}`;
+                      redirect("/flashcard_viewer/", [["deck", JSON.stringify(deck.deck_id)], ["user", JSON.stringify(deck.user_id)]]);
                     }}
                     sx={{
                       width: "200px",
@@ -283,7 +283,7 @@ const App: React.FC = () => {
                     variant="contained"
                     color="primary"
                     onClick={() => {
-                      window.location.href = `/flashcard_viewer/?deck=${deck.deck_id}`;
+                      redirect("/flashcard_viewer/", [["deck", JSON.stringify(deck.deck_id)], ["user", JSON.stringify(deck.user_id)]]);
                     }}
                     sx={{
                       width: "200px",
