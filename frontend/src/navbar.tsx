@@ -18,8 +18,9 @@ export const Navbar = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [openPassChangeDialog, setOpenPassChangeDialog] = useState(false);
-  const [shouldShowPopup, setShouldShowPopup] = useState(false);
+  const [shouldShowPopup, setChangePassError] = useState(false);
   const [errorFields, setErrorFields] = useState<string[]>([]);
+  const [errorFields2, setErrorFields2] = useState<string[]>([]);
   const [showPassChangeSuccessSnackbar, setshowPassChangeSuccessSnackbar] = useState(false);
   const [showDeleteErrorSnackbar, setShowDeleteErrorSnackbar] = useState(false);
   const [showDeleteSuccessSnackbar, setshowDeleteSuccessSnackbar] = useState(false);
@@ -77,6 +78,8 @@ export const Navbar = () => {
     })
     .catch((error) => {
       console.error("Error deleting user:", error);
+      setErrorFields2(["email", "password"]);
+      setTimeout(() => setErrorFields2([]), 2000);
       setShowDeleteErrorSnackbar(true);
     });
 
@@ -109,7 +112,7 @@ export const Navbar = () => {
         console.error("Error changing password:", error);
         setErrorFields(["email2", "pass1", "pass2"]);
         setTimeout(() => setErrorFields([]), 2000);
-        setShouldShowPopup(true);
+        setChangePassError(true);
       });
   };
 
@@ -119,7 +122,7 @@ export const Navbar = () => {
   };
 
   const PassChangeNotSame = () => {
-    setShouldShowPopup(false);
+    setChangePassError(false);
   };
 
   return (
@@ -320,7 +323,9 @@ export const Navbar = () => {
           <TextField
             style={{
               marginBottom: 20,
+              borderColor: errorFields2.includes("email") ? "red" : undefined,
             }}
+            error={errorFields2.includes("email")}
             label="Email"
             variant="outlined"
             fullWidth
@@ -333,7 +338,9 @@ export const Navbar = () => {
           <TextField
             style={{
               marginBottom: 20,
+              borderColor: errorFields2.includes("password") ? "red" : undefined,
             }}
+            error={errorFields2.includes("password")}
             label="Password"
             type="password"
             variant="outlined"
@@ -442,19 +449,23 @@ export const Navbar = () => {
           />
           <Button
             onClick={handleChanegPassDialogClose}
-            sx={{ border: "1px solid purple", color: "white", backgroundColor: "#7b1fa2",
-            "&:hover": {
-              backgroundColor: "#9c27b0",
-            } }}
+            sx={{
+              color: "white",
+              "&:hover": {
+                backgroundColor: "#7b1fa2",
+              },
+            }}
           >
             Cancel
           </Button>
           <Button
             onClick={handleChangePass}
-            sx={{ border: "1px solid purple", color: "#90EE90", backgroundColor: "#7b1fa2",
-            "&:hover": {
-              backgroundColor: "#9c27b0",
-            } }}
+            sx={{
+              color: "white",
+              "&:hover": {
+                backgroundColor: "#7b1fa2",
+              },
+            }}
             autoFocus
           >
             Change
