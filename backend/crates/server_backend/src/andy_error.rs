@@ -38,7 +38,11 @@ pub enum AndyError {
     HttpInvalidHeader(#[from] hyper::header::InvalidHeaderValue),
     #[error("invalid hash in database")]
     BadHash(Vec<u8>),
-    #[error("pdf err")]
+    #[error("url processing err")]
+    UrlProcessing(#[from] data_url::DataUrlError),
+    #[error("url processing err")]
+    UrlDecoding(#[from] data_url::forgiving_base64::InvalidBase64),
+    #[error("pdf parsing err")]
     Pdf(#[from] pdf_parser::AndyPdfError),
     #[error("llm err")]
     Llm(#[from] crate::server::llm::LlmError),

@@ -9,8 +9,22 @@ pub enum SearchEngineError {
     Qdrant(#[from] anyhow::Error),
     #[error("embedder error")]
     Embedder(#[from] sentence_embedder::EmbedderError),
-    #[error("json err")]
-    Json(#[from] serde_json::Error),
+    #[error("embedder length mismatch")]
+    EmbedderLength { expected: usize, got: usize },
+    #[error("payload convertsion")]
+    PayloadConversion(qdrant_client::serde::PayloadConversionError),
+    #[error("payload missing field")]
+    PayloadFieldMissing(&'static str),
+    #[error("payload missing kind")]
+    ValueNoKind,
+    #[error("payload wrong kind")]
+    ValueWrongKind,
+    #[error("integer conversion")]
+    IntegerConversionError(#[from] core::num::TryFromIntError),
+    #[error("embedder never loaded")]
+    EmbedderNeverLoaded,
+    #[error("vectordb never loaded")]
+    VectorDbNeverLoaded,
 }
 
 pub struct SearchEngine {
@@ -19,6 +33,11 @@ pub struct SearchEngine {
 }
 
 impl SearchEngine {
+    const COLLECTION_NAME: &'static str = "andys_collection";
+    const FIELD_DECK_ID: &'static str = "deck_id";
+    const FIELD_USER_ID: &'static str = "user_id";
+    const FIELD_PDF_SENTENCE: &'static str = "text";
+
     pub async fn new(
         qdrant_addr: Option<String>,
         embedder_path: Option<&std::path::Path>,
@@ -33,7 +52,7 @@ impl SearchEngine {
 
                 client
                     .create_collection(&CreateCollection {
-                        collection_name: "andys_collection".into(),
+                        collection_name: Self::COLLECTION_NAME.to_owned(),
                         vectors_config: Some(qdrant_client::qdrant::VectorsConfig {
                             config: Some(qdrant_client::qdrant::vectors_config::Config::Params(
                                 qdrant_client::qdrant::VectorParams {
@@ -61,18 +80,15 @@ impl SearchEngine {
         cards: Vec<super::database::Card>,
     ) -> Result<(), SearchEngineError> {
         let payload: Payload = json!({
-            "user_id": id.0,
-            "deck_id": id.1
+            Self::FIELD_USER_ID: id.0,
+            Self::FIELD_DECK_ID: id.1
         })
         .try_into()
-        .unwrap();
+        .map_err(SearchEngineError::PayloadConversion)?;
 
-        let sentences: Vec<_> = cards
-            .into_iter()
-            .map(|card| format!("Question: {}, Answer: {}", card.question, card.answer))
-            .collect();
+        let sentences: Vec<_> = cards.into_iter().map(format_card).collect();
 
-        let vectors = self.get_embedder().run(sentences)?;
+        let vectors = self.get_embedder()?.run(sentences)?;
 
         let points: Vec<_> = vectors
             .into_iter()
@@ -80,8 +96,8 @@ impl SearchEngine {
             .map(|(num, vector)| PointStruct::new(num as u64, vector, payload.clone()))
             .collect();
 
-        self.get_client()
-            .upsert_points_blocking("andys_collection", None, points, None)
+        self.get_client()?
+            .upsert_points_blocking(Self::COLLECTION_NAME, None, points, None)
             .await?;
 
         Ok(())
@@ -93,16 +109,18 @@ impl SearchEngine {
         num_results: u64,
     ) -> Result<Vec<(super::database::UserId, super::database::DeckId)>, SearchEngineError> {
         let vector = self
-            .get_embedder()
+            .get_embedder()?
             .run(vec![prompt.to_owned()])?
-            .into_iter()
-            .next()
-            .unwrap();
+            .pop()
+            .ok_or(SearchEngineError::EmbedderLength {
+                expected: 1,
+                got: 0,
+            })?;
 
         let search_result = self
-            .get_client()
+            .get_client()?
             .search_points(&SearchPoints {
-                collection_name: "andys_collection".into(),
+                collection_name: Self::COLLECTION_NAME.to_owned(),
                 vector,
                 limit: num_results,
                 with_payload: Some(true.into()),
@@ -110,35 +128,21 @@ impl SearchEngine {
             })
             .await?;
 
-        let results = search_result
-            .result
-            .into_iter()
-            .map(|point| {
-                let deck_id = match point.payload.get("deck_id").unwrap().kind.as_ref().unwrap() {
-                    qdrant_client::qdrant::value::Kind::IntegerValue(n) => {
-                        TryInto::<u32>::try_into(*n).unwrap()
-                    }
-                    _ => panic!("todo handle this error"),
-                };
-                let user_id = match point.payload.get("user_id").unwrap().kind.as_ref().unwrap() {
-                    qdrant_client::qdrant::value::Kind::IntegerValue(n) => {
-                        TryInto::<u32>::try_into(*n).unwrap()
-                    }
-                    _ => panic!("todo handle this error"),
-                };
-
-                (user_id, deck_id)
-            })
-            .collect();
-
+        let results = Self::deserialize_points(search_result.result)?;
         Ok(results)
     }
 
-    fn get_embedder(&mut self) -> &mut sentence_embedder::SentenceEmbedder {
-        self.embedder.as_mut().unwrap()
+    fn get_embedder(
+        &mut self,
+    ) -> Result<&mut sentence_embedder::SentenceEmbedder, SearchEngineError> {
+        self.embedder
+            .as_mut()
+            .ok_or(SearchEngineError::EmbedderNeverLoaded)
     }
-    fn get_client(&mut self) -> &mut QdrantClient {
-        self.client.as_mut().unwrap()
+    fn get_client(&mut self) -> Result<&mut QdrantClient, SearchEngineError> {
+        self.client
+            .as_mut()
+            .ok_or(SearchEngineError::VectorDbNeverLoaded)
     }
 
     pub fn not_fucked(&self) -> bool {
@@ -151,9 +155,9 @@ impl SearchEngine {
         deck_id: u32,
         sentences: Vec<String>,
     ) -> Result<(), SearchEngineError> {
-        self.get_client()
+        self.get_client()?
             .create_collection(&CreateCollection {
-                collection_name: format!("user_id {} deck_id {}", user_id, deck_id),
+                collection_name: format_pdf_collection(user_id, deck_id),
                 vectors_config: Some(qdrant_client::qdrant::VectorsConfig {
                     config: Some(qdrant_client::qdrant::vectors_config::Config::Params(
                         qdrant_client::qdrant::VectorParams {
@@ -167,19 +171,18 @@ impl SearchEngine {
             })
             .await?;
 
-        //Not found: Collection `user_id:854508108 deck_id2054049807` doesn't
         let payloads: Vec<Payload> = sentences
             .iter()
             .map(|x| {
                 json!({
-                    "text": x.clone()
+                    Self::FIELD_PDF_SENTENCE: x.clone()
                 })
                 .try_into()
-                .unwrap()
+                .map_err(SearchEngineError::PayloadConversion)
             })
-            .collect();
+            .collect::<Result<Vec<_>, SearchEngineError>>()?;
 
-        let vectors = self.get_embedder().run(sentences)?;
+        let vectors = self.get_embedder()?.run(sentences)?;
 
         let points: Vec<_> = vectors
             .into_iter()
@@ -188,13 +191,8 @@ impl SearchEngine {
             .map(|(num, (vector, payload))| PointStruct::new(num as u64, vector, payload))
             .collect();
 
-        self.get_client()
-            .upsert_points_blocking(
-                format!("user_id {} deck_id {}", user_id, deck_id),
-                None,
-                points,
-                None,
-            )
+        self.get_client()?
+            .upsert_points_blocking(format_pdf_collection(user_id, deck_id), None, points, None)
             .await?;
 
         Ok(())
@@ -208,16 +206,18 @@ impl SearchEngine {
         deck_id: u32,
     ) -> Result<Vec<String>, SearchEngineError> {
         let vector = self
-            .get_embedder()
+            .get_embedder()?
             .run(vec![prompt.to_owned()])?
-            .into_iter()
-            .next()
-            .unwrap();
+            .pop()
+            .ok_or(SearchEngineError::EmbedderLength {
+                expected: 1,
+                got: 0,
+            })?;
 
         let search_result = self
-            .get_client()
+            .get_client()?
             .search_points(&SearchPoints {
-                collection_name: format!("user_id {} deck_id {}", user_id, deck_id),
+                collection_name: format_pdf_collection(user_id, deck_id),
                 vector,
                 limit: num_results,
                 with_payload: Some(true.into()),
@@ -228,13 +228,22 @@ impl SearchEngine {
         let results = search_result
             .result
             .into_iter()
-            .map(
-                |point| match point.payload.get("text").unwrap().kind.as_ref().unwrap() {
-                    qdrant_client::qdrant::value::Kind::StringValue(n) => n.clone(),
-                    _ => panic!("todo handle this error"),
-                },
-            )
-            .collect();
+            .map(|point| {
+                match point
+                    .payload
+                    .get(Self::FIELD_PDF_SENTENCE)
+                    .ok_or(SearchEngineError::PayloadFieldMissing(
+                        Self::FIELD_PDF_SENTENCE,
+                    ))?
+                    .kind
+                    .as_ref()
+                    .ok_or(SearchEngineError::ValueNoKind)?
+                {
+                    qdrant_client::qdrant::value::Kind::StringValue(n) => Ok(n.clone()),
+                    _ => Err(SearchEngineError::ValueWrongKind),
+                }
+            })
+            .collect::<Result<_, SearchEngineError>>()?;
 
         Ok(results)
     }
@@ -244,10 +253,43 @@ impl SearchEngine {
         user_id: u32,
         deck_id: u32,
     ) -> Result<(), SearchEngineError> {
-        self.get_client()
-            .delete_collection(format!("user_id {} deck_id {}", user_id, deck_id))
+        self.get_client()?
+            .delete_collection(format_pdf_collection(user_id, deck_id))
             .await?;
         Ok(())
+    }
+
+    fn deserialize_points(
+        points: Vec<qdrant_client::qdrant::ScoredPoint>,
+    ) -> Result<Vec<(u32, u32)>, SearchEngineError> {
+        points
+            .into_iter()
+            .map(|point| {
+                let deck_id = Self::extract_integer_from_point(&point, Self::FIELD_DECK_ID)?;
+                let user_id = Self::extract_integer_from_point(&point, Self::FIELD_USER_ID)?;
+
+                Ok((user_id, deck_id))
+            })
+            .collect::<Result<Vec<_>, SearchEngineError>>()
+    }
+
+    fn extract_integer_from_point(
+        point: &qdrant_client::qdrant::ScoredPoint,
+        field: &'static str,
+    ) -> Result<u32, SearchEngineError> {
+        match point
+            .payload
+            .get(Self::FIELD_DECK_ID)
+            .ok_or(SearchEngineError::PayloadFieldMissing(field))?
+            .kind
+            .as_ref()
+            .ok_or(SearchEngineError::ValueNoKind)?
+        {
+            qdrant_client::qdrant::value::Kind::IntegerValue(n) => {
+                TryInto::<u32>::try_into(*n).map_err(|e| e.into())
+            }
+            _ => Err(SearchEngineError::ValueWrongKind),
+        }
     }
 }
 
@@ -274,4 +316,12 @@ async fn loop_inside(resources: &super::SharedState) -> Result<(), crate::AndyEr
     }
 
     Ok(())
+}
+
+fn format_card(card: super::database::Card) -> String {
+    format!("Question: {}, Answer: {}", card.question, card.answer)
+}
+
+fn format_pdf_collection(user_id: u32, deck_id: u32) -> String {
+    format!("user_id {} deck_id {}", user_id, deck_id)
 }
