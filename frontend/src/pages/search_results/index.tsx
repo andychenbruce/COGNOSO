@@ -3,7 +3,7 @@ import { Navbar } from "../../navbar";
 import "./search_results.css";
 
 import { Grid } from "@mui/material";
-import { send_json_backend, get_session_token } from "../../utils";
+import { send_json_backend, get_session_token, redirect } from "../../utils";
 import {
   CardDeck,
   ENDPOINT_SEARCH_DECKS,
@@ -185,14 +185,9 @@ const App: React.FC = () => {
                       variant="contained"
                       color="primary"
                       onClick={() => {
-                        const url = new URL(
-                          window.location.origin + "/flashcard_viewer/",
-                        );
-                        url.searchParams.append(
-                          "deck",
-                          JSON.stringify(deck.deck_id),
-                        );
-                        window.location.href = url.toString();
+                        redirect("/flashcard_viewer/", [
+                          ["deck", JSON.stringify(deck.deck_id)],
+                        ]);
                       }}
                       sx={{
                         width: "200px",

@@ -14,7 +14,7 @@ import {
   ENDPOINT_ADD_RATING,
   AddRating,
 } from "../../backend_interface";
-import { send_json_backend, get_session_token, get_user_id } from "../../utils";
+import { send_json_backend, get_session_token, get_param } from "../../utils";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
@@ -30,20 +30,16 @@ const FlashcardViewerFunc = () => {
   const [value, setValue] = React.useState<number | null>(null);
 
   useEffect(() => {
-    const urlString = window.location.href;
-    const url = new URL(urlString);
-    const searchParams = new URLSearchParams(url.search);
-    const deckIdJSON = searchParams.get("deck");
-    const deckId: number = deckIdJSON ? JSON.parse(deckIdJSON) : null;
+    const deckId: number | null = get_param("deck");
+    const userId: number | null = get_param("user");
+    if (deckId == null || userId == null) {
+      setDeckName("Bad Url");
+      return;
+    }
 
     const fetchDeckName = async () => {
-      const access_token = get_session_token();
-      const user_id = get_user_id();
-      if (access_token == null || user_id == null) {
-        return;
-      }
       const payload: GetDeckRequest = {
-        user_id: user_id,
+        user_id: userId,
         deck_id: deckId,
       };
       const deck_info = await send_json_backend<GetDeckResponse>(
@@ -54,25 +50,16 @@ const FlashcardViewerFunc = () => {
     };
 
     const listCards = () => {
-      const access_token = get_session_token();
-      const user_id = get_user_id();
-      if (access_token == null || user_id == null) {
-        return;
-      }
       const prev_cards: ListCards = {
-        user_id: user_id,
+        user_id: userId,
         deck_id: deckId,
       };
       send_json_backend<ListCardsResponse>(
         ENDPOINT_LIST_CARDS,
         JSON.stringify(prev_cards),
-      )
-        .then((data: ListCardsResponse) => {
-          setFlashcards(data.cards);
-        })
-        .catch((error) => {
-          console.error("Error displaying cards:", error);
-        });
+      ).then((data: ListCardsResponse) => {
+        setFlashcards(data.cards);
+      });
     };
 
     fetchDeckName();
@@ -80,20 +67,18 @@ const FlashcardViewerFunc = () => {
   }, []);
 
   const addRating = (newValue: number) => {
-    const urlString = window.location.href;
-    const url = new URL(urlString);
-    const searchParams = new URLSearchParams(url.search);
-    const deckIdJSON = searchParams.get("deck");
-    const deckId: number = deckIdJSON ? JSON.parse(deckIdJSON) : null;
-    console.log(deckId);
+    const deckId: number | null = get_param("deck");
+    const userId: number | null = get_param("user");
+
     const access_token = get_session_token();
-    if (access_token == null) {
+    if (access_token == null || deckId == null || userId == null) {
       return;
     }
 
     console.log("newValue:", newValue);
     const add_rating: AddRating = {
       access_token: access_token,
+      user_id: userId,
       deck_id: deckId,
       new_rating: newValue,
     };

@@ -14,8 +14,12 @@ import {
   DialogContentText,
 } from "@mui/material";
 import { redirect, send_json_backend } from "./utils";
-import { ENDPOINT_DELETE_USER, DeleteUser } from "./backend_interface";
-import { ENDPOINT_CHANGE_PASSWORD, ChangePassword } from "./backend_interface";
+import {
+  ENDPOINT_DELETE_USER,
+  DeleteUser,
+  ENDPOINT_CHANGE_PASSWORD,
+  ChangePassword,
+} from "./backend_interface";
 import { logout } from "./utils";
 import HomeIcon from "@mui/icons-material/Home";
 import BackupTableOutlinedIcon from "@mui/icons-material/BackupTableOutlined";
@@ -163,7 +167,7 @@ export const Navbar = () => {
           },
         }}
         onClick={() => {
-          redirect("/home_page");
+          redirect("/home_page", []);
         }}
       >
         <HomeIcon />
@@ -188,9 +192,9 @@ export const Navbar = () => {
           style={{ flex: 1, fontSize: "20px", paddingLeft: "10px" }}
           onKeyDown={(e) => {
             if (e.key === "Enter") {
-              const url = new URL(window.location.origin + "/search_results/");
-              url.searchParams.append("query", JSON.stringify(searchQuery));
-              window.location.href = url.toString();
+              redirect("/search_results/", [
+                ["query", JSON.stringify(searchQuery)],
+              ]);
             }
           }}
         />
@@ -206,7 +210,7 @@ export const Navbar = () => {
           },
         }}
         onClick={() => {
-          redirect("/deck_manage");
+          redirect("/deck_manage", []);
         }}
       >
         <BackupTableOutlinedIcon />
@@ -224,7 +228,7 @@ export const Navbar = () => {
           },
         }}
         onClick={() => {
-          redirect("/ai_test");
+          redirect("/ai_test", []);
         }}
       >
         <ChatIcon />

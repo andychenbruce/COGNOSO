@@ -3,7 +3,12 @@ import { Navbar } from "../../navbar";
 import "./flashcard_editor.css";
 import { Button, TextField, Typography, Snackbar } from "@mui/material";
 import { ListCards, ListCardsResponse } from "../../backend_interface";
-import { send_json_backend, get_session_token, get_user_id } from "../../utils";
+import {
+  send_json_backend,
+  get_session_token,
+  get_user_id,
+  get_param,
+} from "../../utils";
 import { redirect } from "../../utils";
 import {
   ENDPOINT_CREATE_CARD,
@@ -21,15 +26,6 @@ interface Card {
 }
 
 const App: React.FC = () => {
-  const get_deckid = () => {
-    const urlString = window.location.href;
-    const url = new URL(urlString);
-    const searchParams = new URLSearchParams(url.search);
-    const deckIdJSON = searchParams.get("deck");
-    const deckId = deckIdJSON ? JSON.parse(deckIdJSON) : null;
-    return deckId;
-  };
-
   const [flashcards, setFlashcards] = useState<Card[]>([]);
   const [question, setQuestion] = useState("");
   const [answer, setAnswer] = useState("");
@@ -51,7 +47,7 @@ const App: React.FC = () => {
   };
 
   const Create_card = () => {
-    const deckId = get_deckid();
+    const deckId = get_param("deck");
     const access_token = get_session_token();
     if (access_token == null) {
       return;
@@ -86,14 +82,13 @@ const App: React.FC = () => {
   };
 
   const listCards = () => {
-    const deckId = get_deckid();
-    const access_token = get_session_token();
-    const user_id = get_user_id();
-    if (access_token == null || user_id == null) {
+    const deckId: number | null = get_param("deck");
+    const userId = get_user_id();
+    if (deckId == null || userId == null) {
       return;
     }
     const prev_cards: ListCards = {
-      user_id: user_id,
+      user_id: userId,
       deck_id: deckId,
     };
     send_json_backend<ListCardsResponse>(
@@ -118,7 +113,8 @@ const App: React.FC = () => {
 
   const handleDeleteCard = (index: number) => {
     const access_token = get_session_token();
-    if (access_token == null) {
+    const deckId: number | null = get_param("deck");
+    if (access_token == null || deckId == null) {
       return;
     }
 
@@ -126,7 +122,7 @@ const App: React.FC = () => {
 
     const deleteCardPayload: DeleteCard = {
       access_token: access_token,
-      deck_id: get_deckid(),
+      deck_id: deckId,
       card_index: cardIndexToDelete,
     };
 
@@ -145,14 +141,15 @@ const App: React.FC = () => {
 
   const handleSaveEdit = (index: number) => {
     const access_token = get_session_token();
-    if (access_token == null) {
+    const deckId: number | null = get_param("deck");
+    if (access_token == null || deckId == null) {
       return;
     }
     const cardIndexToEdit = index;
     console.log(editedQuestion, editedAnswer);
     const edit_card: EditCard = {
       access_token: access_token,
-      deck_id: get_deckid(),
+      deck_id: deckId,
       card_index: cardIndexToEdit,
       new_question: editedQuestion,
       new_answer: editedAnswer,
@@ -189,7 +186,7 @@ const App: React.FC = () => {
       >
         <Button
           onClick={() => {
-            redirect("/flashcard_viewer");
+            redirect("/flashcard_viewer", []);
           }}
           style={{
             position: "absolute",

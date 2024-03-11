@@ -3,7 +3,6 @@ export const ENDPOINT_DELETE_CARD_DECK: string = "/delete_card_deck";
 export const ENDPOINT_SET_DECK_ICON: string = "/set_deck_icon";
 
 export const ENDPOINT_ADD_RATING: string = "/add_rating";
-// export const ENDPOINT_GET_RATING: string = "/get_rating";
 
 export const ENDPOINT_CREATE_CARD: string = "/create_card";
 export const ENDPOINT_DELETE_CARD: string = "/delete_card";
@@ -81,15 +80,10 @@ export interface DeleteCardDeck {
   deck_id: number;
 }
 
-// // request -> ENDPOINT_ADD_RATING
-// export interface GetRating {
-//   access_token: AccessToken,
-//   deck_id: number,
-// }
-
-// response <- ENDPOINT_ADD_RATING
+// request -> ENDPOINT_ADD_RATING
 export interface AddRating {
   access_token: AccessToken;
+  user_id: number;
   deck_id: number;
   new_rating: number;
 }

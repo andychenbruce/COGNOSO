@@ -41,7 +41,7 @@ import {
   ENDPOINT_DELETE_FAVORITE,
   DeleteFavorite,
 } from "../../backend_interface";
-import { send_json_backend, get_session_token } from "../../utils";
+import { send_json_backend, get_session_token, redirect } from "../../utils";
 import DeleteIcon from "@mui/icons-material/Delete";
 import StarIcon from "@mui/icons-material/Star";
 import EditTwoToneIcon from "@mui/icons-material/EditTwoTone";
@@ -424,11 +424,9 @@ const App: React.FC = () => {
                 color="primary"
                 fullWidth
                 onClick={() => {
-                  const url = new URL(
-                    window.location.origin + "/flashcard_viewer/",
-                  );
-                  url.searchParams.append("deck", JSON.stringify(deck.deck_id));
-                  window.location.href = url.toString();
+                  redirect("/flashcard_viewer/", [
+                    ["deck", JSON.stringify(deck.deck_id)],
+                  ]);
                 }}
                 style={{
                   width: "100%",

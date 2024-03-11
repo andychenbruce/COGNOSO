@@ -15,7 +15,8 @@ const Main: React.FC<PageProps> = () => {
     email: "",
     password: "",
   });
-  const [shouldShowPopup, setShouldShowPopup] = useState(false);
+
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const handleInputChange = (
     event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
@@ -32,12 +33,10 @@ const Main: React.FC<PageProps> = () => {
     send_json_backend<LoginResponse>(ENDPOINT_LOGIN, JSON.stringify(user))
       .then((data: LoginResponse) => {
         set_session_info(data.access_token, data.user_id);
-        console.log("got back json: ", data);
         redirectTohome_page();
       })
       .catch((error) => {
-        console.error("Error loggin in:", error);
-        setShouldShowPopup(true);
+        setErrorMessage(error.message);
       });
   };
 
@@ -48,7 +47,7 @@ const Main: React.FC<PageProps> = () => {
     window.location.pathname = "/home_page/";
   };
   const handleClosePopup = () => {
-    setShouldShowPopup(false);
+    setErrorMessage(null);
   };
 
   const HeaderText = () => {
@@ -118,10 +117,10 @@ const Main: React.FC<PageProps> = () => {
             </Button>
           </form>
           <Snackbar
-            open={shouldShowPopup}
+            open={errorMessage != null}
             autoHideDuration={3000}
             onClose={handleClosePopup}
-            message="Login failed. Please try again."
+            message={"Login failed: " + errorMessage}
           />
         </Paper>
       </div>
