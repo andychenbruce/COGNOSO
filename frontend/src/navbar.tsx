@@ -12,19 +12,17 @@ import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import ChatIcon from '@mui/icons-material/Chat';
 // import logo from './../../assets/logo.png';
 
-
 export const Navbar = () => {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
-  const [openPassChangeDialog, setOpenPassChangeDialog] = useState(false);
-  const [shouldShowPopup, setChangePassError] = useState(false);
+  const [searchQuery, setSearchQuery] = useState(""); //state of whats in search bar
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null); //dropdown bar to anchor at 'account' button
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false); //popup for account deletion 
+  const [openPassChangeDialog, setOpenPassChangeDialog] = useState(false);//popup for password change 
+  const [ChangePassError, setChangePassError] = useState(false);
   const [errorFields, setErrorFields] = useState<string[]>([]);
   const [errorFields2, setErrorFields2] = useState<string[]>([]);
   const [showPassChangeSuccessSnackbar, setshowPassChangeSuccessSnackbar] = useState(false);
   const [showDeleteErrorSnackbar, setShowDeleteErrorSnackbar] = useState(false);
   const [showDeleteSuccessSnackbar, setshowDeleteSuccessSnackbar] = useState(false);
-  
   const [user, setUser] = useState({
     email: "",
     password: "",
@@ -43,6 +41,7 @@ export const Navbar = () => {
     }));
   };
 
+  // menu popup for change pass, logout and delete acc
   const handleMenuOpen = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -51,6 +50,7 @@ export const Navbar = () => {
     setAnchorEl(null);
   };
 
+  //Stuff for account deletion
   const handleDeleteButtonClick = () => {
     setOpenDeleteDialog(true);
   };
@@ -85,12 +85,17 @@ export const Navbar = () => {
 
   };
 
+  // stuff for pass change
   const handleChangePassDialog = () => {
     setOpenPassChangeDialog(true);
   };
 
   const handleChanegPassDialogClose = () => {
     setOpenPassChangeDialog(false);
+  };
+
+  const PassChangeNotSame = () => {
+    setChangePassError(false);
   };
 
   const handleChangePass = () => {
@@ -116,13 +121,10 @@ export const Navbar = () => {
       });
   };
 
+  // logout button
   const handleLogOut = () => {
     sessionStorage.clear();
     window.location.pathname = "/login/";
-  };
-
-  const PassChangeNotSame = () => {
-    setChangePassError(false);
   };
 
   return (
@@ -139,10 +141,7 @@ export const Navbar = () => {
         marginBottom: "20px",
       }}
     >
-
       {/* IMAGEHERE OF LOGO */}
-
-
       <Button
         variant="contained"
         sx={{
@@ -221,8 +220,6 @@ export const Navbar = () => {
         <ChatIcon />
         Ai Chat
       </Button>
-
-
       <Button
         variant="contained"
         sx={{
@@ -473,7 +470,7 @@ export const Navbar = () => {
         </DialogActions>
       </Dialog>
       <Snackbar
-        open={shouldShowPopup}
+        open={ChangePassError}
         autoHideDuration={3000}
         onClose={PassChangeNotSame}
         message="Password Change Failed!"
