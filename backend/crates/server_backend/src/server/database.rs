@@ -152,6 +152,9 @@ impl Database {
             if table.remove(user_id)?.is_none() {
                 return Err(AndyError::UserDoesNotExist);
             }
+            let mut table = write_txn.open_table(Self::DECKS_TABLE)?;
+
+            table.drain_filter::<&(u32, u32), _>(.., |key, _val| key.0 == user_id)?;
         }
         write_txn.commit()?;
         Ok(())
