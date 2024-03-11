@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Navbar } from "../../navbar";
-import { Button, TextField, Typography, Box, Paper } from "@mui/material";
+import { Button, TextField, Typography, Paper } from "@mui/material";
 import { ENDPOINT_AI_TEST, AiPromptTest } from "../../backend_interface";
 import { send_json_backend } from "../../utils";
 import './ai_test.css';
