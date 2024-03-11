@@ -36,12 +36,12 @@ const FlashcardViewerFunc = () => {
     const deckId: number = deckIdJSON ? JSON.parse(deckIdJSON) : null;
 
     const fetchDeckName = async () => {
-      let access_token = get_session_token();
-      let user_id = get_user_id();
+      const access_token = get_session_token();
+      const user_id = get_user_id();
       if ((access_token == null) || (user_id == null)) {
         return;
       }
-      let payload: GetDeckRequest = {
+      const payload: GetDeckRequest = {
         user_id: user_id,
         deck_id: deckId,
       };
@@ -57,12 +57,12 @@ const FlashcardViewerFunc = () => {
     };
 
     const listCards = () => {
-      let access_token = get_session_token();
-      let user_id = get_user_id();
+      const access_token = get_session_token();
+      const user_id = get_user_id();
       if (access_token == null || user_id == null) {
         return;
       }
-      let prev_cards: ListCards = {
+      const prev_cards: ListCards = {
         user_id: user_id,
         deck_id: deckId,
       };
@@ -86,13 +86,13 @@ const FlashcardViewerFunc = () => {
     const deckIdJSON = searchParams.get("deck");
     const deckId: number = deckIdJSON ? JSON.parse(deckIdJSON) : null;
     console.log(deckId)
-    let access_token = get_session_token();
+    const access_token = get_session_token();
     if (access_token == null) {
       return;
     }
 
     console.log('newValue:', newValue)
-    let add_rating: AddRating = {
+    const add_rating: AddRating = {
       access_token: access_token,
       deck_id: deckId,
       new_rating: newValue,
@@ -217,8 +217,8 @@ const FlashcardViewerFunc = () => {
           </Paper>
           {flashcards.length > 0 && (
             <Flashcard
-              question={flashcards[currentCardIndex].question}
-              answer={flashcards[currentCardIndex].answer}
+              front={flashcards[currentCardIndex].question}
+              back={flashcards[currentCardIndex].answer}
             />
           )}
           <IconButton

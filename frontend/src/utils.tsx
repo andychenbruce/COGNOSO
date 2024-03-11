@@ -20,7 +20,7 @@ export async function send_json_backend(
 }
 
 export function get_session_token(): [number, number] | null {
-  let data = sessionStorage.getItem(TOKEN_STORAGE);
+  const data = sessionStorage.getItem(TOKEN_STORAGE);
 
   if (data == null) {
     redirect("/login/");
@@ -30,7 +30,7 @@ export function get_session_token(): [number, number] | null {
 }
 
 export function get_user_id(): number | null {
-  let data = sessionStorage.getItem(ID_STORAGE);
+  const data = sessionStorage.getItem(ID_STORAGE);
 
   if (data == null) {
     redirect("/login/");

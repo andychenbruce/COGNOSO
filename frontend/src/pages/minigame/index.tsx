@@ -53,13 +53,13 @@ const App: React.FC = () => {
 
 
   const listCards = () => {
-    let deckId = get_deckid();
-    let access_token = get_session_token();
-    let user_id = get_user_id();
+    const deckId = get_deckid();
+    const access_token = get_session_token();
+    const user_id = get_user_id();
     if (access_token == null || user_id == null) {
       return;
     }
-    let prev_cards: ListCards = {
+    const prev_cards: ListCards = {
       user_id: user_id,
       deck_id: deckId,
     };

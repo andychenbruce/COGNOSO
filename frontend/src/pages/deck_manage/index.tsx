@@ -211,11 +211,11 @@ const App: React.FC = () => {
   };
 
   const updateDecks = () => {
-    let token = get_session_token();
+    const token = get_session_token();
     if (token == null) {
       return;
     }
-    let request1: ListCardDecks = { access_token: token };
+    const request1: ListCardDecks = { access_token: token };
     send_json_backend(ENDPOINT_LIST_CARD_DECKS, JSON.stringify(request1))
       .then((data: ListCardDecksResponse) => {
         setDecks(data.decks);
@@ -224,7 +224,7 @@ const App: React.FC = () => {
       .catch((error) => {
         console.error("Error in:", error);
       });
-    let request2: ListFavoritesRequest = {
+    const request2: ListFavoritesRequest = {
       access_token: token
     };
     send_json_backend(ENDPOINT_LIST_FAVORITES, JSON.stringify(request2))
@@ -257,12 +257,12 @@ const App: React.FC = () => {
       }, 2000);
       return;
     }
-    let access_token = get_session_token();
+    const access_token = get_session_token();
     if (access_token == null) {
       return;
     }
     console.log("access token = ", access_token);
-    let request: CreateCardDeck = {
+    const request: CreateCardDeck = {
       access_token: access_token,
       deck_name: deckName,
     };
@@ -281,14 +281,14 @@ const App: React.FC = () => {
     if (event.target.files == null) {
       console.error("missing file");
     } else {
-      let input_file = event.target.files[0];
+      const input_file = event.target.files[0];
       setFile(input_file);
     }
   };
 
   const getBase64 = (file: File): Promise<string> => {
     return new Promise((resolve, reject) => {
-      var reader = new FileReader();
+      const reader = new FileReader();
       reader.onerror = reject;
       reader.readAsDataURL(file);
       reader.onload = () => {
@@ -321,14 +321,14 @@ const App: React.FC = () => {
       console.error("missing file");
       return;
     }
-    let access_token = get_session_token();
+    const access_token = get_session_token();
 
     getBase64(file).then((base64_encode: string) => {
       if (access_token == null) {
         return;
       }
       console.log("base 64 = ", base64_encode);
-      let request_json: UploadPdf = {
+      const request_json: UploadPdf = {
         access_token: access_token,
         deck_name: deckName,
         file_bytes_base64: base64_encode,
@@ -348,11 +348,11 @@ const App: React.FC = () => {
   };
 
   const handleDeleteDeck = (deckId: number) => {
-    let access_token = get_session_token();
+    const access_token = get_session_token();
     if (access_token == null) {
       return;
     }
-    let deleteRequest: DeleteCardDeck = {
+    const deleteRequest: DeleteCardDeck = {
       access_token: access_token,
       deck_id: deckId,
     };
@@ -366,12 +366,12 @@ const App: React.FC = () => {
   };
 
   const handleFavoriteDeck = (deckid: number) => {
-    let access_token = get_session_token();
-    let user_id = get_user_id();
+    const access_token = get_session_token();
+    const user_id = get_user_id();
     if ((access_token == null) || (user_id == null)) {
       return;
     }
-    let request: AddFavorite = {
+    const request: AddFavorite = {
       access_token: access_token,
       user_id: user_id,
       deck_id: deckid,
@@ -386,12 +386,12 @@ const App: React.FC = () => {
   }
 
   const handleUnfavoriteDeck = (deckId: number) => {
-    let access_token = get_session_token();
-    let user_id = get_user_id();
+    const access_token = get_session_token();
+    const user_id = get_user_id();
     if ((access_token == null) || (user_id == null)) {
       return;
     }
-    let request: DeleteFavorite = {
+    const request: DeleteFavorite = {
       access_token: access_token,
       user_id: user_id,
       deck_id: deckId,

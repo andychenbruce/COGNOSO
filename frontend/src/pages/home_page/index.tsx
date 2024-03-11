@@ -124,11 +124,11 @@ const App: React.FC = () => {
     [] as CardDeck[]
   );
   const updateDecks = () => {
-    let token = get_session_token();
+    const token = get_session_token();
     if (token == null) {
       return;
     }
-    let request1: ListCardDecks = { access_token: token };
+    const request1: ListCardDecks = { access_token: token };
     send_json_backend(ENDPOINT_LIST_CARD_DECKS, JSON.stringify(request1))
       .then((data: ListCardDecksResponse) => {
         setDecks(data.decks);
@@ -136,7 +136,7 @@ const App: React.FC = () => {
       .catch((error) => {
         console.error("Error in:", error);
       });
-    let request2: ListFavoritesRequest = {
+    const request2: ListFavoritesRequest = {
       access_token: token,
     };
     send_json_backend(ENDPOINT_LIST_FAVORITES, JSON.stringify(request2))
@@ -147,8 +147,8 @@ const App: React.FC = () => {
       .catch((error) => {
         console.error("Error in:", error);
       });
-    let randNum = 10;
-    let request3: RandomDecksRequest = {
+    const randNum = 10;
+    const request3: RandomDecksRequest = {
       num_decks: randNum,
     };
     send_json_backend(ENDPOINT_GET_RANDOM_DECKS, JSON.stringify(request3))
