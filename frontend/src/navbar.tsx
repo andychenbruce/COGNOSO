@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import {Button,  InputBase,  Menu,  Snackbar,  MenuItem,Dialog,  TextField,  DialogContent,  DialogTitle,  DialogActions,  ListItemText,  DialogContentText,} from "@mui/material";
 import { redirect, send_json_backend } from "./utils";
@@ -9,6 +10,8 @@ import BackupTableOutlinedIcon from "@mui/icons-material/BackupTableOutlined";
 import Person2OutlinedIcon from "@mui/icons-material/Person2Outlined";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import ChatIcon from '@mui/icons-material/Chat';
+// import logo from './../../assets/logo.png';
+
 
 export const Navbar = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -135,6 +138,8 @@ export const Navbar = () => {
     >
 
       {/* IMAGEHERE OF LOGO */}
+
+
       <Button
         variant="contained"
         sx={{
