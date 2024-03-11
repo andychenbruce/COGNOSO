@@ -418,8 +418,8 @@ async fn create_deck_pdf(
     let user_id = state.database.validate_token(info.access_token)?;
     let deck_id = state.database.get_deck_id(&info.deck_name);
 
-    let url = data_url::DataUrl::process(&info.file_bytes_base64).unwrap();
-    let (body, _fragment) = url.decode_to_vec().unwrap();
+    let url = data_url::DataUrl::process(&info.file_bytes_base64)?;
+    let (body, _fragment) = url.decode_to_vec()?;
 
     let text = pdf_parser::extract_text(&body)?;
 

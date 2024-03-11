@@ -7,7 +7,7 @@ use std::hash::Hasher;
 use crate::api_structs;
 
 const DEFAULT_ICON: u32 = 0;
-const SHA265_NUM_BYTES: usize = 32;
+const SHA256_NUM_BYTES: usize = 32;
 
 type AccessToken = (u32, u32);
 pub type UserId = u32;
@@ -85,7 +85,7 @@ impl Database {
             .value();
 
         let test_password_hash = sha256_hash(password.as_bytes());
-        let real_password_hash: [u8; SHA265_NUM_BYTES] = user_info
+        let real_password_hash: [u8; SHA256_NUM_BYTES] = user_info
             .password_hash
             .try_into()
             .map_err(AndyError::BadHash)?;
@@ -182,7 +182,7 @@ impl Database {
                 ..entry
             };
 
-            table.insert(user_id, out)?.unwrap();
+            table.insert(user_id, out)?;
         }
         write_txn.commit()?;
         Ok(())
@@ -481,6 +481,8 @@ impl Database {
             .map(|id| {
                 let read_txn = self.db.begin_read()?;
                 let table = read_txn.open_table(Self::DECKS_TABLE)?;
+
+                //todo: delete favorites to decks that no longer exist
                 let deck = table.get(id)?.unwrap().value();
 
                 Ok::<api_structs::CardDeck, AndyError>(api_structs::CardDeck {
@@ -631,14 +633,14 @@ impl Database {
     }
 }
 
-fn sha256_hash(bytes: &[u8]) -> [u8; SHA265_NUM_BYTES] {
+fn sha256_hash(bytes: &[u8]) -> [u8; SHA256_NUM_BYTES] {
     let mut hasher = sha2::Sha256::new();
 
     hasher.update(bytes);
 
     let result: Vec<u8> = hasher.finalize().to_vec();
 
-    result.try_into().unwrap()
+    result.try_into().expect("sha256 size mismatch")
 }
 
 fn hash<K>(username: K) -> u64
