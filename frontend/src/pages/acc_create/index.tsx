@@ -38,7 +38,7 @@ const Main: React.FC<PageProps> = () => {
       setPasswordMismatch(true);
       return;
     }
-    let new_user_request: NewUser = {
+    const new_user_request: NewUser = {
       user_name: user.username,
       email: user.email,
       password: user.password1,

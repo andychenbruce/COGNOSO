@@ -166,22 +166,22 @@ const App: React.FC = () => {
   
   const handleIconSelectionConfirm = () => {
 
-    let temp_deck_id = currentEditing
+    const temp_deck_id = currentEditing
     if (temp_deck_id == null){
       console.error('deck_id is null')
       return;
     }
-    let access_token = get_session_token();
+    const access_token = get_session_token();
     if (access_token == null) {
       return;
     }
-    let index = selectedIcon
+    const index = selectedIcon
     if (index === null) {
       console.error('No icon selected');
       changeIconErrorSnackbar(true)
       return;
     } 
-    let new_icon: SetDeckIcon = {
+    const new_icon: SetDeckIcon = {
       access_token: access_token,
       deck_id: temp_deck_id,
       icon: index,
@@ -206,7 +206,7 @@ const App: React.FC = () => {
     setSelectedIcon(index);
   };
 
-  const handleEditDeckIcon = (_deckId: number) => {
+  const handleEditDeckIcon = () => {
     setOpenIconDialog(true);
   };
 
@@ -485,7 +485,7 @@ const App: React.FC = () => {
 
               <IconButton
                 onClick={() => {
-                  handleEditDeckIcon(deck.deck_id);
+                  handleEditDeckIcon();
                   setCurrentEditing(deck.deck_id);
                 }}
                 

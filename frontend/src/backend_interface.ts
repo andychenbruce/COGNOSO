@@ -65,7 +65,7 @@ export interface EditCard {
   access_token: AccessToken;
   deck_id: number;
   card_index: number;
-  new_question: String;
+  new_question: string;
   new_answer: string;
 }
 
