@@ -1,22 +1,9 @@
-.headerOne {
-  color: rgba(233, 56, 209, 0.527);
-}
-
-.Favorites {
-  padding: 10px;
-  margin: 20px;
-  color: yellow;
-  text-align: left;
-}
-
-.Decks {
-  padding: 10px;
-  margin: 20px;
+.HeaderOne {
   color: white;
-  text-align: left;
+  /* color: rgba(233, 56, 209, 0.527); */
 }
 
-.OtherDecks {
+.mainbody {
   padding: 10px;
   margin: 20px;
   color: white;
@@ -25,18 +12,10 @@
 
 .Content-box {
   border: 5px solid #ffffff;
-  min-height: 200px;
+  min-height: 100%;
   margin-top: 20px;
 }
 
-.Favorites-box {
-  border-color: yellow;
-}
-
-.Decks-box {
+.search_results-box {
   border-color: rgba(255, 255, 255, 0.356);
-}
-
-.OtherDecks-box {
-  border-color: rgba(255, 255, 255, 0.37);
 }
