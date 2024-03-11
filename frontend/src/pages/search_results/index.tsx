@@ -169,6 +169,7 @@ const App: React.FC = () => {
                       onClick={() => {
                         redirect("/flashcard_viewer/", [
                           ["deck", JSON.stringify(deck.deck_id)],
+			  ["user", JSON.stringify(deck.user_id)],
                         ]);
                       }}
                       sx={{

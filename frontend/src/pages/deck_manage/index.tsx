@@ -1,3 +1,13 @@
+// This file is the deck manager page. 
+// It contains functions that:
+// -open a selected deck (bring user to flashcard viewer for selected deck)
+// -shows rating of my decks
+// -contains an edit button to change the deck icons
+// -call a popup to select desired deck icon from a list of icons
+// -a button that will bring a popup allowing users to create a new deck manually or by uploading a pdf
+// -a favorites toggle to set certain flashcard sets as favorite
+
+
 import React, {
   Dispatch,
   useState,
@@ -42,12 +52,13 @@ import {
   DeleteFavorite,
 } from "../../backend_interface";
 import { send_json_backend, get_session_token, redirect } from "../../utils";
-import DeleteIcon from "@mui/icons-material/Delete";
-import StarIcon from "@mui/icons-material/Star";
-import EditTwoToneIcon from "@mui/icons-material/EditTwoTone";
+
 import { get_user_id } from "../../utils";
 
 // testing icons
+import DeleteIcon from "@mui/icons-material/Delete";
+import StarIcon from "@mui/icons-material/Star";
+import EditTwoToneIcon from "@mui/icons-material/EditTwoTone";
 import BeachAccessTwoToneIcon from "@mui/icons-material/BeachAccessTwoTone";
 import PetsTwoToneIcon from "@mui/icons-material/PetsTwoTone";
 import StarTwoToneIcon from "@mui/icons-material/StarTwoTone";
@@ -427,6 +438,7 @@ const App: React.FC = () => {
                 onClick={() => {
                   redirect("/flashcard_viewer/", [
                     ["deck", JSON.stringify(deck.deck_id)],
+		    ["user", JSON.stringify(deck.user_id)]
                   ]);
                 }}
                 style={{
