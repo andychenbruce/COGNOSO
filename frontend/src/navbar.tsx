@@ -250,7 +250,7 @@ export const Navbar = () => {
         }}
         PaperProps={{
           sx: {
-            width: "400px",
+            width: "250px",
             backgroundColor: "#9370db",
           },
         }}
@@ -292,6 +292,9 @@ export const Navbar = () => {
           <ListItemText primary="Delete Account" sx={{ color: "white" }} />
         </MenuItem>
       </Menu>
+
+       {/* DELETE ACCOUNT SECTION */}
+
       <Dialog
         open={openDeleteDialog}
         onClose={handleDeleteDialogClose}
@@ -299,14 +302,14 @@ export const Navbar = () => {
         aria-describedby="alert-dialog-description"
       >
         <DialogTitle
-          style={{ background: "#140952a6", color: "#E6E6FA" }}
+          style={{ background: "#140952a6" , color: "white" }}
           id="alert-dialog-title"
         >
           Confirm Delete Account
         </DialogTitle>
-        <DialogContent style={{ background: "#140952a6" }}>
+        <DialogContent style={{ background: "#140952a6"  }}>
           <DialogContentText
-            style={{ color: "#E6E6FA" }}
+            style={{ color: "white" }}
             id="alert-dialog-description"
           >
             Are you sure you want to delete your account? This action cannot be
@@ -366,24 +369,22 @@ export const Navbar = () => {
           </Button>
         </DialogActions>
       </Dialog>
+
+      {/* Change Password Section */}
+
       <Dialog
         open={openPassChangeDialog}
         onClose={handleChanegPassDialogClose}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
-        sx={{
-          ".MuiDialog-paper": {
-            background: "linear-gradient(to left, #140952a6, #22032e)",
-          },
-        }}
       >
         <DialogTitle
           id="alert-dialog-title"
-          style={{ background: "#9370db", color: "white" }}
+          style={{ background: "#140952a6" , color: "white" }}
         >
           Change Password
         </DialogTitle>
-        <DialogContent style={{ background: "#9370db" }}>
+        <DialogContent style={{ background: "#140952a6"  }}>
           <DialogContentText
             id="alert-dialog-description"
             style={{ color: "white" }}
@@ -391,7 +392,7 @@ export const Navbar = () => {
             Please enter your Email, Old Password and New Password
           </DialogContentText>
         </DialogContent>
-        <DialogActions style={{ background: "#9370db" }}>
+        <DialogActions style={{ background: "#140952a6"  }}>
           <TextField
             style={{
               marginBottom: 20,
@@ -441,23 +442,19 @@ export const Navbar = () => {
           />
           <Button
             onClick={handleChanegPassDialogClose}
-            sx={{
-              color: "white",
-              "&:hover": {
-                backgroundColor: "#7b1fa2",
-              },
-            }}
+            sx={{ border: "1px solid purple", color: "white", backgroundColor: "#7b1fa2",
+            "&:hover": {
+              backgroundColor: "#9c27b0",
+            } }}
           >
             Cancel
           </Button>
           <Button
             onClick={handleChangePass}
-            sx={{
-              color: "#90EE90",
-              "&:hover": {
-                backgroundColor: "#4caf50",
-              },
-            }}
+            sx={{ border: "1px solid purple", color: "#90EE90", backgroundColor: "#7b1fa2",
+            "&:hover": {
+              backgroundColor: "#9c27b0",
+            } }}
             autoFocus
           >
             Change
