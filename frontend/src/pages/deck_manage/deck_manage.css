@@ -36,3 +36,14 @@
     transform: rotate(360deg);
   }
 }
+
+.span_style {
+  margin-left: 5px;
+  text-align: center;
+  padding: 5px;
+  top: 60%;
+  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

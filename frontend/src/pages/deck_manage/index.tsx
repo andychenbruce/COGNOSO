@@ -446,14 +446,7 @@ const App: React.FC = () => {
                 {iconList[decks[index].icon_num]}
 
 
-                <span
-                  style={{
-                    marginLeft: "5px",
-                    textAlign: "center",
-                    padding: "5px",
-                    top: "60%",
-                  }}
-                >
+                <span className="span_style">
                   {decks[index].name}
                 </span>
               </Button>

@@ -177,18 +177,7 @@ const App: React.FC = () => {
       <div className="Favorites">
         <h2>{<StarIcon />} Favorites</h2>
         <div className="Content-box Favorites-box">
-          <div
-            style={{
-              padding: "10px",
-              display: "flex",
-              backgroundColor: "rgba(128, 128, 128, 0.5)",
-              overflowX: "scroll",
-              overflowY: "hidden",
-              scrollbarWidth: "thin",
-              scrollbarColor:
-                "rgba(255, 255, 255, 0.5) rgba(255, 255, 255, 0.5)",
-            }}
-          >
+          <div className="deckAreaBackground">
             {favorites.length > 0 ? (
               favorites.map((deck, index) => (
                 <div key={deck.deck_id} style={{ marginRight: "10px" }}>
@@ -198,6 +187,7 @@ const App: React.FC = () => {
                     onClick={() => {
                       window.location.href = `/flashcard_viewer/?deck=${deck.deck_id}`;
                     }}
+                    className="button_sx"
                     sx={{
                       width: "200px",
                       height: "200px",
@@ -225,18 +215,7 @@ const App: React.FC = () => {
                         left: 10,
                       }}
                     />
-                    <span
-                      style={{
-                        marginLeft: "5px",
-                        textAlign: "center",
-                        padding: "5px",
-                        top: "60%",
-                        width: "100px",
-                        whiteSpace: "nowrap",
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                      }}
-                    >
+                    <span className="span_style">
                       {deck.name}
                     </span>
                   </Button>
@@ -252,18 +231,7 @@ const App: React.FC = () => {
       <div className="Decks">
         <h2>{<ViewCarouselTwoToneIcon />} My Decks</h2>
         <div className="Content-box Decks-box">
-          <div
-            style={{
-              padding: "10px",
-              display: "flex",
-              backgroundColor: "rgba(128, 128, 128, 0.5)",
-              overflowX: "scroll",
-              overflowY: "hidden",
-              scrollbarWidth: "thin",
-              scrollbarColor:
-                "rgba(255, 255, 255, 0.5) rgba(255, 255, 255, 0.5)",
-            }}
-          >
+          <div className="deckAreaBackground">
             {decks.length > 0 ? (
               decks.map((deck, index) => (
                 <div key={deck.deck_id} style={{ marginRight: "10px" }}>
@@ -300,18 +268,7 @@ const App: React.FC = () => {
                         left: 10,
                       }}
                     />
-                    <span
-                      style={{
-                        marginLeft: "5px",
-                        textAlign: "center",
-                        padding: "5px",
-                        top: "60%",
-                        width: "100px",
-                        whiteSpace: "nowrap",
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                      }}
-                    >
+                    <span className="span_style">
                       {deck.name}
                     </span>
                   </Button>
@@ -327,18 +284,7 @@ const App: React.FC = () => {
       <div className="OtherDecks">
         <h2>{<ViewCarouselIcon />} Decks By Other Users</h2>
         <div className="Content-box OtherDecks-box">
-          <div
-            style={{
-              padding: "10px",
-              display: "flex",
-              backgroundColor: "rgba(128, 128, 128, 0.5)",
-              overflowX: "scroll",
-              overflowY: "hidden",
-              scrollbarWidth: "thin",
-              scrollbarColor:
-                "rgba(255, 255, 255, 0.5) rgba(255, 255, 255, 0.5)",
-            }}
-          >
+          <div className="deckAreaBackground">
             {randomdecks.length > 0 ? (
               randomdecks.map((deck, index) => (
                 <div key={deck.deck_id} style={{ marginRight: "10px" }}>
@@ -375,18 +321,7 @@ const App: React.FC = () => {
                         left: 10,
                       }}
                     />
-                    <span
-                      style={{
-                        marginLeft: "5px",
-                        textAlign: "center",
-                        padding: "5px",
-                        top: "60%",
-                        width: "100px",
-                        whiteSpace: "nowrap",
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                      }}
-                    >
+                    <span className="span_style">
                       {deck.name}
                     </span>
                   </Button>
