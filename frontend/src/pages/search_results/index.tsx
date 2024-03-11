@@ -1,3 +1,5 @@
+//This file is the search results page
+//It uses the search bar to send a request to the backend and display the correct decks
 import React, { useState, Dispatch, useEffect } from "react";
 import { Navbar } from "../../navbar";
 import "./search_results.css";
@@ -120,6 +122,7 @@ const App: React.FC = () => {
   const [query, setQuery]: [string, Dispatch<string>] = useState("");
 
   useEffect(() => {
+    //Gets the query from the search bar and sends it to the backend to get the results
     const urlString = window.location.href;
     const url = new URL(urlString);
     const searchParams = new URLSearchParams(url.search);
@@ -148,6 +151,7 @@ const App: React.FC = () => {
   }, []);
 
   return (
+    //displays the results in the same format as the homepage
     <div className="App">
       <div>
         <Navbar />

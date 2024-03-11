@@ -1,3 +1,4 @@
+//This file is used to edit and add flashcards 
 import React, { useState, useEffect } from "react";
 import { Navbar } from "../../navbar";
 import "./flashcard_editor.css";
@@ -38,6 +39,7 @@ const App: React.FC = () => {
   const [errorFields, setErrorFields] = useState<string[]>([]);
 
   const handleEditCard = (index: number) => {
+    //this function is used to edit the previously made flashcards
     setEditingCardIndex(index);
     const card = flashcards[index];
     setEditedQuestion(card.question);
@@ -45,6 +47,7 @@ const App: React.FC = () => {
   };
 
   const Create_card = () => {
+    //this function is used to create new flashcards
     const deckId = get_param("deck");
     const access_token = get_session_token();
     if (access_token == null) {
@@ -77,6 +80,7 @@ const App: React.FC = () => {
   };
 
   const listCards = () => {
+    //this function is used to display all the previously made flashcards
     const deckId: number | null = get_param("deck");
     const userId = get_user_id();
     if (deckId == null || userId == null) {
@@ -95,12 +99,14 @@ const App: React.FC = () => {
   };
 
   const cancelEdit = () => {
+    //this function is used to cancel the editing of the flashcards 
     setQuestion("");
     setAnswer("");
     setEditingCardIndex(null);
   };
 
   const handleDeleteCard = (index: number) => {
+    //this function is used to delete the previously made flashcards
     const access_token = get_session_token();
     const deckId: number | null = get_param("deck");
     if (access_token == null || deckId == null) {
@@ -126,6 +132,7 @@ const App: React.FC = () => {
   };
 
   const handleSaveEdit = (index: number) => {
+    //this function is used to edit the previously made flashcards
     const access_token = get_session_token();
     const deckId: number | null = get_param("deck");
     if (access_token == null || deckId == null) {

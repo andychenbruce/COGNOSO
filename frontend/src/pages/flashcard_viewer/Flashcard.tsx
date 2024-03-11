@@ -1,3 +1,5 @@
+//this file has the flashcard interface
+
 import React, { useState } from "react";
 import "./Flashcard.css";
 

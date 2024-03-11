@@ -1,3 +1,5 @@
+//this file is used to display all the flashcards
+
 import "./App.css";
 import React, { useState, useEffect } from "react";
 import { Button, Paper, Typography, IconButton } from "@mui/material";
@@ -38,6 +40,7 @@ const FlashcardViewerFunc = () => {
     }
 
     const fetchDeckName = async () => {
+      //this function just gets the deck name
       const payload: GetDeckRequest = {
         user_id: userId,
         deck_id: deckId,
@@ -50,6 +53,7 @@ const FlashcardViewerFunc = () => {
     };
 
     const listCards = () => {
+    //this function lists the card 
       const prev_cards: ListCards = {
         user_id: userId,
         deck_id: deckId,
@@ -67,6 +71,7 @@ const FlashcardViewerFunc = () => {
   }, []);
 
   const addRating = (newValue: number) => {
+    //this function adds ratings for the decks
     const deckId: number | null = get_param("deck");
     const userId: number | null = get_param("user");
 
