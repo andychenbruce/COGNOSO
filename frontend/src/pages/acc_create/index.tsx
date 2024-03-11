@@ -48,14 +48,11 @@ const acc_create: React.FC<PageProps> = () => {
       email: user.email,
       password: user.password1,
     };
-    send_json_backend(ENDPOINT_NEW_USER, JSON.stringify(new_user_request))
-      .then((data) => {
-        console.log("New user made:", data);
+    send_json_backend(ENDPOINT_NEW_USER, JSON.stringify(new_user_request)).then(
+      (_data) => {
         redirectToLogin();
-      })
-      .catch((error) => {
-        console.error("Error creating new user:", error);
-      });
+      },
+    );
   };
 
   const redirectToLogin = () => {

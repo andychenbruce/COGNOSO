@@ -78,15 +78,12 @@ export const Navbar = () => {
   };
 
   const handleDeleteConfirm = () => {
-    console.log("Account deletion initiated!");
     const deleteUserRequest: DeleteUser = {
       email: user.email,
       password: user.password,
     };
     send_json_backend(ENDPOINT_DELETE_USER, JSON.stringify(deleteUserRequest))
       .then(() => {
-        console.log("User deleted successfully.");
-        console.log("Logging out...");
         setshowDeleteSuccessSnackbar(true);
         logout();
         window.location.pathname = "/login/";
@@ -123,7 +120,6 @@ export const Navbar = () => {
       JSON.stringify(changePassRequest),
     )
       .then(() => {
-        console.log("success!");
         handleChanegPassDialogClose();
         setshowPassChangeSuccessSnackbar(true);
       })

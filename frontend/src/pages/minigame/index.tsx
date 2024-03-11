@@ -67,9 +67,7 @@ const App: React.FC = () => {
       JSON.stringify(prev_cards),
     )
       .then((data: ListCardsResponse) => {
-        console.log("Prev_Cards:", data);
         setFlashcards(data.cards);
-        //console.log(flashcards);
       })
       .catch((error) => {
         console.error("Error displaying cards:", error);
@@ -95,7 +93,6 @@ const App: React.FC = () => {
     e.preventDefault();
     const droppedCard = JSON.parse(e.dataTransfer.getData("card"));
     setLeftCard(droppedCard);
-    console.log(leftCard);
     //submitHandler();
   };
 
@@ -127,11 +124,9 @@ const App: React.FC = () => {
   }, []);
 
   const submitHandler = () => {
-    //console.log(leftCard, rightCard)
     if (leftCard != undefined && rightCard != undefined) {
       if (leftCard.answer === rightCard.answer) {
         setIsCorrect(true);
-        console.log(flashcards);
         for (let i = 0; i < flashcards.length; i++) {
           if (flashcards[i] == leftCard) {
             flashcards.splice(i, 1); // Removes 1 element starting from indexToRemove

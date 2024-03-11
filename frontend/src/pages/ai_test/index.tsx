@@ -16,14 +16,11 @@ const App: React.FC = () => {
     const aiSend: AiPromptTest = {
       prompt: prompt,
     };
-    console.log("prompt:", prompt);
-    send_json_backend<string>(ENDPOINT_AI_TEST, JSON.stringify(aiSend))
-      .then((data: string) => {
+    send_json_backend<string>(ENDPOINT_AI_TEST, JSON.stringify(aiSend)).then(
+      (data: string) => {
         setResponse(data);
-      })
-      .catch((error) => {
-        console.error("Error talking card:", error);
-      });
+      },
+    );
   };
 
   return (

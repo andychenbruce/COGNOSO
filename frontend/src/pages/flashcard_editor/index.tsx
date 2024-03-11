@@ -9,7 +9,6 @@ import {
   get_user_id,
   get_param,
 } from "../../utils";
-import { redirect } from "../../utils";
 import {
   ENDPOINT_CREATE_CARD,
   ENDPOINT_LIST_CARDS,
@@ -18,7 +17,6 @@ import {
   DeleteCard,
   EditCard,
 } from "../../backend_interface";
-// import { EditCard } from "../../backend_interface";
 
 interface Card {
   question: string;
@@ -69,16 +67,13 @@ const App: React.FC = () => {
       question: q1,
       answer: a1,
     };
-    send_json_backend(ENDPOINT_CREATE_CARD, JSON.stringify(create_card))
-      .then((data) => {
-        console.log("result:", data);
+    send_json_backend(ENDPOINT_CREATE_CARD, JSON.stringify(create_card)).then(
+      (_data) => {
         listCards();
         setq1("");
         seta1("");
-      })
-      .catch((error) => {
-        console.error("Error creating card:", error);
-      });
+      },
+    );
   };
 
   const listCards = () => {
@@ -94,15 +89,9 @@ const App: React.FC = () => {
     send_json_backend<ListCardsResponse>(
       ENDPOINT_LIST_CARDS,
       JSON.stringify(prev_cards),
-    )
-      .then((data: ListCardsResponse) => {
-        console.log("Prev_Cards:", data);
-        setFlashcards(data.cards);
-        console.log(flashcards);
-      })
-      .catch((error) => {
-        console.error("Error displaying cards:", error);
-      });
+    ).then((data: ListCardsResponse) => {
+      setFlashcards(data.cards);
+    });
   };
 
   const cancelEdit = () => {
@@ -126,17 +115,14 @@ const App: React.FC = () => {
       card_index: cardIndexToDelete,
     };
 
-    send_json_backend(ENDPOINT_DELETE_CARD, JSON.stringify(deleteCardPayload))
-      .then(() => {
-        console.log("Card deleted with index:", cardIndexToDelete);
-
-        const updatedFlashcards = [...flashcards];
-        updatedFlashcards.splice(index, 1);
-        setFlashcards(updatedFlashcards);
-      })
-      .catch((error) => {
-        console.error("Error deleting card:", error);
-      });
+    send_json_backend(
+      ENDPOINT_DELETE_CARD,
+      JSON.stringify(deleteCardPayload),
+    ).then(() => {
+      const updatedFlashcards = [...flashcards];
+      updatedFlashcards.splice(index, 1);
+      setFlashcards(updatedFlashcards);
+    });
   };
 
   const handleSaveEdit = (index: number) => {
@@ -146,7 +132,6 @@ const App: React.FC = () => {
       return;
     }
     const cardIndexToEdit = index;
-    console.log(editedQuestion, editedAnswer);
     const edit_card: EditCard = {
       access_token: access_token,
       deck_id: deckId,
@@ -155,15 +140,12 @@ const App: React.FC = () => {
       new_answer: editedAnswer,
     };
 
-    send_json_backend(ENDPOINT_EDIT_CARD, JSON.stringify(edit_card))
-      .then((data) => {
-        console.log("result:", data);
+    send_json_backend(ENDPOINT_EDIT_CARD, JSON.stringify(edit_card)).then(
+      (_data) => {
         listCards();
         cancelEdit();
-      })
-      .catch((error) => {
-        console.error("Error editing card:", error);
-      });
+      },
+    );
   };
 
   useEffect(() => {
@@ -186,7 +168,7 @@ const App: React.FC = () => {
       >
         <Button
           onClick={() => {
-            redirect("/flashcard_viewer", []);
+            window.location.href = "/flashcard_viewer";
           }}
           style={{
             position: "absolute",

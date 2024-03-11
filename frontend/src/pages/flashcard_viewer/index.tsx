@@ -75,7 +75,6 @@ const FlashcardViewerFunc = () => {
       return;
     }
 
-    console.log("newValue:", newValue);
     const add_rating: AddRating = {
       access_token: access_token,
       user_id: userId,
@@ -179,8 +178,7 @@ const FlashcardViewerFunc = () => {
           <Rating
             name="simple-controlled"
             value={value}
-            onChange={(event, newValue) => {
-              console.log(event, "new value is:", newValue);
+            onChange={(_event, newValue) => {
               setValue(newValue);
               if (newValue !== null) {
                 addRating(newValue);
