@@ -117,26 +117,24 @@ const App: React.FC = () => {
     <BedIcon />,
   ];
 
-  const get_search_query = () => {
-    const urlString = window.location.href;
-    const url = new URL(urlString);
-    const searchParams = new URLSearchParams(url.search);
-    const deckIdJSON = searchParams.get("query");
-    const deckId = deckIdJSON ? JSON.parse(deckIdJSON) : null;
-    return deckId;
-  };
-
-  const search_query_to_show = () => {
-    const urlString = window.location.href;
-    const url = new URL(urlString);
-    const searchParams = new URLSearchParams(url.search);
-    const deckIdJSON = searchParams.get("query");
-    return deckIdJSON;
-  };
+  const [decks, setDecks]: [CardDeck[], Dispatch<CardDeck[]>] = useState(
+    [] as CardDeck[],
+  );
+  const [query, setQuery]: [string, Dispatch<string>] = useState("");
 
   useEffect(() => {
+    const urlString = window.location.href;
+    const url = new URL(urlString);
+    const searchParams = new URLSearchParams(url.search);
+    const queryJSON = searchParams.get("query");
+    const query = queryJSON ? JSON.parse(queryJSON) : null;
+    if (query == null) {
+      return;
+    }
+    setQuery(query);
+
     const request: SearchDecksRequest = {
-      prompt: get_search_query(),
+      prompt: query,
     };
     send_json_backend<SearchDecksResponse>(
       ENDPOINT_SEARCH_DECKS,
@@ -144,7 +142,7 @@ const App: React.FC = () => {
     ).then((data: SearchDecksResponse) => {
       const temp = [];
       for (let i = 0; i < data.decks.length; i++) {
-        if (data.decks[i].name == get_search_query()) {
+        if (data.decks[i].name == query) {
           temp.push(data.decks[i]);
         }
       }
@@ -165,20 +163,13 @@ const App: React.FC = () => {
     );
   };
 
-  const [decks, setDecks]: [CardDeck[], Dispatch<CardDeck[]>] = useState(
-    [] as CardDeck[],
-  );
-
   useEffect(updateDecks, []);
 
   return (
     <div className="App">
       <div>
         <Navbar />
-        <h1 className="HeaderOne">
-          {" "}
-          Search Results for: {search_query_to_show()}
-        </h1>
+        <h1 className="HeaderOne"> Search Results for: {query}</h1>
 
         <div className="mainbody">
           <div className="Content-box">
