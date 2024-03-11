@@ -1,3 +1,8 @@
+// This file is used for the account creation page. It manages 4 textfields and two buttons (used MUI).
+// It checks if the user has input the same password twice but does NOT validate whether the input in the email section is actucally an email
+// If successful, the account creation page should rerout to the login page with the backend having saved the user's credentials
+// Otherwise, the user will be prompted that something is wrong with their credentials (i.e passwords dont match)
+
 import React from "react";
 import { useState } from "react";
 import {
