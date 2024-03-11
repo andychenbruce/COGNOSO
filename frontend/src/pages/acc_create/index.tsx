@@ -13,7 +13,7 @@ import type { PageProps } from "gatsby";
 import { ENDPOINT_NEW_USER, NewUser } from "../../backend_interface";
 import { send_json_backend } from "../../utils";
 
-const Main: React.FC<PageProps> = () => {
+const acc_create: React.FC<PageProps> = () => {
   const [passwordMismatch, setPasswordMismatch] = useState(false);
   const [user, setUser] = useState({
     username: "",
@@ -166,4 +166,4 @@ const Main: React.FC<PageProps> = () => {
   );
 };
 
-export default Main;
+export default acc_create;
