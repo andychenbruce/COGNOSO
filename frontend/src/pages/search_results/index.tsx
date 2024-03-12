@@ -13,7 +13,7 @@ import {
   SearchDecksResponse,
 } from "../../backend_interface";
 import { Button, Rating } from "@mui/material";
-
+import NotInterestedIcon from '@mui/icons-material/NotInterested';
 
 // testing icons
 import BeachAccessTwoToneIcon from "@mui/icons-material/BeachAccessTwoTone";
@@ -64,6 +64,8 @@ import BedIcon from "@mui/icons-material/Bed";
 import BuildIcon from "@mui/icons-material/Build";
 import Brightness2Icon from "@mui/icons-material/Brightness2";
 import BungalowIcon from "@mui/icons-material/Bungalow";
+
+import Divider from '@mui/material/Divider';
 
 const dummydeck: React.FC = () => {
   const iconList = [
@@ -150,20 +152,18 @@ const dummydeck: React.FC = () => {
       setDecks(data.decks);
     });
   }, []);
-
   return (
-    //displays search results if any are returned from backend. Otherwise a dummy deck will be placed.
     <div>
       <div>
         <Navbar />
-        <h1 className="HeaderOne"> Search Results for: {query}</h1>
+        <h1 className="HeaderOne">Search Results for: {query}</h1>
   
         <div className="mainbody">
           <div className="Content-box">
             <Grid
               container
               spacing={1}
-              sx={{ backgroundColor: "rgba(128, 128, 128, 0.5)"}}
+              sx={{ backgroundColor: "rgba(128, 128, 128, 0.5)" }}
             >
               {decks.length > 0 ? (
                 decks.map((deck, index) => (
@@ -207,11 +207,10 @@ const dummydeck: React.FC = () => {
                         />
                         <span
                           style={{
-                            marginLeft: "5px",
                             textAlign: "center",
                             padding: "5px",
-                            top: "60%",
-                            width: "100px",
+                            position: "absolute",
+                            width: "160px", // Adjusted for better fitting
                             whiteSpace: "nowrap",
                             overflow: "hidden",
                             textOverflow: "ellipsis",
@@ -224,7 +223,37 @@ const dummydeck: React.FC = () => {
                   </Grid>
                 ))
               ) : (
-                <header style={{display:'flex', justifyContent: "center",}}>No Results Found</header>
+                <Grid item xs={12} style={{ display: "flex", justifyContent: "center" }}>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={() => { window.location.pathname = "/deck_manage/" }}
+                    sx={{
+                      width: "200px",
+                      height: "200px",
+                      display: "flex",
+                      flexDirection: "column",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      position: "relative",
+                      backgroundColor: "#af52bf",
+                      "&:hover": {
+                        backgroundColor: "#7b1fa2",
+                      },
+                    }}
+                  >
+                    <NotInterestedIcon style={{ marginBottom: "10px" }} />
+                    <Divider />
+                    <span
+                      style={{
+                        textAlign: "center",
+                        display: "block",
+                      }}
+                    >
+                      No Results Found - Click to go to Deck Manager!
+                    </span>
+                  </Button>
+                </Grid>
               )}
             </Grid>
           </div>
@@ -232,7 +261,6 @@ const dummydeck: React.FC = () => {
       </div>
     </div>
   );
-  };
-  
+}
   export default dummydeck;
   
