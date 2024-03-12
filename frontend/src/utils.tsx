@@ -5,7 +5,7 @@ export async function send_json_backend<I, T>(
   endpoint: string,
   payload: I,
 ): Promise<T> {
-  const response = await fetch("http://100.64.90.47:3000" + endpoint, {
+  const response = await fetch("http://localhost:3000" + endpoint, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
