@@ -213,7 +213,6 @@ const FlashcardViewerFunc = () => {
             <Flashcard
               front={flashcards[currentCardIndex].question}
               back={flashcards[currentCardIndex].answer}
-              //style={{ padding: "20px", overflow: "auto" }}
             />
           )}
           <IconButton
