@@ -13,7 +13,6 @@ import {
   SearchDecksResponse,
 } from "../../backend_interface";
 import { Button, Rating } from "@mui/material";
-import DummyDeck from "./dummydeck";
 
 
 // testing icons
@@ -168,7 +167,7 @@ const dummydeck: React.FC = () => {
             >
               {decks.length > 0 ? (
                 decks.map((deck, index) => (
-                  <Grid item xs={4} sm={3} md={2} lg={1} key={deck.deck_id}>
+                  <Grid item key={deck.deck_id}>
                     <div style={{ padding: "10px", display: "flex" }}>
                       <Button
                         variant="contained"
@@ -225,7 +224,7 @@ const dummydeck: React.FC = () => {
                   </Grid>
                 ))
               ) : (
-                <DummyDeck />
+                <header style={{display:'flex', justifyContent: "center",}}>No Results Found</header>
               )}
             </Grid>
           </div>

@@ -156,6 +156,11 @@ const App: React.FC = () => {
     );
   };
 
+  const getdeckId = () => {
+    const deckId: number | null = get_param("deck");
+    return deckId;
+  }
+  console.log(`/flashcard_viewer/?deck=${getdeckId()}&user=${get_user_id()}`)
   useEffect(() => {
     listCards();
   }, []);
@@ -176,7 +181,8 @@ const App: React.FC = () => {
       >
         <Button
           onClick={() => {
-            window.location.href = "/flashcard_viewer";
+            
+            window.location.href = `/flashcard_viewer/?deck=${getdeckId()}&user=${get_user_id()}`;
           }}
           style={{
             position: "absolute",

@@ -1,3 +1,12 @@
+//login page
+//uses two buttons and two textfields.
+//utilizes states for user inputs and sends info to backend for verification
+//if credentials are correct, login reroutes to home page
+// if credentials are incorrect, a popup will appear stating such
+// if user does not fill either or any textfields, a popup will appear stating that empty textfield is required
+// if user name is correct but password is wrong, error will say such
+// if user name does not exist, error will say such
+
 import React from "react";
 import { useState, Dispatch } from "react";
 import { Paper, TextField, Button, Snackbar } from "@mui/material";
@@ -18,7 +27,7 @@ const Main: React.FC<PageProps> = () => {
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  const handleInputChange = (
+  const handleInputChange = ( //saves state that textfields are currently in
     event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
   ) => {
     const { value, name } = event.target;
@@ -28,7 +37,7 @@ const Main: React.FC<PageProps> = () => {
     });
   };
 
-  const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const onSubmit = (event: React.FormEvent<HTMLFormElement>) => { //when user presses enter or login, sends info to backend for verification of credentials
     event.preventDefault();
     send_json_backend<LoginRequest, LoginResponse>(ENDPOINT_LOGIN, user)
       .then((data: LoginResponse) => {
@@ -40,13 +49,13 @@ const Main: React.FC<PageProps> = () => {
       });
   };
 
-  const redirectToacc_create = () => {
+  const redirectToacc_create = () => { //redirect to acc creation page
     window.location.pathname = "/acc_create/";
   };
-  const redirectTohome_page = () => {
+  const redirectTohome_page = () => { //after login success, redirect to home page
     window.location.pathname = "/home_page/";
   };
-  const handleClosePopup = () => {
+  const handleClosePopup = () => { //handles bottom left popup for any errors that may occur
     setErrorMessage(null);
   };
 

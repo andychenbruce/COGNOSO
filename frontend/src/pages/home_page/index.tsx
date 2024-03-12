@@ -69,7 +69,7 @@ import BuildIcon from "@mui/icons-material/Build";
 import Brightness2Icon from "@mui/icons-material/Brightness2";
 import BungalowIcon from "@mui/icons-material/Bungalow";
 
-const App: React.FC = () => {
+const home_page: React.FC = () => {
   const iconList = [
     <BungalowIcon />,
     <Brightness2Icon />,
@@ -157,15 +157,15 @@ const App: React.FC = () => {
   };
 
   const [favorites, setFavorites]: [CardDeck[], Dispatch<CardDeck[]>] =
-    useState([] as CardDeck[]);
+    useState([] as CardDeck[]); //saves favorite decks to be displayed when page is updated
 
   useEffect(updateDecks, []);
 
   const [randomdecks, setRandomDecks]: [CardDeck[], Dispatch<CardDeck[]>] =
-    useState([] as CardDeck[]);
+    useState([] as CardDeck[]);  //saves randomly selected decks to be displayed when page is updated
 
   return (
-    <div className="App">
+    <div>
       <Navbar />
 
       {/* Favorites */}
@@ -335,4 +335,4 @@ const App: React.FC = () => {
   );
 };
 
-export default App;
+export default home_page;
