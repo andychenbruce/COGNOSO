@@ -1,4 +1,4 @@
-// This file is the ai chat page. 
+// This file is the ai chat page.
 // All user made prompt submitted will be sent to backend and will take at most a minute to process before producing a response
 // The response will then be sent back here, where it will be loaded onto the page in the response box
 

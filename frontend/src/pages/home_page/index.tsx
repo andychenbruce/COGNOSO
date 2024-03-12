@@ -180,7 +180,10 @@ const App: React.FC = () => {
                     variant="contained"
                     color="primary"
                     onClick={() => {
-                      redirect("/flashcard_viewer/", [["deck", JSON.stringify(deck.deck_id)], ["user", JSON.stringify(deck.user_id)]]);
+                      redirect("/flashcard_viewer/", [
+                        ["deck", JSON.stringify(deck.deck_id)],
+                        ["user", JSON.stringify(deck.user_id)],
+                      ]);
                     }}
                     className="button_sx"
                     sx={{
@@ -232,7 +235,10 @@ const App: React.FC = () => {
                     variant="contained"
                     color="primary"
                     onClick={() => {
-                      redirect("/flashcard_viewer/", [["deck", JSON.stringify(deck.deck_id)], ["user", JSON.stringify(deck.user_id)]]);
+                      redirect("/flashcard_viewer/", [
+                        ["deck", JSON.stringify(deck.deck_id)],
+                        ["user", JSON.stringify(deck.user_id)],
+                      ]);
                     }}
                     sx={{
                       width: "200px",
@@ -283,7 +289,10 @@ const App: React.FC = () => {
                     variant="contained"
                     color="primary"
                     onClick={() => {
-                      redirect("/flashcard_viewer/", [["deck", JSON.stringify(deck.deck_id)], ["user", JSON.stringify(deck.user_id)]]);
+                      redirect("/flashcard_viewer/", [
+                        ["deck", JSON.stringify(deck.deck_id)],
+                        ["user", JSON.stringify(deck.user_id)],
+                      ]);
                     }}
                     sx={{
                       width: "200px",

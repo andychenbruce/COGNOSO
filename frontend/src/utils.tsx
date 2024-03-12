@@ -54,7 +54,7 @@ export function redirect(pathname: string, params: [string, string][]) {
   const url = new URL(window.location.href);
 
   url.search = "";
-  
+
   url.pathname = pathname;
 
   params.forEach((x) => {

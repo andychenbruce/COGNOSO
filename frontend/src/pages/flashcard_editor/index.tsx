@@ -1,4 +1,4 @@
-//This file is used to edit and add flashcards 
+//This file is used to edit and add flashcards
 import React, { useState, useEffect } from "react";
 import { Navbar } from "../../navbar";
 import "./flashcard_editor.css";
@@ -51,7 +51,7 @@ const App: React.FC = () => {
     //this function is used to create new flashcards
     const deckId = get_param<number>("deck");
     const access_token = get_session_token();
-    if ((access_token == null) || (deckId == null)) {
+    if (access_token == null || deckId == null) {
       return;
     }
     if (!q1 || !a1) {
@@ -100,7 +100,7 @@ const App: React.FC = () => {
   };
 
   const cancelEdit = () => {
-    //this function is used to cancel the editing of the flashcards 
+    //this function is used to cancel the editing of the flashcards
     setQuestion("");
     setAnswer("");
     setEditingCardIndex(null);

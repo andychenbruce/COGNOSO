@@ -45,15 +45,15 @@ const FlashcardViewerFunc = () => {
         user_id: userId,
         deck_id: deckId,
       };
-      const deck_info = await send_json_backend<GetDeckRequest, GetDeckResponse>(
-        ENDPOINT_GET_DECK,
-        payload,
-      );
+      const deck_info = await send_json_backend<
+        GetDeckRequest,
+        GetDeckResponse
+      >(ENDPOINT_GET_DECK, payload);
       setDeckName(deck_info.name);
     };
 
     const listCards = () => {
-    //this function lists the card 
+      //this function lists the card
       const prev_cards: ListCards = {
         user_id: userId,
         deck_id: deckId,

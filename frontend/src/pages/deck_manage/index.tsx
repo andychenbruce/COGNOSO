@@ -1,4 +1,4 @@
-// This file is the deck manager page. 
+// This file is the deck manager page.
 // It contains functions that:
 // -open a selected deck (bring user to flashcard viewer for selected deck)
 // -shows rating of my decks
@@ -6,7 +6,6 @@
 // -call a popup to select desired deck icon from a list of icons
 // -a button that will bring a popup allowing users to create a new deck manually or by uploading a pdf
 // -a favorites toggle to set certain flashcard sets as favorite
-
 
 import React, {
   Dispatch,
@@ -368,7 +367,10 @@ const App: React.FC = () => {
       access_token: access_token,
       deck_id: deckId,
     };
-    send_json_backend<DeleteCardDeck, null>(ENDPOINT_DELETE_CARD_DECK, deleteRequest)
+    send_json_backend<DeleteCardDeck, null>(
+      ENDPOINT_DELETE_CARD_DECK,
+      deleteRequest,
+    )
       .then(() => {
         updateDecks();
       })
@@ -417,7 +419,6 @@ const App: React.FC = () => {
       });
   };
 
-
   return (
     <div>
       <Navbar />
@@ -438,7 +439,7 @@ const App: React.FC = () => {
                 onClick={() => {
                   redirect("/flashcard_viewer/", [
                     ["deck", JSON.stringify(deck.deck_id)],
-		    ["user", JSON.stringify(deck.user_id)]
+                    ["user", JSON.stringify(deck.user_id)],
                   ]);
                 }}
                 style={{

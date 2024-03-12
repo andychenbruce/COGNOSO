@@ -7,10 +7,7 @@ const Main: React.FC<PageProps> = () => {
     redirect("/login", []); // Assuming "/login" is the path to your login page
   }, []); // Empty dependency array ensures this effect runs only once, on mount
 
-  return (
-    <>
-    </>
-  );
+  return <></>;
 };
 
 export const Head: HeadFC = () => (
