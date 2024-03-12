@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, Dispatch } from "react";
 import {
   Button,
   InputBase,
@@ -131,11 +131,8 @@ export const Navbar = () => {
       });
   };
 
-  // logout button
-  const handleLogOut = () => {
-    sessionStorage.clear();
-    window.location.pathname = "/login/";
-  };
+
+  
 
   return (
     <div
@@ -152,99 +149,17 @@ export const Navbar = () => {
       }}
     >
       {/* IMAGEHERE OF LOGO */}
-      <Button
-        variant="contained"
-        sx={{
-          fontSize: "20px",
-          width: "250px",
-          backgroundColor: "#9c27b0",
-          "&:hover": {
-            backgroundColor: "#7b1fa2",
-          },
-        }}
-        onClick={() => {
-          redirect("/home_page", []);
-        }}
-      >
-        <HomeIcon />
-        Home
-      </Button>
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          width: "400px",
-          border: "2px solid #9c27b0",
-          borderRadius: "4px",
-          padding: "5px",
-        }}
-      >
-        <InputBase
-          placeholder="Search…"
-          startAdornment={<SearchOutlinedIcon />}
-          inputProps={{ "aria-label": "search", style: { color: "#E6E6FA" } }}
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          style={{ flex: 1, fontSize: "20px", paddingLeft: "10px" }}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              redirect("/search_results/", [
-                ["query", JSON.stringify(searchQuery)],
-              ]);
-            }
-          }}
-        />
-      </div>
-      <Button
-        variant="contained"
-        sx={{
-          fontSize: "20px",
-          width: "250px",
-          backgroundColor: "#9c27b0",
-          "&:hover": {
-            backgroundColor: "#7b1fa2",
-          },
-        }}
-        onClick={() => {
-          redirect("/deck_manage", []);
-        }}
-      >
-        <BackupTableOutlinedIcon />
-        Decks
-      </Button>
-
-      <Button
-        variant="contained"
-        sx={{
-          fontSize: "20px",
-          width: "250px",
-          backgroundColor: "#9c27b0",
-          "&:hover": {
-            backgroundColor: "#7b1fa2",
-          },
-        }}
-        onClick={() => {
-          redirect("/ai_test", []);
-        }}
-      >
-        <ChatIcon />
-        Ai Chat
-      </Button>
-      <Button
-        variant="contained"
-        sx={{
-          fontSize: "20px",
-          width: "250px",
-          backgroundColor: "#9c27b0",
-          "&:hover": {
-            backgroundColor: "#7b1fa2",
-          },
-        }}
-        onClick={handleMenuOpen}
-      >
-        <Person2OutlinedIcon />
-        Account
-      </Button>
+      <HomeButton />
+      <SearchBar
+	searchQuery={searchQuery}
+	setSearchQuery={setSearchQuery}
+      />
+      
+      <DecksButton />
+      <AiButton />
+      <AccountButton
+	handleMenuOpen={handleMenuOpen}
+      />
       <Menu
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
@@ -264,29 +179,11 @@ export const Navbar = () => {
           },
         }}
       >
-        <MenuItem
-          onClick={handleLogOut}
-          sx={{
-            backgroundColor: "transparent",
-            "&:hover": {
-              backgroundColor: "#7b1fa2",
-            },
-          }}
-        >
-          <ListItemText primary="Log Out" sx={{ color: "white" }} />
-        </MenuItem>
+	<LogoutButton />
 
-        <MenuItem
-          onClick={handleChangePassDialog}
-          sx={{
-            backgroundColor: "transparent",
-            "&:hover": {
-              backgroundColor: "#7b1fa2",
-            },
-          }}
-        >
-          <ListItemText primary="Change Password" sx={{ color: "white" }} />
-        </MenuItem>
+        <ChangePasswordButton
+	  handleChangePassDialog={handleChangePassDialog}
+	/>
 
         <MenuItem
           onClick={handleDeleteButtonClick}
@@ -507,3 +404,147 @@ export const Navbar = () => {
     </div>
   );
 };
+
+
+const LogoutButton = () => (
+  <MenuItem
+    onClick={() => {
+      sessionStorage.clear();
+      window.location.pathname = "/login/";
+    }
+    }
+    sx={{
+      backgroundColor: "transparent",
+      "&:hover": {
+        backgroundColor: "#7b1fa2",
+      },
+    }}
+  >
+    <ListItemText primary="Log Out" sx={{ color: "white" }} />
+  </MenuItem>
+);
+
+const ChangePasswordButton = ({handleChangePassDialog} : {handleChangePassDialog: () => void}) => (
+  <MenuItem
+    onClick={handleChangePassDialog}
+    sx={{
+      backgroundColor: "transparent",
+      "&:hover": {
+        backgroundColor: "#7b1fa2",
+      },
+    }}
+  >
+    <ListItemText primary="Change Password" sx={{ color: "white" }} />
+  </MenuItem>
+);
+  
+
+const HomeButton = () => (
+  <Button
+    variant="contained"
+    sx={{
+      fontSize: "20px",
+      width: "250px",
+      backgroundColor: "#9c27b0",
+      "&:hover": {
+        backgroundColor: "#7b1fa2",
+      },
+    }}
+    onClick={() => {
+      redirect("/home_page", []);
+    }}
+  >
+    <HomeIcon />
+    Home
+  </Button>
+);
+
+const SearchBar = ({searchQuery, setSearchQuery} : {searchQuery: string, setSearchQuery: Dispatch<string>}) => (
+  <div
+    style={{
+      display: "flex",
+      alignItems: "center",
+      width: "400px",
+      border: "2px solid #9c27b0",
+      borderRadius: "4px",
+      padding: "5px",
+    }}
+  >
+    <InputBase
+      placeholder="Search…"
+      startAdornment={<SearchOutlinedIcon />}
+      inputProps={{ "aria-label": "search", style: { color: "#E6E6FA" } }}
+      value={searchQuery}
+      onChange={(e) => setSearchQuery(e.target.value)}
+      style={{ flex: 1, fontSize: "20px", paddingLeft: "10px" }}
+      onKeyDown={(e) => {
+        if (e.key === "Enter") {
+          redirect("/search_results/", [
+            ["query", JSON.stringify(searchQuery)],
+          ]);
+        }
+      }}
+    />
+  </div>
+
+
+);
+
+const DecksButton = () => (
+  <Button
+    variant="contained"
+    sx={{
+      fontSize: "20px",
+      width: "250px",
+      backgroundColor: "#9c27b0",
+      "&:hover": {
+        backgroundColor: "#7b1fa2",
+      },
+    }}
+    onClick={() => {
+      redirect("/deck_manage", []);
+    }}
+  >
+    <BackupTableOutlinedIcon />
+    Decks
+  </Button>
+);
+
+
+const AiButton = () => (
+  <Button
+    variant="contained"
+    sx={{
+      fontSize: "20px",
+      width: "250px",
+      backgroundColor: "#9c27b0",
+      "&:hover": {
+        backgroundColor: "#7b1fa2",
+      },
+    }}
+    onClick={() => {
+      redirect("/ai_test", []);
+    }}
+  >
+    <ChatIcon />
+    Ai Chat
+  </Button>
+);
+
+const AccountButton = ({handleMenuOpen} : {handleMenuOpen: (event: React.MouseEvent<HTMLButtonElement>) => void}) => (
+  <Button
+    variant="contained"
+    sx={{
+      fontSize: "20px",
+      width: "250px",
+      backgroundColor: "#9c27b0",
+      "&:hover": {
+        backgroundColor: "#7b1fa2",
+      },
+    }}
+    onClick={handleMenuOpen}
+  >
+    <Person2OutlinedIcon />
+    Account
+  </Button>
+)
