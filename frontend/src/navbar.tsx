@@ -153,7 +153,7 @@ export const Navbar = () => {
     <div
       style={{
         backgroundColor: "rgba(128, 128, 128, 0.5)",
-        border: "5px solid #ab47bc",
+        border: "2px solid #ab47bc",
         borderRadius: "15px",
         padding: "5px",
         display: "flex",
@@ -185,7 +185,7 @@ export const Navbar = () => {
         style={{
           display: "flex",
           alignItems: "center",
-          width: "400px",
+          width: "550px",
           border: "2px solid #9c27b0",
           borderRadius: "4px",
           padding: "5px",
