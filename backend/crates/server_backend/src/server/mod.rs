@@ -328,7 +328,10 @@ async fn ai_test(
     info: api_structs::AiPromptTest,
     state: std::sync::Arc<SharedState>,
 ) -> Result<String, AndyError> {
-    let ai_response = state.llm_runner.submit_prompt(info.prompt).await?;
+    let ai_response = state.llm_runner.submit_prompt(
+            format!("<|im_start|>system\nYou are a helpful assistant who will help the user with any question.<|im_end|>\n<|im_start|>{}<|im_end|>\n<|im_start|>assistant\n", info.prompt)
+
+        ).await?;
 
     Ok(ai_response)
 }
