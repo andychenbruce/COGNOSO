@@ -18,11 +18,9 @@ const App: React.FC = () => {
   const [flashcards, setFlashcards] = useState<Card[]>([]);
   const [rightCard, setRightCard] = useState<Card>();
   const [leftCard, setLeftCard] = useState<Card>();
-  //const [_visibleFlashcards, setVisibleFlashcards] = useState<number>(4);
+
   const [shuffledFlashcards, setShuffledFlashcards] = useState<Card[]>([]);
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
-
-  //const [droppedItems, setDroppedItems] = useState<Card[]>([]);
 
   const get_deckid = () => {
     const urlString = window.location.href;
@@ -49,6 +47,7 @@ const App: React.FC = () => {
   const nextHandler = () => {
     resetCards();
     shuffleHandler();
+    //suffle the card and resets the middle section when called.
   };
 
   const listCards = () => {
@@ -83,24 +82,51 @@ const App: React.FC = () => {
     card: Card,
   ) => {
     e.dataTransfer.setData("card", JSON.stringify(card));
+    //gets mouse position
+    e.dataTransfer.effectAllowed = "move";
+    e.dataTransfer.setData("text/plain", e.clientY.toString());
   };
 
   const handleDragOver: DragEventHandler<HTMLDivElement> = (e) => {
     e.preventDefault();
+  const mouseY = e.clientY;
+  const threshold = window.innerHeight / 3;
+  
+  if (mouseY < threshold) {
+    const scrollDistance = threshold - mouseY;
+    // Calculate the scroll speed based on mouse position
+    const scrollSpeed = scrollDistance / threshold;
+    // Calculate the new scroll position
+    const scrollTop = window.scrollY || document.documentElement.scrollTop;
+    const newScroll = scrollTop - scrollSpeed * 10;
+    
+    const animateScroll = () => {
+      const difference = newScroll - window.scrollY;
+      const step = difference / 5; 
+      if (Math.abs(step) > 1) {
+        window.scrollBy(0, step);
+        requestAnimationFrame(animateScroll);
+      } else {
+        window.scrollTo(0, newScroll);
+      }
+    };
+  
+    requestAnimationFrame(animateScroll);
+  }
   };
 
   const handleDropLeft: DragEventHandler<HTMLDivElement> = (e) => {
     e.preventDefault();
     const droppedCard = JSON.parse(e.dataTransfer.getData("card"));
     setLeftCard(droppedCard);
-    //submitHandler();
+    //This drops the left hand cards on the left answer slot
   };
 
   const handleDropRight: DragEventHandler<HTMLDivElement> = (e) => {
     e.preventDefault();
     const droppedCard = JSON.parse(e.dataTransfer.getData("card"));
     setRightCard(droppedCard);
-    //submitHandler();
+    //This drops the right hand cards on the right answer slot
   };
 
   function getRandomInt(min: number, max: number) {
@@ -116,7 +142,7 @@ const App: React.FC = () => {
       () => Math.random() - 0.5,
     );
     setShuffledFlashcards(shuffledNewFlashcards);
-    //setVisibleFlashcards(4);
+    //this is to only show 4 cards at a time shuffle them when called.
   };
 
   useEffect(() => {
@@ -172,6 +198,7 @@ const App: React.FC = () => {
             border: "2px solid yellow",
             borderRadius: "10px",
             padding: "10px",
+            overflow: "auto",
           }}
         >
           {shuffledFlashcards
@@ -205,6 +232,7 @@ const App: React.FC = () => {
             alignItems: "center",
             justifyContent: "center",
             marginRight: "10px",
+            overflow: "auto",
             borderRadius: "10px",
             boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
             backgroundColor:
@@ -234,6 +262,7 @@ const App: React.FC = () => {
             justifyContent: "center",
             marginLeft: "10px",
             borderRadius: "10px",
+            overflow: "auto",
             boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
             backgroundColor:
               isCorrect === false
@@ -256,11 +285,11 @@ const App: React.FC = () => {
             border: "2px solid yellow",
             borderRadius: "10px",
             padding: "10px",
+            overflow: "auto",
           }}
         >
           {shuffledFlashcards
             .sort(() => Math.random() - 0.5)
-            //.slice(0, visibleFlashcards)
             .map((flashcard, index) => (
               <div key={index} style={{ marginBottom: "10px" }}>
                 <button
