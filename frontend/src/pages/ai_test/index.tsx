@@ -16,7 +16,7 @@ const App: React.FC = () => {
     const aiSend: AiPromptTest = {
       prompt: prompt,
     };
-    send_json_backend<string>(ENDPOINT_AI_TEST, JSON.stringify(aiSend)).then(
+    send_json_backend<AiPromptTest, string>(ENDPOINT_AI_TEST, aiSend).then(
       (data: string) => {
         setResponse(data);
       },

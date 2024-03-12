@@ -45,9 +45,9 @@ const FlashcardViewerFunc = () => {
         user_id: userId,
         deck_id: deckId,
       };
-      const deck_info = await send_json_backend<GetDeckResponse>(
+      const deck_info = await send_json_backend<GetDeckRequest, GetDeckResponse>(
         ENDPOINT_GET_DECK,
-        JSON.stringify(payload),
+        payload,
       );
       setDeckName(deck_info.name);
     };
@@ -58,9 +58,9 @@ const FlashcardViewerFunc = () => {
         user_id: userId,
         deck_id: deckId,
       };
-      send_json_backend<ListCardsResponse>(
+      send_json_backend<ListCards, ListCardsResponse>(
         ENDPOINT_LIST_CARDS,
-        JSON.stringify(prev_cards),
+        prev_cards,
       ).then((data: ListCardsResponse) => {
         setFlashcards(data.cards);
       });
@@ -86,7 +86,7 @@ const FlashcardViewerFunc = () => {
       deck_id: deckId,
       new_rating: newValue,
     };
-    send_json_backend(ENDPOINT_ADD_RATING, JSON.stringify(add_rating));
+    send_json_backend<AddRating, null>(ENDPOINT_ADD_RATING, add_rating);
   };
 
   const addFlashcard = () => {

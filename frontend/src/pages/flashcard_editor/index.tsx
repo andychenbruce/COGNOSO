@@ -15,6 +15,7 @@ import {
   ENDPOINT_LIST_CARDS,
   ENDPOINT_DELETE_CARD,
   ENDPOINT_EDIT_CARD,
+  CreateCard,
   DeleteCard,
   EditCard,
 } from "../../backend_interface";
@@ -48,9 +49,9 @@ const App: React.FC = () => {
 
   const Create_card = () => {
     //this function is used to create new flashcards
-    const deckId = get_param("deck");
+    const deckId = get_param<number>("deck");
     const access_token = get_session_token();
-    if (access_token == null) {
+    if ((access_token == null) || (deckId == null)) {
       return;
     }
     if (!q1 || !a1) {
@@ -64,14 +65,14 @@ const App: React.FC = () => {
       return;
     }
 
-    const create_card = {
+    const create_card: CreateCard = {
       access_token: access_token,
       deck_id: deckId,
       question: q1,
       answer: a1,
     };
-    send_json_backend(ENDPOINT_CREATE_CARD, JSON.stringify(create_card)).then(
-      (_data) => {
+    send_json_backend<CreateCard, null>(ENDPOINT_CREATE_CARD, create_card).then(
+      () => {
         listCards();
         setq1("");
         seta1("");
@@ -90,9 +91,9 @@ const App: React.FC = () => {
       user_id: userId,
       deck_id: deckId,
     };
-    send_json_backend<ListCardsResponse>(
+    send_json_backend<ListCards, ListCardsResponse>(
       ENDPOINT_LIST_CARDS,
-      JSON.stringify(prev_cards),
+      prev_cards,
     ).then((data: ListCardsResponse) => {
       setFlashcards(data.cards);
     });
@@ -121,9 +122,9 @@ const App: React.FC = () => {
       card_index: cardIndexToDelete,
     };
 
-    send_json_backend(
+    send_json_backend<DeleteCard, null>(
       ENDPOINT_DELETE_CARD,
-      JSON.stringify(deleteCardPayload),
+      deleteCardPayload,
     ).then(() => {
       const updatedFlashcards = [...flashcards];
       updatedFlashcards.splice(index, 1);
@@ -147,8 +148,8 @@ const App: React.FC = () => {
       new_answer: editedAnswer,
     };
 
-    send_json_backend(ENDPOINT_EDIT_CARD, JSON.stringify(edit_card)).then(
-      (_data) => {
+    send_json_backend<EditCard, null>(ENDPOINT_EDIT_CARD, edit_card).then(
+      () => {
         listCards();
         cancelEdit();
       },

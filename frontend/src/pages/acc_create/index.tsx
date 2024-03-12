@@ -48,8 +48,8 @@ const acc_create: React.FC<PageProps> = () => {
       email: user.email,
       password: user.password1,
     };
-    send_json_backend(ENDPOINT_NEW_USER, JSON.stringify(new_user_request)).then(
-      (_data) => {
+    send_json_backend<NewUser, null>(ENDPOINT_NEW_USER, new_user_request).then(
+      () => {
         redirectToLogin();
       },
     );

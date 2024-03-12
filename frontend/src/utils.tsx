@@ -1,16 +1,16 @@
 const ID_STORAGE: string = "user_id";
 const TOKEN_STORAGE: string = "session_token";
 
-export async function send_json_backend<T>(
+export async function send_json_backend<I, T>(
   endpoint: string,
-  body: string,
+  payload: I,
 ): Promise<T> {
   const response = await fetch("http://localhost:3000" + endpoint, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: body,
+    body: JSON.stringify(payload),
   });
 
   if (!response.ok) {

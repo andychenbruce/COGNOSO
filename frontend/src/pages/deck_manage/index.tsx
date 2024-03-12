@@ -197,7 +197,7 @@ const App: React.FC = () => {
       icon: index,
     };
 
-    send_json_backend(ENDPOINT_SET_DECK_ICON, JSON.stringify(new_icon))
+    send_json_backend<SetDeckIcon, null>(ENDPOINT_SET_DECK_ICON, new_icon)
       .then(() => {
         console.log("Successfully updated deck icon");
         handleIconDialogClose();
@@ -224,9 +224,9 @@ const App: React.FC = () => {
       return;
     }
     const request1: ListCardDecks = { access_token: token };
-    send_json_backend<ListCardDecksResponse>(
+    send_json_backend<ListCardDecks, ListCardDecksResponse>(
       ENDPOINT_LIST_CARD_DECKS,
-      JSON.stringify(request1),
+      request1,
     )
       .then((data: ListCardDecksResponse) => {
         setDecks(data.decks);
@@ -238,9 +238,9 @@ const App: React.FC = () => {
     const request2: ListFavoritesRequest = {
       access_token: token,
     };
-    send_json_backend<ListFavoritesResponse>(
+    send_json_backend<ListFavoritesRequest, ListFavoritesResponse>(
       ENDPOINT_LIST_FAVORITES,
-      JSON.stringify(request2),
+      request2,
     )
       .then((data: ListFavoritesResponse) => {
         // console.log('favorited', data)
@@ -279,7 +279,7 @@ const App: React.FC = () => {
       access_token: access_token,
       deck_name: deckName,
     };
-    send_json_backend(ENDPOINT_CREATE_CARD_DECK, JSON.stringify(request))
+    send_json_backend<CreateCardDeck, null>(ENDPOINT_CREATE_CARD_DECK, request)
       .then(() => {
         updateDecks();
       })
@@ -345,9 +345,9 @@ const App: React.FC = () => {
         deck_name: deckName,
         file_bytes_base64: base64_encode,
       };
-      return send_json_backend(
+      return send_json_backend<UploadPdf, null>(
         ENDPOINT_CREATE_DECK_PDF,
-        JSON.stringify(request_json),
+        request_json,
       )
         .then(() => {
           updateDecks();
@@ -368,7 +368,7 @@ const App: React.FC = () => {
       access_token: access_token,
       deck_id: deckId,
     };
-    send_json_backend(ENDPOINT_DELETE_CARD_DECK, JSON.stringify(deleteRequest))
+    send_json_backend<DeleteCardDeck, null>(ENDPOINT_DELETE_CARD_DECK, deleteRequest)
       .then(() => {
         updateDecks();
       })
@@ -388,7 +388,7 @@ const App: React.FC = () => {
       user_id: user_id,
       deck_id: deckid,
     };
-    send_json_backend(ENDPOINT_ADD_FAVORITE, JSON.stringify(request))
+    send_json_backend<AddFavorite, null>(ENDPOINT_ADD_FAVORITE, request)
       .then(() => {
         updateDecks();
       })
@@ -408,7 +408,7 @@ const App: React.FC = () => {
       user_id: user_id,
       deck_id: deckId,
     };
-    send_json_backend(ENDPOINT_DELETE_FAVORITE, JSON.stringify(request))
+    send_json_backend<DeleteFavorite, null>(ENDPOINT_DELETE_FAVORITE, request)
       .then(() => {
         setFavorites(favorites.filter((deck) => deck.deck_id !== deckId));
       })

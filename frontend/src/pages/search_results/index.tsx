@@ -136,9 +136,9 @@ const App: React.FC = () => {
     const request: SearchDecksRequest = {
       prompt: query,
     };
-    send_json_backend<SearchDecksResponse>(
+    send_json_backend<SearchDecksRequest, SearchDecksResponse>(
       ENDPOINT_SEARCH_DECKS,
-      JSON.stringify(request),
+      request,
     ).then((data: SearchDecksResponse) => {
       const temp = [];
       for (let i = 0; i < data.decks.length; i++) {
