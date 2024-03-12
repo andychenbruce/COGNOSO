@@ -3,7 +3,6 @@ import { Button } from "@mui/material";
 import { redirect } from "../../utils";
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 
-
 const DummyDeck = () => {
   return (
     <div style={{ marginRight: "10px" }}>
@@ -15,14 +14,15 @@ const DummyDeck = () => {
           width: "200px",
           height: "200px",
           marginBottom: "10px",
-          backgroundColor: "#f50057",
-          "&:hover": {
-            backgroundColor: "#ab003c",
-          },
           display: "flex",
           flexDirection: "column",
           justifyContent: "center",
           alignItems: "center",
+          position: "relative",
+          backgroundColor: "#af52bf",
+          "&:hover": {
+            backgroundColor: "#7b1fa2",
+          },
         }}
       >
         <AddCircleOutlineIcon/>

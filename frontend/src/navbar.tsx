@@ -1,4 +1,15 @@
-import React, { useState, Dispatch } from "react";
+// This file is for the navbar to be made and exported
+//Functions:
+//-goes to home page with home button
+//-search textfield and implementation. pressing enter redirects to search_results page
+//-ai chat button redirects to ai_test page where user can ask questions
+//-decks button redirects to deck_manager page
+//-accounts button pulls a dropdown menu with the following options:
+//    -log out (literally logs current user out)
+//    -change password (brings a popup where users can change their password)
+//    -delete account (brings a popup where users can put in their credentials and delete their account. This deletes all decks made by said account)
+
+import React, { useState } from "react";
 import {
   Button,
   InputBase,
@@ -26,7 +37,6 @@ import BackupTableOutlinedIcon from "@mui/icons-material/BackupTableOutlined";
 import Person2OutlinedIcon from "@mui/icons-material/Person2Outlined";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import ChatIcon from "@mui/icons-material/Chat";
-// import logo from './../../assets/logo.png';
 
 export const Navbar = () => {
   const [searchQuery, setSearchQuery] = useState(""); //state of whats in search bar
@@ -48,6 +58,8 @@ export const Navbar = () => {
     pass1: "",
     pass2: "",
   });
+
+  
 
   const handleInputChange = (
     event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
@@ -82,7 +94,7 @@ export const Navbar = () => {
       email: user.email,
       password: user.password,
     };
-    send_json_backend<DeleteUser, null>(ENDPOINT_DELETE_USER, deleteUserRequest)
+    send_json_backend(ENDPOINT_DELETE_USER, JSON.stringify(deleteUserRequest))
       .then(() => {
         setshowDeleteSuccessSnackbar(true);
         logout();
@@ -115,9 +127,9 @@ export const Navbar = () => {
       old_password: user.pass1,
       new_password: user.pass2,
     };
-    send_json_backend<ChangePassword, null>(
+    send_json_backend(
       ENDPOINT_CHANGE_PASSWORD,
-      changePassRequest,
+      JSON.stringify(changePassRequest),
     )
       .then(() => {
         handleChanegPassDialogClose();
@@ -131,8 +143,11 @@ export const Navbar = () => {
       });
   };
 
-
-  
+  // logout button
+  const handleLogOut = () => {
+    sessionStorage.clear();
+    window.location.pathname = "/login/";
+  };
 
   return (
     <div
@@ -149,17 +164,100 @@ export const Navbar = () => {
       }}
     >
       {/* IMAGEHERE OF LOGO */}
-      <HomeButton />
-      <SearchBar
-	searchQuery={searchQuery}
-	setSearchQuery={setSearchQuery}
-      />
-      
-      <DecksButton />
-      <AiButton />
-      <AccountButton
-	handleMenuOpen={handleMenuOpen}
-      />
+      <Button
+        variant="contained"
+        sx={{
+          fontSize: "20px",
+          width: "250px",
+          backgroundColor: "#9c27b0",
+          "&:hover": {
+          backgroundColor: "#7b1fa2",
+          },
+        }}
+        onClick={() => {
+          redirect("/home_page", []);
+        }}
+      >
+        <HomeIcon />
+        Home
+      </Button>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          width: "400px",
+          border: "2px solid #9c27b0",
+          borderRadius: "4px",
+          padding: "5px",
+        }}
+      >
+        <InputBase
+          placeholder="Search…"
+          startAdornment={<SearchOutlinedIcon />}
+          inputProps={{ "aria-label": "search", style: { color: "#E6E6FA" } }}
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          style={{ flex: 1, fontSize: "20px", paddingLeft: "10px" }}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              redirect("/search_results/", [
+                ["query", JSON.stringify(searchQuery)],
+              ]);
+            }
+          }}
+        />
+      </div>
+      <Button
+        variant="contained"
+        sx={{
+          fontSize: "20px",
+          width: "250px",
+          backgroundColor: "#9c27b0",
+          "&:hover": {
+          backgroundColor: "#7b1fa2",
+          },
+        }}
+        
+        onClick={() => {
+          redirect("/deck_manage", []);
+        }}
+      >
+        <BackupTableOutlinedIcon />
+        Decks
+      </Button>
+
+      <Button
+        variant="contained"
+        sx={{
+          fontSize: "20px",
+          width: "250px",
+          backgroundColor: "#9c27b0",
+          "&:hover": {
+          backgroundColor: "#7b1fa2",
+          },
+        }}
+        onClick={() => {
+          redirect("/ai_test", []);
+        }}
+      >
+        <ChatIcon />
+        Ai Chat
+      </Button>
+      <Button
+        variant="contained"
+        sx={{
+          fontSize: "20px",
+          width: "250px",
+          backgroundColor: "#9c27b0",
+          "&:hover": {
+          backgroundColor: "#7b1fa2",
+          },
+        }}
+        onClick={handleMenuOpen}
+      >
+        <Person2OutlinedIcon />
+        Account
+      </Button>
       <Menu
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
@@ -179,11 +277,29 @@ export const Navbar = () => {
           },
         }}
       >
-	<LogoutButton />
+        <MenuItem
+          onClick={handleLogOut}
+          sx={{
+            backgroundColor: "transparent",
+            "&:hover": {
+              backgroundColor: "#7b1fa2",
+            },
+          }}
+        >
+          <ListItemText primary="Log Out" sx={{ color: "white" }} />
+        </MenuItem>
 
-        <ChangePasswordButton
-	  handleChangePassDialog={handleChangePassDialog}
-	/>
+        <MenuItem
+          onClick={handleChangePassDialog}
+          sx={{
+            backgroundColor: "transparent",
+            "&:hover": {
+              backgroundColor: "#7b1fa2",
+            },
+          }}
+        >
+          <ListItemText primary="Change Password" sx={{ color: "white" }} />
+        </MenuItem>
 
         <MenuItem
           onClick={handleDeleteButtonClick}
@@ -226,7 +342,9 @@ export const Navbar = () => {
           <TextField
             style={{
               marginBottom: 20,
-              borderColor: errorFields2.includes("email") ? "red" : undefined,
+              borderColor: errorFields2.includes("email") 
+                ? "red" 
+                : undefined,
             }}
             error={errorFields2.includes("email")}
             label="Email"
@@ -404,147 +522,3 @@ export const Navbar = () => {
     </div>
   );
 };
-
-
-const LogoutButton = () => (
-  <MenuItem
-    onClick={() => {
-      sessionStorage.clear();
-      window.location.pathname = "/login/";
-    }
-    }
-    sx={{
-      backgroundColor: "transparent",
-      "&:hover": {
-        backgroundColor: "#7b1fa2",
-      },
-    }}
-  >
-    <ListItemText primary="Log Out" sx={{ color: "white" }} />
-  </MenuItem>
-);
-
-const ChangePasswordButton = ({handleChangePassDialog} : {handleChangePassDialog: () => void}) => (
-  <MenuItem
-    onClick={handleChangePassDialog}
-    sx={{
-      backgroundColor: "transparent",
-      "&:hover": {
-        backgroundColor: "#7b1fa2",
-      },
-    }}
-  >
-    <ListItemText primary="Change Password" sx={{ color: "white" }} />
-  </MenuItem>
-);
-  
-
-const HomeButton = () => (
-  <Button
-    variant="contained"
-    sx={{
-      fontSize: "20px",
-      width: "250px",
-      backgroundColor: "#9c27b0",
-      "&:hover": {
-        backgroundColor: "#7b1fa2",
-      },
-    }}
-    onClick={() => {
-      redirect("/home_page", []);
-    }}
-  >
-    <HomeIcon />
-    Home
-  </Button>
-);
-
-const SearchBar = ({searchQuery, setSearchQuery} : {searchQuery: string, setSearchQuery: Dispatch<string>}) => (
-  <div
-    style={{
-      display: "flex",
-      alignItems: "center",
-      width: "400px",
-      border: "2px solid #9c27b0",
-      borderRadius: "4px",
-      padding: "5px",
-    }}
-  >
-    <InputBase
-      placeholder="Search…"
-      startAdornment={<SearchOutlinedIcon />}
-      inputProps={{ "aria-label": "search", style: { color: "#E6E6FA" } }}
-      value={searchQuery}
-      onChange={(e) => setSearchQuery(e.target.value)}
-      style={{ flex: 1, fontSize: "20px", paddingLeft: "10px" }}
-      onKeyDown={(e) => {
-        if (e.key === "Enter") {
-          redirect("/search_results/", [
-            ["query", JSON.stringify(searchQuery)],
-          ]);
-        }
-      }}
-    />
-  </div>
-
-
-);
-
-const DecksButton = () => (
-  <Button
-    variant="contained"
-    sx={{
-      fontSize: "20px",
-      width: "250px",
-      backgroundColor: "#9c27b0",
-      "&:hover": {
-        backgroundColor: "#7b1fa2",
-      },
-    }}
-    onClick={() => {
-      redirect("/deck_manage", []);
-    }}
-  >
-    <BackupTableOutlinedIcon />
-    Decks
-  </Button>
-);
-
-
-const AiButton = () => (
-  <Button
-    variant="contained"
-    sx={{
-      fontSize: "20px",
-      width: "250px",
-      backgroundColor: "#9c27b0",
-      "&:hover": {
-        backgroundColor: "#7b1fa2",
-      },
-    }}
-    onClick={() => {
-      redirect("/ai_test", []);
-    }}
-  >
-    <ChatIcon />
-    Ai Chat
-  </Button>
-);
-
-const AccountButton = ({handleMenuOpen} : {handleMenuOpen: (event: React.MouseEvent<HTMLButtonElement>) => void}) => (
-  <Button
-    variant="contained"
-    sx={{
-      fontSize: "20px",
-      width: "250px",
-      backgroundColor: "#9c27b0",
-      "&:hover": {
-        backgroundColor: "#7b1fa2",
-      },
-    }}
-    onClick={handleMenuOpen}
-  >
-    <Person2OutlinedIcon />
-    Account
-  </Button>
-)

@@ -13,6 +13,8 @@ import {
   SearchDecksResponse,
 } from "../../backend_interface";
 import { Button, Rating } from "@mui/material";
+import DummyDeck from "./dummydeck";
+
 
 // testing icons
 import BeachAccessTwoToneIcon from "@mui/icons-material/BeachAccessTwoTone";
@@ -64,7 +66,7 @@ import BuildIcon from "@mui/icons-material/Build";
 import Brightness2Icon from "@mui/icons-material/Brightness2";
 import BungalowIcon from "@mui/icons-material/Bungalow";
 
-const App: React.FC = () => {
+const dummydeck: React.FC = () => {
   const iconList = [
     <BungalowIcon />,
     <Brightness2Icon />,
@@ -151,82 +153,87 @@ const App: React.FC = () => {
   }, []);
 
   return (
-    //displays the results in the same format as the homepage
-    <div className="App">
+    //displays search results if any are returned from backend. Otherwise a dummy deck will be placed.
+    <div>
       <div>
         <Navbar />
         <h1 className="HeaderOne"> Search Results for: {query}</h1>
-
+  
         <div className="mainbody">
           <div className="Content-box">
             <Grid
               container
               spacing={1}
-              sx={{ backgroundColor: "rgba(128, 128, 128, 0.5)" }}
+              sx={{ backgroundColor: "rgba(128, 128, 128, 0.5)"}}
             >
-              {decks.map((deck, index) => (
-                <Grid item xs={4} sm={3} md={2} lg={1} key={deck.deck_id}>
-                  <div style={{ padding: "10px", display: "flex" }}>
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      onClick={() => {
-                        redirect("/flashcard_viewer/", [
-                          ["deck", JSON.stringify(deck.deck_id)],
-                          ["user", JSON.stringify(deck.user_id)],
-                        ]);
-                      }}
-                      sx={{
-                        width: "200px",
-                        height: "200px",
-                        marginBottom: "10px",
-                        display: "flex",
-                        flexDirection: "column",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        position: "relative",
-                        backgroundColor: "#af52bf",
-                        "&:hover": {
-                          backgroundColor: "#7b1fa2",
-                        },
-                      }}
-                    >
-                      {iconList[decks[index].icon_num]}
-                      <Rating
-                        name={`deck-rating-${deck.deck_id}`}
-                        value={deck.rating}
-                        readOnly
-                        size="small"
-                        style={{
-                          position: "absolute",
-                          bottom: 10,
-                          left: 10,
+              {decks.length > 0 ? (
+                decks.map((deck, index) => (
+                  <Grid item xs={4} sm={3} md={2} lg={1} key={deck.deck_id}>
+                    <div style={{ padding: "10px", display: "flex" }}>
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={() => {
+                          redirect("/flashcard_viewer/", [
+                            ["deck", JSON.stringify(deck.deck_id)],
+                            ["user", JSON.stringify(deck.user_id)],
+                          ]);
                         }}
-                      />
-                      <span
-                        style={{
-                          marginLeft: "5px",
-                          textAlign: "center",
-                          padding: "5px",
-                          top: "60%",
-                          width: "100px",
-                          whiteSpace: "nowrap",
-                          overflow: "hidden",
-                          textOverflow: "ellipsis",
+                        sx={{
+                          width: "200px",
+                          height: "200px",
+                          marginBottom: "10px",
+                          display: "flex",
+                          flexDirection: "column",
+                          justifyContent: "center",
+                          alignItems: "center",
+                          position: "relative",
+                          backgroundColor: "#af52bf",
+                          "&:hover": {
+                            backgroundColor: "#7b1fa2",
+                          },
                         }}
                       >
-                        {deck.name}
-                      </span>
-                    </Button>
-                  </div>
-                </Grid>
-              ))}
+                        {iconList[decks[index].icon_num]}
+                        <Rating
+                          name={`deck-rating-${deck.deck_id}`}
+                          value={deck.rating}
+                          readOnly
+                          size="small"
+                          style={{
+                            position: "absolute",
+                            bottom: 10,
+                            left: 10,
+                          }}
+                        />
+                        <span
+                          style={{
+                            marginLeft: "5px",
+                            textAlign: "center",
+                            padding: "5px",
+                            top: "60%",
+                            width: "100px",
+                            whiteSpace: "nowrap",
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                          }}
+                        >
+                          {deck.name}
+                        </span>
+                      </Button>
+                    </div>
+                  </Grid>
+                ))
+              ) : (
+                <DummyDeck />
+              )}
             </Grid>
           </div>
         </div>
       </div>
     </div>
   );
-};
-
-export default App;
+  };
+  
+  export default dummydeck;
+  

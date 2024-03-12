@@ -12,7 +12,7 @@ const App: React.FC = () => {
   const [prompt, setPrompt] = useState("");
   const [response, setResponse] = useState("");
 
-  const submitPrompt = () => {
+  const submitPrompt = () => { //sends users prompt to backend
     const aiSend: AiPromptTest = {
       prompt: prompt,
     };
@@ -21,6 +21,13 @@ const App: React.FC = () => {
         setResponse(data);
       },
     );
+  };
+
+  //this function submits a user's prompt when the 'enter' key is pressed
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    if (event.key === 'Enter') {
+      submitPrompt();
+    }
   };
 
   return (
@@ -46,10 +53,12 @@ const App: React.FC = () => {
             required
             label="Ask a Question!"
             InputLabelProps={{ style: { color: "black" } }}
+            onKeyDown={handleKeyDown}
           />
           <Button
             variant="contained"
             onClick={submitPrompt}
+            
             sx={{
               backgroundColor: "#9c27b0",
               "&:hover": {
@@ -62,8 +71,13 @@ const App: React.FC = () => {
           </Button>
           <p style={{ color: "white" }}>
             {" "}
+            *Please use correct punctuation for best results
+            {" "}
+            </p>
+            <p style={{ color: "white" }}>
             *Please Note that responses may take a minute to process and
-            generate{" "}
+            generate
+            {" "}
           </p>
         </Paper>
         <Paper
