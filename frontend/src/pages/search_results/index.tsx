@@ -170,55 +170,43 @@ const dummydeck: React.FC = () => {
                   <Grid item key={deck.deck_id}>
                     <div style={{ padding: "10px", display: "flex" }}>
                       <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={() => {
-                          redirect("/flashcard_viewer/", [
-                            ["deck", JSON.stringify(deck.deck_id)],
-                            ["user", JSON.stringify(deck.user_id)],
-                          ]);
+                      variant="contained"
+                      color="primary"
+                      onClick={() => {
+                        redirect("/flashcard_viewer/", [
+                          ["deck", JSON.stringify(deck.deck_id)],
+                          ["user", JSON.stringify(deck.user_id)],
+                        ]);
+                      }}
+                      sx={{
+                        width: "200px",
+                        height: "200px",
+                        marginBottom: "10px",
+                        backgroundColor: "#9c27b0",
+                        "&:hover": {
+                          backgroundColor: "#7b1fa2",
+                        },
+                        display: "flex",
+                        flexDirection: "column",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        position: "relative",
+                      }}
+                    >
+                      {iconList[decks[index].icon_num]}
+                      <Rating
+                        name={`deck-rating-${deck.deck_id}`}
+                        value={deck.rating}
+                        readOnly
+                        size="small"
+                        style={{
+                          position: "absolute",
+                          bottom: 10,
+                          left: 10,
                         }}
-                        sx={{
-                          width: "200px",
-                          height: "200px",
-                          marginBottom: "10px",
-                          display: "flex",
-                          flexDirection: "column",
-                          justifyContent: "center",
-                          alignItems: "center",
-                          position: "relative",
-                          backgroundColor: "#af52bf",
-                          "&:hover": {
-                            backgroundColor: "#7b1fa2",
-                          },
-                        }}
-                      >
-                        {iconList[decks[index].icon_num]}
-                        <Rating
-                          name={`deck-rating-${deck.deck_id}`}
-                          value={deck.rating}
-                          readOnly
-                          size="small"
-                          style={{
-                            position: "absolute",
-                            bottom: 10,
-                            left: 10,
-                          }}
-                        />
-                        <span
-                          style={{
-                            textAlign: "center",
-                            padding: "5px",
-                            position: "absolute",
-                            width: "160px", // Adjusted for better fitting
-                            whiteSpace: "nowrap",
-                            overflow: "hidden",
-                            textOverflow: "ellipsis",
-                          }}
-                        >
-                          {deck.name}
-                        </span>
-                      </Button>
+                      />
+                      <span className="span_style">{deck.name}</span>
+                    </Button>
                     </div>
                   </Grid>
                 ))
