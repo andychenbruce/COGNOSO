@@ -442,11 +442,15 @@ const App: React.FC = () => {
                     ["user", JSON.stringify(deck.user_id)],
                   ]);
                 }}
-                style={{
+                sx={{
                   width: "100%",
                   height: "200px",
                   marginBottom: "10px",
+                  
                   backgroundColor: "#af52bf",
+                      "&:hover": {
+                        backgroundColor: "#7b1fa2",
+                      },
                   position: "relative",
                   display: "flex",
                   flexDirection: "column",
@@ -526,9 +530,9 @@ const App: React.FC = () => {
         variant="contained"
         color="primary"
         onClick={handleCreateButtonClick}
-        style={{
-          width: "70px",
-          height: "70px",
+        sx={{
+          width: "90px",
+          height: "90px",
           fontSize: "1.5rem",
           marginTop: "10px",
           borderRadius: "50%",
@@ -538,7 +542,12 @@ const App: React.FC = () => {
           position: "fixed",
           bottom: "20px",
           right: "20px",
-          backgroundColor: "#af52bf",
+          // backgroundColor: "#af52bf",
+          backgroundColor: "#9c27b0",
+            "&:hover": {
+            backgroundColor: "#7b1fa2",
+          },
+          border: '2px solid black'
         }}
       >
         +
