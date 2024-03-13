@@ -145,7 +145,7 @@ const dummydeck: React.FC = () => {
     ).then((data: SearchDecksResponse) => {
 
 
-      var unique_decks = data.decks.reduce(function(acc, item){
+      const unique_decks = data.decks.reduce(function(acc, item){
 	if (acc.findIndex(
 	  (deck) => {
 	    return (deck.user_id == item.user_id) && (deck.deck_id == item.deck_id);
