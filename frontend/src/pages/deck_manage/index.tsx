@@ -542,7 +542,6 @@ const App: React.FC = () => {
           position: "fixed",
           bottom: "20px",
           right: "20px",
-          // backgroundColor: "#af52bf",
           backgroundColor: "#9c27b0",
             "&:hover": {
             backgroundColor: "#7b1fa2",
@@ -568,6 +567,9 @@ const App: React.FC = () => {
         >
           Create New Deck
         </DialogTitle>
+
+
+        {/* CREATE DECK SECTION */}
         <Divider style={{ backgroundColor: "#9370db" }} />
         <DialogContent style={{ backgroundColor: "#9370db" }}>
           <div
@@ -668,6 +670,8 @@ const App: React.FC = () => {
         </DialogActions>
       </Dialog>
 
+
+{/* SELECT ICON */}
       <Dialog
         open={openIconDialog}
         onClose={handleIconDialogClose}
@@ -675,8 +679,9 @@ const App: React.FC = () => {
         aria-describedby="alert-dialog-description"
       >
         <DialogTitle
-          style={{ backgroundColor: "#8916c7" }}
+          style={{ backgroundColor: "#8916c7", color: 'white'}}
           id="alert-dialog-title"
+          
         >
           Choose Deck Icon
         </DialogTitle>
@@ -708,7 +713,7 @@ const App: React.FC = () => {
             onClick={() => handleIconSelectionConfirm()}
             style={{
               backgroundColor: "green",
-              border: "1px solid green",
+              border: "1px solid white",
               color: "white",
             }}
           >
