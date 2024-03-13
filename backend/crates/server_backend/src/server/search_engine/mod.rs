@@ -321,13 +321,19 @@ impl SearchEngine {
     }
 }
 
-pub async fn search_engine_updater_loop(resources: std::sync::Arc<super::SharedState>) -> ! {
+pub async fn search_engine_updater_loop(
+    resources: std::sync::Arc<super::SharedState>,
+    mut reindex_queue: tokio::sync::mpsc::UnboundedReceiver<()>,
+) -> ! {
     loop {
-        //todo this should use use a MPSC queue of requests for whenever the flashcard database changes instead of running every 20 seconds
-        tokio::time::sleep(std::time::Duration::from_secs(20)).await;
         if let Err(e) = loop_inside(&resources).await {
             println!("UPDATING ERROR: {:?}", e);
         }
+
+        reindex_queue
+            .recv()
+            .await
+            .expect("search engine update queue all senders were closed");
     }
 }
 

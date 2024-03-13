@@ -43,6 +43,7 @@ pub struct Card {
 
 pub struct Database {
     db: redb::Database,
+    update_search_queue: tokio::sync::mpsc::UnboundedSender<()>,
 }
 
 impl Database {
@@ -104,7 +105,10 @@ impl Database {
         Ok(user_id)
     }
 
-    pub fn new(db_path: std::path::PathBuf) -> Result<Self, AndyError> {
+    pub fn new(
+        db_path: std::path::PathBuf,
+        update_search_queue: tokio::sync::mpsc::UnboundedSender<()>,
+    ) -> Result<Self, AndyError> {
         let db = redb::Database::create(db_path)?;
         {
             //create tables
@@ -114,7 +118,10 @@ impl Database {
             write_txn.open_table(Self::SESSION_TOKENS_TABLE)?;
             write_txn.commit()?;
         }
-        Ok(Self { db })
+        Ok(Self {
+            db,
+            update_search_queue,
+        })
     }
 
     pub fn new_user(
@@ -288,6 +295,7 @@ impl Database {
         deck.cards.push(Card { question, answer });
 
         self.insert_or_replace(key, deck, Self::DECKS_TABLE)?;
+        self.update_search_queue.send(())?;
         Ok(())
     }
 
@@ -311,6 +319,7 @@ impl Database {
         deck.cards.remove(card_index as usize);
 
         self.insert_or_replace(key, deck, Self::DECKS_TABLE)?;
+        self.update_search_queue.send(())?;
         Ok(())
     }
 
@@ -337,7 +346,7 @@ impl Database {
         card.question = new_question;
         card.answer = new_answer;
         self.insert_or_replace(key, deck, Self::DECKS_TABLE)?;
-
+        self.update_search_queue.send(())?;
         Ok(())
     }
 
@@ -665,6 +674,7 @@ impl Database {
             )?;
         }
         write_txn.commit()?;
+        self.update_search_queue.send(())?;
         Ok(())
     }
 }

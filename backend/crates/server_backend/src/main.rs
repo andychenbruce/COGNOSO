@@ -41,8 +41,10 @@ async fn main() -> Result<(), AndyError> {
     eprintln!("listening on {:?}", addr);
     let listener = TcpListener::bind(addr).await?;
 
+    let (indexer_sender, indexer_reciever) = tokio::sync::mpsc::unbounded_channel::<()>();
+
     let globals: std::sync::Arc<server::SharedState> = std::sync::Arc::new(server::SharedState {
-        database: server::database::Database::new(args.database_path)?,
+        database: server::database::Database::new(args.database_path, indexer_sender)?,
         llm_runner: server::llm::LlmRunner::new(args.llm_runner),
         search_engine: tokio::sync::Mutex::new(
             server::search_engine::SearchEngine::new(
@@ -62,6 +64,7 @@ async fn main() -> Result<(), AndyError> {
 
     tokio::task::spawn(server::search_engine::search_engine_updater_loop(
         globals.clone(),
+        indexer_reciever,
     ));
 
     loop {

@@ -50,4 +50,6 @@ pub enum AndyError {
     Llm(#[from] crate::server::llm::LlmError),
     #[error("search err")]
     Search(#[from] crate::server::search_engine::SearchEngineError),
+    #[error("channel disconnected")]
+    MspcDiconnect(#[from] tokio::sync::mpsc::error::SendError<()>),
 }
