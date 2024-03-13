@@ -129,7 +129,7 @@ export const Navbar = () => {
     };
     send_json_backend(
       ENDPOINT_CHANGE_PASSWORD,
-      JSON.stringify(changePassRequest),
+      changePassRequest,
     )
       .then(() => {
         handleChanegPassDialogClose();
