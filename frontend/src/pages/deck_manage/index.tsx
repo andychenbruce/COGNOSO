@@ -596,6 +596,7 @@ const App: React.FC = () => {
             />
             {usePDF && (
               <>
+                <p style={{ float: 'left', width: '100%' }}>*Large files take longer to process</p>
                 <Button
                   variant="contained"
                   component="label"
