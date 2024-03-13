@@ -307,7 +307,7 @@ async fn search(
             .search_engine
             .lock()
             .await
-            .search_prompt(&info.prompt, 5)
+            .search_prompt(&info.prompt, 500)
             .await?;
 
         let decks: Vec<api_structs::CardDeck> = thing

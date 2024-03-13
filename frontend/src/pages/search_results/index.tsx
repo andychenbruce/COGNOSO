@@ -143,13 +143,19 @@ const dummydeck: React.FC = () => {
       ENDPOINT_SEARCH_DECKS,
       request,
     ).then((data: SearchDecksResponse) => {
-      const temp = [];
-      for (let i = 0; i < data.decks.length; i++) {
-        if (data.decks[i].name == query) {
-          temp.push(data.decks[i]);
-        }
-      }
-      setDecks(data.decks);
+
+
+      var unique_decks = data.decks.reduce(function(acc, item){
+	if (acc.findIndex(
+	  (deck) => {
+	    return (deck.user_id == item.user_id) && (deck.deck_id == item.deck_id);
+	  } ) == -1) {
+	  acc.push(item);
+	}
+	return acc;
+      }, [] as CardDeck[]);
+      
+      setDecks(unique_decks);
     });
   }, []);
   return (
