@@ -127,7 +127,9 @@ impl Database {
         let write_txn = self.db.begin_write()?;
         {
             let mut table = write_txn.open_table(Self::USERS_TABLE)?;
-            table.get(user_id)?.ok_or(AndyError::UserAlreadyExist)?;
+            if table.get(user_id)?.is_some() {
+                return Err(AndyError::UserAlreadyExist);
+            }
             table.insert(
                 user_id,
                 UserEntry {
@@ -220,7 +222,7 @@ impl Database {
         let table = read_txn.open_table(Self::DECKS_TABLE)?;
         let deck = table
             .get((user_id, deck_id))?
-            .ok_or(AndyError::DeckDoesNotExist)?
+            .ok_or(AndyError::DeckDoesNotExist((user_id, deck_id)))?
             .value();
 
         Ok(api_structs::CardDeck {
@@ -254,7 +256,10 @@ impl Database {
 
         let read_txn = self.db.begin_read()?;
         let table = read_txn.open_table(Self::DECKS_TABLE)?;
-        let mut deck = table.get(key)?.ok_or(AndyError::DeckDoesNotExist)?.value();
+        let mut deck = table
+            .get(key)?
+            .ok_or(AndyError::DeckDoesNotExist(key))?
+            .value();
         deck.rating = ((deck.rating * (deck.num_ratings as f32)) + new_rating)
             / ((deck.num_ratings + 1) as f32);
 
@@ -276,7 +281,10 @@ impl Database {
 
         let read_txn = self.db.begin_read()?;
         let table = read_txn.open_table(Self::DECKS_TABLE)?;
-        let mut deck = table.get(key)?.ok_or(AndyError::DeckDoesNotExist)?.value();
+        let mut deck = table
+            .get(key)?
+            .ok_or(AndyError::DeckDoesNotExist(key))?
+            .value();
         deck.cards.push(Card { question, answer });
 
         self.insert_or_replace(key, deck, Self::DECKS_TABLE)?;
@@ -293,7 +301,10 @@ impl Database {
 
         let read_txn = self.db.begin_read()?;
         let table = read_txn.open_table(Self::DECKS_TABLE)?;
-        let mut deck = table.get(key)?.ok_or(AndyError::DeckDoesNotExist)?.value();
+        let mut deck = table
+            .get(key)?
+            .ok_or(AndyError::DeckDoesNotExist(key))?
+            .value();
         if deck.cards.len() <= (card_index as usize) {
             return Err(AndyError::CardIndexOutOfBounds);
         }
@@ -315,7 +326,10 @@ impl Database {
 
         let read_txn = self.db.begin_read()?;
         let table = read_txn.open_table(Self::DECKS_TABLE)?;
-        let mut deck = table.get(key)?.ok_or(AndyError::DeckDoesNotExist)?.value();
+        let mut deck = table
+            .get(key)?
+            .ok_or(AndyError::DeckDoesNotExist(key))?
+            .value();
         let card = deck
             .cards
             .get_mut(card_index as usize)
@@ -364,7 +378,10 @@ impl Database {
 
         let read_txn = self.db.begin_read()?;
         let table = read_txn.open_table(Self::DECKS_TABLE)?;
-        let deck = table.get(key)?.ok_or(AndyError::DeckDoesNotExist)?.value();
+        let deck = table
+            .get(key)?
+            .ok_or(AndyError::DeckDoesNotExist(key))?
+            .value();
 
         Ok(api_structs::ListCardsResponse {
             cards: deck
@@ -427,7 +444,10 @@ impl Database {
 
         let read_txn = self.db.begin_read()?;
         let table = read_txn.open_table(Self::DECKS_TABLE)?;
-        let mut deck = table.get(key)?.ok_or(AndyError::DeckDoesNotExist)?.value();
+        let mut deck = table
+            .get(key)?
+            .ok_or(AndyError::DeckDoesNotExist(key))?
+            .value();
         deck.icon_num = icon_num;
         self.insert_or_replace(key, deck, Self::DECKS_TABLE)?;
 
@@ -515,7 +535,9 @@ impl Database {
         let read_txn = self.db.begin_read()?;
         {
             let table = read_txn.open_table(Self::DECKS_TABLE)?;
-            table.get(id_pair)?.ok_or(AndyError::DeckDoesNotExist)?;
+            table
+                .get(id_pair)?
+                .ok_or(AndyError::DeckDoesNotExist(id_pair))?;
         }
 
         let table = read_txn.open_table(Self::USERS_TABLE)?;
@@ -541,7 +563,9 @@ impl Database {
         let read_txn = self.db.begin_read()?;
         {
             let table = read_txn.open_table(Self::DECKS_TABLE)?;
-            table.get(id_pair)?.ok_or(AndyError::DeckDoesNotExist)?;
+            table
+                .get(id_pair)?
+                .ok_or(AndyError::DeckDoesNotExist(id_pair))?;
         }
 
         let table = read_txn.open_table(Self::USERS_TABLE)?;

@@ -11,7 +11,7 @@ pub enum AndyError {
     #[error("nonexistant user")]
     UserDoesNotExist,
     #[error("deck does not exist")]
-    DeckDoesNotExist,
+    DeckDoesNotExist((u32, u32)),
     #[error("favorite does not exist")]
     FavoriteDoesNotExist,
     #[error("favorite already exist")]
