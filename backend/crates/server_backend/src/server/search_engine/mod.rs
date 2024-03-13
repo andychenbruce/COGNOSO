@@ -101,9 +101,10 @@ impl SearchEngine {
         &mut self,
         id: (super::database::UserId, super::database::DeckId),
         cards: Vec<super::database::Card>,
-    ) -> Result<(), SearchEngineError> {
+        start_id: u64
+    ) -> Result<u64, SearchEngineError> {
         if cards.is_empty() {
-            return Ok(());
+            return Ok(start_id);
         }
         let payload: Payload = json!({
             Self::FIELD_USER_ID: id.0,
@@ -119,14 +120,19 @@ impl SearchEngine {
         let points: Vec<_> = vectors
             .into_iter()
             .enumerate()
-            .map(|(num, vector)| PointStruct::new(num as u64, vector, payload.clone()))
+            .map(|(num, vector)| PointStruct::new(start_id + (num as u64), vector, payload.clone()))
             .collect();
+        let num_points = points.len();
+
+        let info = self.get_client()?.collection_info(Self::COLLECTION_NAME.to_owned()).await?.result.unwrap().vectors_count.unwrap();
+        println!("before had {} points", info); 
 
         self.get_client()?
             .upsert_points_blocking(Self::COLLECTION_NAME, None, points, None)
             .await?;
-
-        Ok(())
+        let info = self.get_client()?.collection_info(Self::COLLECTION_NAME.to_owned()).await?.result.unwrap().vectors_count.unwrap();
+        println!("now has {} points", info);
+        Ok(start_id + (num_points as u64))
     }
 
     pub async fn search_prompt(
@@ -155,6 +161,9 @@ impl SearchEngine {
             .await?;
 
         let results = Self::deserialize_points(search_result.result)?;
+
+        let info = self.get_client()?.collection_info(Self::COLLECTION_NAME.to_owned()).await?.result.unwrap().vectors_count.unwrap();
+        println!("got {} results, limit of {}, total = {}", results.len(), num_results, info);
         Ok(results)
     }
 
@@ -336,10 +345,10 @@ async fn loop_inside(resources: &super::SharedState) -> Result<(), crate::AndyEr
 
     
     engine.clear_decks().await?;
-    
+    let mut start_id: u64 = 0; 
     for deck in decks {
         println!("adding deck ids: {:?} info {:?}", deck.0, deck.1.name);
-        engine.add_deck(deck.0, deck.1.cards).await?;
+        start_id = engine.add_deck(deck.0, deck.1.cards, start_id).await?;
     }
 
     Ok(())
