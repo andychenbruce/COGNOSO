@@ -2,20 +2,6 @@
 #+attr_html: :height 100 px
 [[./assets/logo.png]]
 
-
-* Backend
-#+BEGIN_SRC bash-ts
-  cd backend
-#+END_SRC
-** Build instructions
-#+BEGIN_SRC bash-ts
-  cargo build
-#+END_SRC
-** Running
-#+BEGIN_SRC bash-ts
-  ./run.sh
-#+END_SRC
-
 * Frontend
 #+BEGIN_SRC bash-ts
   cd frontend
@@ -30,8 +16,44 @@
   npm run build
 #+END_SRC
 Static html will be in ~frontend/build~, can be served with any HTTP server of choice.
+#+BEGIN_SRC bash-ts
+  #example server
+  python3 -m http.server
+#+END_SRC
 
-* Backend endpoints
+
+* Backend
+#+BEGIN_SRC bash-ts
+  cd backend
+  # clone submodules
+  git submodule update --init --recursive
+#+END_SRC
+** Build instructions
+#+BEGIN_SRC bash-ts
+  cargo build
+#+END_SRC
+** Running
+#+BEGIN_SRC bash-ts
+  ./run.sh
+#+END_SRC
+** Start Vector Database
+#+BEGIN_SRC bash-ts
+  ./qdrant.sh
+#+END_SRC
+* AI runner
+#+BEGIN_SRC bash-ts
+  cd llama.cpp
+  mkdir build
+  cd build
+  cmake .. -DLLAMA_CUBLAS=ON
+  cmake --build . --config Release
+#+END_SRC
+** Run AI runner
+#+BEGIN_SRC bash-ts
+  ./llama.sh
+#+END_SRC
+
+* Endpoints
 For the frontend endpoints are defined in [[./frontend/src/backend_interface.ts]].
 For the backend endpoints are defined in [[./backend/crates/server_backend/src/api_structs.rs]].
 Keep these files in sync or the code is going to get messy.
