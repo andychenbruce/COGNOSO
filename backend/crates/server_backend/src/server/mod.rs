@@ -302,7 +302,7 @@ async fn search(
     info: api_structs::SearchDecksRequest,
     state: std::sync::Arc<SharedState>,
 ) -> Result<api_structs::SearchDecksResponse, AndyError> {
-    if state.search_engine.lock().await.not_fucked() {
+    if state.search_engine.lock().await.is_initialized() {
         let thing = state
             .search_engine
             .lock()

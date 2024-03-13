@@ -127,6 +127,7 @@ impl Database {
         let write_txn = self.db.begin_write()?;
         {
             let mut table = write_txn.open_table(Self::USERS_TABLE)?;
+            table.get(user_id)?.ok_or(AndyError::UserAlreadyExist)?;
             table.insert(
                 user_id,
                 UserEntry {

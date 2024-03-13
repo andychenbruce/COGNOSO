@@ -145,7 +145,7 @@ impl SearchEngine {
             .ok_or(SearchEngineError::VectorDbNeverLoaded)
     }
 
-    pub fn not_fucked(&self) -> bool {
+    pub fn is_initialized(&self) -> bool {
         matches!((&self.client, &self.embedder), (Some(_), Some(_)))
     }
 

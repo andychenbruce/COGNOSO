@@ -6,6 +6,8 @@ pub enum AndyError {
     Serde(#[from] serde_json::Error),
     #[error("io error")]
     Io(#[from] std::io::Error),
+    #[error("user already exists")]
+    UserAlreadyExist,
     #[error("nonexistant user")]
     UserDoesNotExist,
     #[error("deck does not exist")]
