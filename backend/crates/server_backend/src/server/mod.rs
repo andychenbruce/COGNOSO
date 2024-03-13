@@ -302,7 +302,7 @@ async fn search(
     info: api_structs::SearchDecksRequest,
     state: std::sync::Arc<SharedState>,
 ) -> Result<api_structs::SearchDecksResponse, AndyError> {
-    if state.search_engine.lock().await.not_fucked() {
+    if state.search_engine.lock().await.is_initialized() {
         let thing = state
             .search_engine
             .lock()
@@ -314,7 +314,6 @@ async fn search(
             .into_iter()
             .map(|(user_id, deck_id)| state.database.get_deck_info(user_id, deck_id))
             .collect::<Result<_, AndyError>>()?;
-
         Ok(api_structs::SearchDecksResponse { decks })
     } else {
         //send dummy data

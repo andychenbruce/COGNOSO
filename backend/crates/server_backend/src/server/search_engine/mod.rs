@@ -79,6 +79,9 @@ impl SearchEngine {
         id: (super::database::UserId, super::database::DeckId),
         cards: Vec<super::database::Card>,
     ) -> Result<(), SearchEngineError> {
+        if cards.is_empty() {
+            return Ok(());
+        }
         let payload: Payload = json!({
             Self::FIELD_USER_ID: id.0,
             Self::FIELD_DECK_ID: id.1
@@ -89,7 +92,7 @@ impl SearchEngine {
         let sentences: Vec<_> = cards.into_iter().map(format_card).collect();
 
         let vectors = self.get_embedder()?.run(sentences)?;
-
+        println!("adding {} vectors", vectors.len());
         let points: Vec<_> = vectors
             .into_iter()
             .enumerate()
@@ -145,7 +148,7 @@ impl SearchEngine {
             .ok_or(SearchEngineError::VectorDbNeverLoaded)
     }
 
-    pub fn not_fucked(&self) -> bool {
+    pub fn is_initialized(&self) -> bool {
         matches!((&self.client, &self.embedder), (Some(_), Some(_)))
     }
 
@@ -279,7 +282,7 @@ impl SearchEngine {
     ) -> Result<u32, SearchEngineError> {
         match point
             .payload
-            .get(Self::FIELD_DECK_ID)
+            .get(field)
             .ok_or(SearchEngineError::PayloadFieldMissing(field))?
             .kind
             .as_ref()
@@ -307,6 +310,7 @@ async fn loop_inside(resources: &super::SharedState) -> Result<(), crate::AndyEr
     let decks = resources.database.get_all_decks()?;
 
     for deck in decks {
+        println!("adding deck ids: {:?} info {:?}", deck.0, deck.1.name);
         resources
             .search_engine
             .lock()
