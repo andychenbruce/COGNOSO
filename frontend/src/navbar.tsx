@@ -94,7 +94,7 @@ export const Navbar = () => {
       email: user.email,
       password: user.password,
     };
-    send_json_backend(ENDPOINT_DELETE_USER, JSON.stringify(deleteUserRequest))
+    send_json_backend(ENDPOINT_DELETE_USER, deleteUserRequest)
       .then(() => {
         setshowDeleteSuccessSnackbar(true);
         logout();

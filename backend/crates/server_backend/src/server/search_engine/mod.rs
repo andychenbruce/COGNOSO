@@ -116,7 +116,6 @@ impl SearchEngine {
         let sentences: Vec<_> = cards.into_iter().map(format_card).collect();
 
         let vectors = self.get_embedder()?.run(sentences)?;
-        println!("adding {} vectors", vectors.len());
         let points: Vec<_> = vectors
             .into_iter()
             .enumerate()
@@ -124,14 +123,10 @@ impl SearchEngine {
             .collect();
         let num_points = points.len();
 
-        let info = self.get_client()?.collection_info(Self::COLLECTION_NAME.to_owned()).await?.result.unwrap().vectors_count.unwrap();
-        println!("before had {} points", info); 
-
         self.get_client()?
             .upsert_points_blocking(Self::COLLECTION_NAME, None, points, None)
             .await?;
-        let info = self.get_client()?.collection_info(Self::COLLECTION_NAME.to_owned()).await?.result.unwrap().vectors_count.unwrap();
-        println!("now has {} points", info);
+        
         Ok(start_id + (num_points as u64))
     }
 
@@ -162,8 +157,6 @@ impl SearchEngine {
 
         let results = Self::deserialize_points(search_result.result)?;
 
-        let info = self.get_client()?.collection_info(Self::COLLECTION_NAME.to_owned()).await?.result.unwrap().vectors_count.unwrap();
-        println!("got {} results, limit of {}, total = {}", results.len(), num_results, info);
         Ok(results)
     }
 
@@ -347,7 +340,6 @@ async fn loop_inside(resources: &super::SharedState) -> Result<(), crate::AndyEr
     engine.clear_decks().await?;
     let mut start_id: u64 = 0; 
     for deck in decks {
-        println!("adding deck ids: {:?} info {:?}", deck.0, deck.1.name);
         start_id = engine.add_deck(deck.0, deck.1.cards, start_id).await?;
     }
 
