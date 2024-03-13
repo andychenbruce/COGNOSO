@@ -312,7 +312,15 @@ async fn search(
 
         let decks: Vec<api_structs::CardDeck> = thing
             .into_iter()
-            .map(|(user_id, deck_id)| state.database.get_deck_info(user_id, deck_id))
+            .filter_map(
+                |(user_id, deck_id)| match state.database.get_deck_info(user_id, deck_id) {
+                    Ok(x) => Some(Ok(x)),
+                    Err(e) => match e {
+                        AndyError::DeckDoesNotExist(_) => None,
+                        other => Some(Err(other)),
+                    },
+                },
+            )
             .collect::<Result<_, AndyError>>()?;
         Ok(api_structs::SearchDecksResponse { decks })
     } else {

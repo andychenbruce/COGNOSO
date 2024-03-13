@@ -101,7 +101,7 @@ impl SearchEngine {
         &mut self,
         id: (super::database::UserId, super::database::DeckId),
         cards: Vec<super::database::Card>,
-        start_id: u64
+        start_id: u64,
     ) -> Result<u64, SearchEngineError> {
         if cards.is_empty() {
             return Ok(start_id);
@@ -126,7 +126,7 @@ impl SearchEngine {
         self.get_client()?
             .upsert_points_blocking(Self::COLLECTION_NAME, None, points, None)
             .await?;
-        
+
         Ok(start_id + (num_points as u64))
     }
 
@@ -336,9 +336,8 @@ async fn loop_inside(resources: &super::SharedState) -> Result<(), crate::AndyEr
 
     let mut engine = resources.search_engine.lock().await;
 
-    
     engine.clear_decks().await?;
-    let mut start_id: u64 = 0; 
+    let mut start_id: u64 = 0;
     for deck in decks {
         start_id = engine.add_deck(deck.0, deck.1.cards, start_id).await?;
     }
