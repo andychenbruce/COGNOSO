@@ -49,7 +49,6 @@ impl SearchEngine {
         let client = match qdrant_addr {
             Some(addr) => {
                 let client = QdrantClient::from_url(&addr).build()?;
-
                 client
                     .create_collection(&CreateCollection {
                         collection_name: Self::COLLECTION_NAME.to_owned(),
@@ -72,6 +71,30 @@ impl SearchEngine {
         };
 
         Ok(Self { client, embedder })
+    }
+
+    pub async fn clear_decks(&mut self) -> Result<(), SearchEngineError> {
+        self.get_client()?
+            .delete_collection(Self::COLLECTION_NAME.to_owned())
+            .await?;
+
+        self.get_client()?
+            .create_collection(&CreateCollection {
+                collection_name: Self::COLLECTION_NAME.to_owned(),
+                vectors_config: Some(qdrant_client::qdrant::VectorsConfig {
+                    config: Some(qdrant_client::qdrant::vectors_config::Config::Params(
+                        qdrant_client::qdrant::VectorParams {
+                            size: VECTOR_SIZE,
+                            distance: Distance::Cosine.into(),
+                            ..Default::default()
+                        },
+                    )),
+                }),
+                ..Default::default()
+            })
+            .await?;
+
+        Ok(())
     }
 
     pub async fn add_deck(
@@ -309,14 +332,14 @@ pub async fn search_engine_updater_loop(resources: std::sync::Arc<super::SharedS
 async fn loop_inside(resources: &super::SharedState) -> Result<(), crate::AndyError> {
     let decks = resources.database.get_all_decks()?;
 
+    let mut engine = resources.search_engine.lock().await;
+
+    
+
     for deck in decks {
         println!("adding deck ids: {:?} info {:?}", deck.0, deck.1.name);
-        resources
-            .search_engine
-            .lock()
-            .await
-            .add_deck(deck.0, deck.1.cards)
-            .await?;
+        engine.clear_decks().await?;
+        engine.add_deck(deck.0, deck.1.cards).await?;
     }
 
     Ok(())
