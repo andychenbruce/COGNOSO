@@ -4,7 +4,7 @@ import { redirect } from "../utils";
 
 const Main: React.FC<PageProps> = () => {
   React.useEffect(() => {
-    redirect("/login", []); // Assuming "/login" is the path to your login page
+    redirect("/home_page", []); // Assuming "/login" is the path to your login page
   }, []); // Empty dependency array ensures this effect runs only once, on mount
 
   return <></>;

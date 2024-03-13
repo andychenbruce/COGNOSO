@@ -6,7 +6,7 @@ import {
   ListCards,
   ListCardsResponse,
 } from "../../backend_interface";
-import { send_json_backend, get_session_token, get_user_id } from "../../utils";
+import { send_json_backend, get_param } from "../../utils";
 import { Button } from "@mui/material";
 
 interface Card {
@@ -21,15 +21,6 @@ const App: React.FC = () => {
 
   const [shuffledFlashcards, setShuffledFlashcards] = useState<Card[]>([]);
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
-
-  const get_deckid = () => {
-    const urlString = window.location.href;
-    const url = new URL(urlString);
-    const searchParams = new URLSearchParams(url.search);
-    const deckIdJSON = searchParams.get("deck");
-    const deckId = deckIdJSON ? JSON.parse(deckIdJSON) : null;
-    return deckId;
-  };
 
   const check_correct = () => {
     if (rightCard?.answer == leftCard?.answer) {
@@ -51,14 +42,15 @@ const App: React.FC = () => {
   };
 
   const listCards = () => {
-    const deckId = get_deckid();
-    const access_token = get_session_token();
-    const user_id = get_user_id();
-    if (access_token == null || user_id == null) {
+    const deckId = get_param<number>("deck");
+    const userId = get_param<number>("user");
+
+    if (userId == null || deckId == null) {
       return;
     }
+
     const prev_cards: ListCards = {
-      user_id: user_id,
+      user_id: userId,
       deck_id: deckId,
     };
     send_json_backend<ListCards, ListCardsResponse>(
