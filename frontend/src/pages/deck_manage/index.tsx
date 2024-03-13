@@ -531,8 +531,8 @@ const App: React.FC = () => {
         color="primary"
         onClick={handleCreateButtonClick}
         sx={{
-          width: "90px",
-          height: "90px",
+          width: "150px",
+          height: "150px",
           fontSize: "1.5rem",
           marginTop: "10px",
           borderRadius: "50%",
