@@ -89,30 +89,30 @@ const App: React.FC = () => {
 
   const handleDragOver: DragEventHandler<HTMLDivElement> = (e) => {
     e.preventDefault();
-  const mouseY = e.clientY;
-  const threshold = window.innerHeight / 3;
-  
-  if (mouseY < threshold) {
-    const scrollDistance = threshold - mouseY;
-    // Calculate the scroll speed based on mouse position
-    const scrollSpeed = scrollDistance / threshold;
-    // Calculate the new scroll position
-    const scrollTop = window.scrollY || document.documentElement.scrollTop;
-    const newScroll = scrollTop - scrollSpeed * 10;
-    
-    const animateScroll = () => {
-      const difference = newScroll - window.scrollY;
-      const step = difference / 5; 
-      if (Math.abs(step) > 1) {
-        window.scrollBy(0, step);
-        requestAnimationFrame(animateScroll);
-      } else {
-        window.scrollTo(0, newScroll);
-      }
-    };
-  
-    requestAnimationFrame(animateScroll);
-  }
+    const mouseY = e.clientY;
+    const threshold = window.innerHeight / 3;
+
+    if (mouseY < threshold) {
+      const scrollDistance = threshold - mouseY;
+      // Calculate the scroll speed based on mouse position
+      const scrollSpeed = scrollDistance / threshold;
+      // Calculate the new scroll position
+      const scrollTop = window.scrollY || document.documentElement.scrollTop;
+      const newScroll = scrollTop - scrollSpeed * 10;
+
+      const animateScroll = () => {
+        const difference = newScroll - window.scrollY;
+        const step = difference / 5;
+        if (Math.abs(step) > 1) {
+          window.scrollBy(0, step);
+          requestAnimationFrame(animateScroll);
+        } else {
+          window.scrollTo(0, newScroll);
+        }
+      };
+
+      requestAnimationFrame(animateScroll);
+    }
   };
 
   const handleDropLeft: DragEventHandler<HTMLDivElement> = (e) => {

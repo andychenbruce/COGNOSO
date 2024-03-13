@@ -59,8 +59,6 @@ export const Navbar = () => {
     pass2: "",
   });
 
-  
-
   const handleInputChange = (
     event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
   ) => {
@@ -127,10 +125,7 @@ export const Navbar = () => {
       old_password: user.pass1,
       new_password: user.pass2,
     };
-    send_json_backend(
-      ENDPOINT_CHANGE_PASSWORD,
-      changePassRequest,
-    )
+    send_json_backend(ENDPOINT_CHANGE_PASSWORD, changePassRequest)
       .then(() => {
         handleChanegPassDialogClose();
         setshowPassChangeSuccessSnackbar(true);
@@ -171,7 +166,7 @@ export const Navbar = () => {
           width: "250px",
           backgroundColor: "#9c27b0",
           "&:hover": {
-          backgroundColor: "#7b1fa2",
+            backgroundColor: "#7b1fa2",
           },
         }}
         onClick={() => {
@@ -214,10 +209,9 @@ export const Navbar = () => {
           width: "250px",
           backgroundColor: "#9c27b0",
           "&:hover": {
-          backgroundColor: "#7b1fa2",
+            backgroundColor: "#7b1fa2",
           },
         }}
-        
         onClick={() => {
           redirect("/deck_manage", []);
         }}
@@ -233,7 +227,7 @@ export const Navbar = () => {
           width: "250px",
           backgroundColor: "#9c27b0",
           "&:hover": {
-          backgroundColor: "#7b1fa2",
+            backgroundColor: "#7b1fa2",
           },
         }}
         onClick={() => {
@@ -250,7 +244,7 @@ export const Navbar = () => {
           width: "250px",
           backgroundColor: "#9c27b0",
           "&:hover": {
-          backgroundColor: "#7b1fa2",
+            backgroundColor: "#7b1fa2",
           },
         }}
         onClick={handleMenuOpen}
@@ -342,9 +336,7 @@ export const Navbar = () => {
           <TextField
             style={{
               marginBottom: 20,
-              borderColor: errorFields2.includes("email") 
-                ? "red" 
-                : undefined,
+              borderColor: errorFields2.includes("email") ? "red" : undefined,
             }}
             error={errorFields2.includes("email")}
             label="Email"

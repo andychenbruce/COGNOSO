@@ -162,7 +162,7 @@ const home_page: React.FC = () => {
   useEffect(updateDecks, []);
 
   const [randomdecks, setRandomDecks]: [CardDeck[], Dispatch<CardDeck[]>] =
-    useState([] as CardDeck[]);  //saves randomly selected decks to be displayed when page is updated
+    useState([] as CardDeck[]); //saves randomly selected decks to be displayed when page is updated
 
   return (
     <div>

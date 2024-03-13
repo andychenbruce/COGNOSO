@@ -353,7 +353,7 @@ const App: React.FC = () => {
         })
         .catch((error) => {
           console.error("Error in:", error);
-          setpdfUploadError(true)
+          setpdfUploadError(true);
         });
     });
   };
@@ -446,11 +446,11 @@ const App: React.FC = () => {
                   width: "100%",
                   height: "200px",
                   marginBottom: "10px",
-                  
+
                   backgroundColor: "#af52bf",
-                      "&:hover": {
-                        backgroundColor: "#7b1fa2",
-                      },
+                  "&:hover": {
+                    backgroundColor: "#7b1fa2",
+                  },
                   position: "relative",
                   display: "flex",
                   flexDirection: "column",
@@ -543,10 +543,10 @@ const App: React.FC = () => {
           bottom: "20px",
           right: "20px",
           backgroundColor: "#9c27b0",
-            "&:hover": {
+          "&:hover": {
             backgroundColor: "#7b1fa2",
           },
-          border: '2px solid black'
+          border: "2px solid black",
         }}
       >
         +
@@ -567,7 +567,6 @@ const App: React.FC = () => {
         >
           Create New Deck
         </DialogTitle>
-
 
         {/* CREATE DECK SECTION */}
         <Divider style={{ backgroundColor: "#9370db" }} />
@@ -670,8 +669,7 @@ const App: React.FC = () => {
         </DialogActions>
       </Dialog>
 
-
-{/* SELECT ICON */}
+      {/* SELECT ICON */}
       <Dialog
         open={openIconDialog}
         onClose={handleIconDialogClose}
@@ -679,9 +677,8 @@ const App: React.FC = () => {
         aria-describedby="alert-dialog-description"
       >
         <DialogTitle
-          style={{ backgroundColor: "#8916c7", color: 'white'}}
+          style={{ backgroundColor: "#8916c7", color: "white" }}
           id="alert-dialog-title"
-          
         >
           Choose Deck Icon
         </DialogTitle>
@@ -749,7 +746,7 @@ const App: React.FC = () => {
       <Snackbar
         open={pdfUploadError}
         autoHideDuration={null}
-        onClose={()=>setpdfUploadError(false)}
+        onClose={() => setpdfUploadError(false)}
         message="Could not upload file!"
       ></Snackbar>
     </div>

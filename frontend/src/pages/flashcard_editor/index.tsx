@@ -156,7 +156,6 @@ const App: React.FC = () => {
     );
   };
 
-
   useEffect(() => {
     listCards();
   }, []);

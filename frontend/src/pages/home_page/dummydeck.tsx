@@ -1,8 +1,7 @@
 import React from "react";
 import { Button } from "@mui/material";
 import { redirect } from "../../utils";
-import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 
 const DummyDeck = () => {
   return (
@@ -25,7 +24,7 @@ const DummyDeck = () => {
           alignItems: "center",
         }}
       >
-        <AddCircleOutlineIcon/>
+        <AddCircleOutlineIcon />
         <span>Add New Deck</span>
       </Button>
     </div>

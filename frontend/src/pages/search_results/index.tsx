@@ -13,7 +13,7 @@ import {
   SearchDecksResponse,
 } from "../../backend_interface";
 import { Button, Rating } from "@mui/material";
-import NotInterestedIcon from '@mui/icons-material/NotInterested';
+import NotInterestedIcon from "@mui/icons-material/NotInterested";
 
 // testing icons
 import BeachAccessTwoToneIcon from "@mui/icons-material/BeachAccessTwoTone";
@@ -65,7 +65,7 @@ import BuildIcon from "@mui/icons-material/Build";
 import Brightness2Icon from "@mui/icons-material/Brightness2";
 import BungalowIcon from "@mui/icons-material/Bungalow";
 
-import Divider from '@mui/material/Divider';
+import Divider from "@mui/material/Divider";
 
 const dummydeck: React.FC = () => {
   const iconList = [
@@ -143,18 +143,17 @@ const dummydeck: React.FC = () => {
       ENDPOINT_SEARCH_DECKS,
       request,
     ).then((data: SearchDecksResponse) => {
-
-
-      const unique_decks = data.decks.reduce(function(acc, item){
-	if (acc.findIndex(
-	  (deck) => {
-	    return (deck.user_id == item.user_id) && (deck.deck_id == item.deck_id);
-	  } ) == -1) {
-	  acc.push(item);
-	}
-	return acc;
+      const unique_decks = data.decks.reduce(function (acc, item) {
+        if (
+          acc.findIndex((deck) => {
+            return deck.user_id == item.user_id && deck.deck_id == item.deck_id;
+          }) == -1
+        ) {
+          acc.push(item);
+        }
+        return acc;
       }, [] as CardDeck[]);
-      
+
       setDecks(unique_decks);
     });
   }, []);
@@ -163,7 +162,7 @@ const dummydeck: React.FC = () => {
       <div>
         <Navbar />
         <h1 className="HeaderOne">Search Results for: {query}</h1>
-  
+
         <div className="mainbody">
           <div className="Content-box">
             <Grid
@@ -176,52 +175,58 @@ const dummydeck: React.FC = () => {
                   <Grid item key={deck.deck_id}>
                     <div style={{ padding: "10px", display: "flex" }}>
                       <Button
-                      variant="contained"
-                      color="primary"
-                      onClick={() => {
-                        redirect("/flashcard_viewer/", [
-                          ["deck", JSON.stringify(deck.deck_id)],
-                          ["user", JSON.stringify(deck.user_id)],
-                        ]);
-                      }}
-                      sx={{
-                        width: "200px",
-                        height: "200px",
-                        marginBottom: "10px",
-                        backgroundColor: "#9c27b0",
-                        "&:hover": {
-                          backgroundColor: "#7b1fa2",
-                        },
-                        display: "flex",
-                        flexDirection: "column",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        position: "relative",
-                      }}
-                    >
-                      {iconList[decks[index].icon_num]}
-                      <Rating
-                        name={`deck-rating-${deck.deck_id}`}
-                        value={deck.rating}
-                        readOnly
-                        size="small"
-                        style={{
-                          position: "absolute",
-                          bottom: 10,
-                          left: 10,
+                        variant="contained"
+                        color="primary"
+                        onClick={() => {
+                          redirect("/flashcard_viewer/", [
+                            ["deck", JSON.stringify(deck.deck_id)],
+                            ["user", JSON.stringify(deck.user_id)],
+                          ]);
                         }}
-                      />
-                      <span className="span_style">{deck.name}</span>
-                    </Button>
+                        sx={{
+                          width: "200px",
+                          height: "200px",
+                          marginBottom: "10px",
+                          backgroundColor: "#9c27b0",
+                          "&:hover": {
+                            backgroundColor: "#7b1fa2",
+                          },
+                          display: "flex",
+                          flexDirection: "column",
+                          justifyContent: "center",
+                          alignItems: "center",
+                          position: "relative",
+                        }}
+                      >
+                        {iconList[decks[index].icon_num]}
+                        <Rating
+                          name={`deck-rating-${deck.deck_id}`}
+                          value={deck.rating}
+                          readOnly
+                          size="small"
+                          style={{
+                            position: "absolute",
+                            bottom: 10,
+                            left: 10,
+                          }}
+                        />
+                        <span className="span_style">{deck.name}</span>
+                      </Button>
                     </div>
                   </Grid>
                 ))
               ) : (
-                <Grid item xs={12} style={{ display: "flex", justifyContent: "center" }}>
+                <Grid
+                  item
+                  xs={12}
+                  style={{ display: "flex", justifyContent: "center" }}
+                >
                   <Button
                     variant="contained"
                     color="primary"
-                    onClick={() => { window.location.pathname = "/deck_manage/" }}
+                    onClick={() => {
+                      window.location.pathname = "/deck_manage/";
+                    }}
                     sx={{
                       width: "200px",
                       height: "200px",
@@ -255,6 +260,5 @@ const dummydeck: React.FC = () => {
       </div>
     </div>
   );
-}
-  export default dummydeck;
-  
+};
+export default dummydeck;

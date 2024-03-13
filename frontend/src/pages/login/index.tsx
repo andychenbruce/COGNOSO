@@ -27,7 +27,8 @@ const Main: React.FC<PageProps> = () => {
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  const handleInputChange = ( //saves state that textfields are currently in
+  const handleInputChange = (
+    //saves state that textfields are currently in
     event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
   ) => {
     const { value, name } = event.target;
@@ -37,7 +38,8 @@ const Main: React.FC<PageProps> = () => {
     });
   };
 
-  const onSubmit = (event: React.FormEvent<HTMLFormElement>) => { //when user presses enter or login, sends info to backend for verification of credentials
+  const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    //when user presses enter or login, sends info to backend for verification of credentials
     event.preventDefault();
     send_json_backend<LoginRequest, LoginResponse>(ENDPOINT_LOGIN, user)
       .then((data: LoginResponse) => {
@@ -49,13 +51,16 @@ const Main: React.FC<PageProps> = () => {
       });
   };
 
-  const redirectToacc_create = () => { //redirect to acc creation page
+  const redirectToacc_create = () => {
+    //redirect to acc creation page
     window.location.pathname = "/acc_create/";
   };
-  const redirectTohome_page = () => { //after login success, redirect to home page
+  const redirectTohome_page = () => {
+    //after login success, redirect to home page
     window.location.pathname = "/home_page/";
   };
-  const handleClosePopup = () => { //handles bottom left popup for any errors that may occur
+  const handleClosePopup = () => {
+    //handles bottom left popup for any errors that may occur
     setErrorMessage(null);
   };
 

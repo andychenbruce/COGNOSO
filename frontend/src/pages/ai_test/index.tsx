@@ -12,7 +12,8 @@ const App: React.FC = () => {
   const [prompt, setPrompt] = useState("");
   const [response, setResponse] = useState("");
 
-  const submitPrompt = () => { //sends users prompt to backend
+  const submitPrompt = () => {
+    //sends users prompt to backend
     const aiSend: AiPromptTest = {
       prompt: prompt,
     };
@@ -25,7 +26,7 @@ const App: React.FC = () => {
 
   //this function submits a user's prompt when the 'enter' key is pressed
   const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
-    if (event.key === 'Enter') {
+    if (event.key === "Enter") {
       submitPrompt();
     }
   };
@@ -45,21 +46,20 @@ const App: React.FC = () => {
             AI Chat
           </Typography>
           <TextField
-  value={prompt}
-  onChange={(e) => setPrompt(e.target.value)}
-  fullWidth
-  margin="normal"
-  style={{ borderRadius: "10px" }}
-  required
-  label="Ask a Question!"
-  InputLabelProps={{ style: { color: "white" } }}
-  InputProps={{ style: { color: "white" } }} // Setting text color to white
-  onKeyDown={handleKeyDown}
-/>
+            value={prompt}
+            onChange={(e) => setPrompt(e.target.value)}
+            fullWidth
+            margin="normal"
+            style={{ borderRadius: "10px" }}
+            required
+            label="Ask a Question!"
+            InputLabelProps={{ style: { color: "white" } }}
+            InputProps={{ style: { color: "white" } }} // Setting text color to white
+            onKeyDown={handleKeyDown}
+          />
           <Button
             variant="contained"
             onClick={submitPrompt}
-            
             sx={{
               backgroundColor: "#9c27b0",
               "&:hover": {
@@ -72,13 +72,11 @@ const App: React.FC = () => {
           </Button>
           <p style={{ color: "white" }}>
             {" "}
-            *Please use correct punctuation for best results
-            {" "}
-            </p>
-            <p style={{ color: "white" }}>
+            *Please use correct punctuation for best results{" "}
+          </p>
+          <p style={{ color: "white" }}>
             *Please Note that responses may take a minute to process and
-            generate
-            {" "}
+            generate{" "}
           </p>
         </Paper>
         <Paper
