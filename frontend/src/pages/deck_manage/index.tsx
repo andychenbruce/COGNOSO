@@ -169,6 +169,7 @@ const App: React.FC = () => {
   const [decks, setDecks]: [CardDeck[], Dispatch<CardDeck[]>] = useState(
     [] as CardDeck[],
   );
+  const [pdfUploadError, setpdfUploadError] = useState(false);
   const [favorites, setFavorites]: [CardDeck[], Dispatch<CardDeck[]>] =
     useState([] as CardDeck[]);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
@@ -229,7 +230,6 @@ const App: React.FC = () => {
     )
       .then((data: ListCardDecksResponse) => {
         setDecks(data.decks);
-        // console.log(data.decks);
       })
       .catch((error) => {
         console.error("Error in:", error);
@@ -242,7 +242,6 @@ const App: React.FC = () => {
       request2,
     )
       .then((data: ListFavoritesResponse) => {
-        // console.log('favorited', data)
         setFavorites(data.decks);
       })
       .catch((error) => {
@@ -354,6 +353,7 @@ const App: React.FC = () => {
         })
         .catch((error) => {
           console.error("Error in:", error);
+          setpdfUploadError(true)
         });
     });
   };
@@ -739,12 +739,18 @@ const App: React.FC = () => {
         message="Title cannot be empty!"
       ></Snackbar>
 
-      {/* FIX SOON */}
       <Snackbar
         open={iconerrorsnackbar}
         autoHideDuration={null}
         onClose={() => changeIconErrorSnackbar(false)}
         message="Error Changing Icon!"
+      ></Snackbar>
+
+      <Snackbar
+        open={pdfUploadError}
+        autoHideDuration={null}
+        onClose={()=>setpdfUploadError(false)}
+        message="Could not upload file!"
       ></Snackbar>
     </div>
   );
