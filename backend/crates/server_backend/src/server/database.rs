@@ -249,6 +249,7 @@ impl Database {
             table.remove((user_id, deck_id))?;
         }
         write_txn.commit()?;
+        self.update_search_queue.send(())?;
         Ok(())
     }
 
