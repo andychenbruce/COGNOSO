@@ -335,10 +335,10 @@ async fn loop_inside(resources: &super::SharedState) -> Result<(), crate::AndyEr
     let mut engine = resources.search_engine.lock().await;
 
     
-
+    engine.clear_decks().await?;
+    
     for deck in decks {
         println!("adding deck ids: {:?} info {:?}", deck.0, deck.1.name);
-        engine.clear_decks().await?;
         engine.add_deck(deck.0, deck.1.cards).await?;
     }
 
