@@ -5,6 +5,8 @@ const VECTOR_SIZE: u64 = 384;
 
 #[derive(thiserror::Error, Debug)]
 pub enum SearchEngineError {
+    #[error("thread join error")]
+    ThreadJoin(#[from] tokio::task::JoinError),
     #[error("qdrant client error")]
     Qdrant(#[from] anyhow::Error),
     #[error("embedder error")]
@@ -29,7 +31,7 @@ pub enum SearchEngineError {
 
 pub struct SearchEngine {
     client: Option<QdrantClient>,
-    embedder: Option<sentence_embedder::SentenceEmbedder>,
+    embedder: Option<std::sync::Arc<tokio::sync::Mutex<sentence_embedder::SentenceEmbedder>>>,
 }
 
 impl SearchEngine {
@@ -44,7 +46,7 @@ impl SearchEngine {
     ) -> Result<Self, SearchEngineError> {
         let embedder = match embedder_path.map(sentence_embedder::SentenceEmbedder::new) {
             None => None,
-            Some(x) => Some(x?),
+            Some(x) => Some(std::sync::Arc::new(tokio::sync::Mutex::new(x?))),
         };
         let client = match qdrant_addr {
             Some(addr) => {
@@ -114,8 +116,14 @@ impl SearchEngine {
         .map_err(SearchEngineError::PayloadConversion)?;
 
         let sentences: Vec<_> = cards.into_iter().map(format_card).collect();
+        //spawn pdf parsing in a new thread so it doesn't block the executor
 
-        let vectors = self.get_embedder()?.run(sentences)?;
+        let embedder_arc = self.get_embedder()?;
+        let vectors = tokio::task::spawn_blocking(move || {
+            Ok::<Vec<_>, SearchEngineError>(embedder_arc.blocking_lock().run(sentences)?)
+        })
+        .await??;
+
         let points: Vec<_> = vectors
             .into_iter()
             .enumerate()
@@ -135,14 +143,19 @@ impl SearchEngine {
         prompt: &str,
         num_results: u64,
     ) -> Result<Vec<(super::database::UserId, super::database::DeckId)>, SearchEngineError> {
-        let vector = self
-            .get_embedder()?
-            .run(vec![prompt.to_owned()])?
-            .pop()
-            .ok_or(SearchEngineError::EmbedderLength {
-                expected: 1,
-                got: 0,
-            })?;
+        let prompt_mem = prompt.to_owned();
+        let embedder_arc = self.get_embedder()?;
+        let vector = tokio::task::spawn_blocking(move || {
+            embedder_arc
+                .blocking_lock()
+                .run(vec![prompt_mem])?
+                .pop()
+                .ok_or(SearchEngineError::EmbedderLength {
+                    expected: 1,
+                    got: 0,
+                })
+        })
+        .await??;
 
         let search_result = self
             .get_client()?
@@ -161,10 +174,13 @@ impl SearchEngine {
     }
 
     fn get_embedder(
-        &mut self,
-    ) -> Result<&mut sentence_embedder::SentenceEmbedder, SearchEngineError> {
+        &self,
+    ) -> Result<
+        std::sync::Arc<tokio::sync::Mutex<sentence_embedder::SentenceEmbedder>>,
+        SearchEngineError,
+    > {
         self.embedder
-            .as_mut()
+            .clone()
             .ok_or(SearchEngineError::EmbedderNeverLoaded)
     }
     fn get_client(&mut self) -> Result<&mut QdrantClient, SearchEngineError> {
@@ -210,7 +226,11 @@ impl SearchEngine {
             })
             .collect::<Result<Vec<_>, SearchEngineError>>()?;
 
-        let vectors = self.get_embedder()?.run(sentences)?;
+        let embedder_arc = self.get_embedder()?;
+        let vectors = tokio::task::spawn_blocking(move || {
+            Ok::<Vec<_>, SearchEngineError>(embedder_arc.blocking_lock().run(sentences)?)
+        })
+        .await??;
 
         let points: Vec<_> = vectors
             .into_iter()
@@ -235,6 +255,8 @@ impl SearchEngine {
     ) -> Result<Vec<String>, SearchEngineError> {
         let vector = self
             .get_embedder()?
+            .lock()
+            .await
             .run(vec![prompt.to_owned()])?
             .pop()
             .ok_or(SearchEngineError::EmbedderLength {

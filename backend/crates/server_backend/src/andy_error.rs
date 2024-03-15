@@ -1,5 +1,7 @@
 #[derive(thiserror::Error, Debug)]
 pub enum AndyError {
+    #[error("thead joining error")]
+    ThreadJoin(#[from] tokio::task::JoinError),
     #[error("hyper library error")]
     Hyper(#[from] hyper::Error),
     #[error("serde json (de)serialization error")]
