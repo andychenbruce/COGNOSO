@@ -417,7 +417,11 @@ async fn create_deck_pdf(
     let url = data_url::DataUrl::process(&info.file_bytes_base64)?;
     let (body, _fragment) = url.decode_to_vec()?;
 
-    let text = pdf_parser::extract_text(&body)?;
+    //spawn pdf parsing in a new thread so it doesn't block the executor
+    let text = tokio::task::spawn_blocking(move || {
+        Ok::<String, AndyError>(pdf_parser::extract_text(&body)?)
+    })
+    .await??;
 
     enum SliceType<'a> {
         Question(&'a str),
