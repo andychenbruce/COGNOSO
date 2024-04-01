@@ -1,5 +1,13 @@
 ** CSE115A Intro to Software Management: Winter 2024
 
+*** Authors (in no particular order)
+ - Nick Puckdee
+ - Vincent Liu
+ - Ish Khandelwal
+ - Sairithvik Ventrapragada
+ - Sathvik Singireddy
+ - Andy Bruce
+
 #+attr_html: :width 100 px
 #+attr_html: :height 100 px
 [[./assets/logo.png]]
